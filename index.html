@@ -426,7 +426,7 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
   const $ = (s, r=document) => r.querySelector(s);
   const $$ = (s, r=document) => [...r.querySelectorAll(s)];
 
-  // ============ HELPERS (hoisted, safe) ============
+  // ============ HELPERS ============
   function escapeHtml(s) {
     if (s == null) return '';
     return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -469,7 +469,7 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
     return Number(n || 0).toLocaleString('ar-EG') + ' ' + (SYM[currency] || 'ل.س');
   }
 
-  // ============ TRACKING PAGE (independent, no state) ============
+  // ============ TRACKING PAGE (independent, products clickable) ============
   async function showTrackingPage(orderNumber) {
     const main = document.querySelector('main');
     const header = document.querySelector('header');
@@ -509,7 +509,8 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
       if (it.color) meta += 'لون: ' + escapeHtml(it.color);
       let imgSrc = it.image || '';
       if (imgSrc.startsWith('file://') || !imgSrc.startsWith('http')) imgSrc = 'https://via.placeholder.com/60x75?text=?';
-      itemsHtml += '<div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #E7E5E4"><img src="' + escapeHtml(imgSrc) + '" style="width:60px;height:75px;object-fit:cover;border-radius:6px;background:#f0f0f0" onerror="this.src=\'https://via.placeholder.com/60x75?text=?\'"><div style="flex:1"><div style="font-weight:600;margin-bottom:2px">' + escapeHtml(it.name) + '</div><div style="font-size:.8rem;color:#737373">' + meta + '</div><div style="font-size:.85rem;margin-top:4px">الكمية: ' + it.qty + ' × ' + priceStr(it.price, currency) + '</div></div></div>';
+      const productLink = it.id ? getSiteUrl() + '?product=' + encodeURIComponent(it.id) : getSiteUrl();
+      itemsHtml += '<a href="' + productLink + '" style="display:flex;gap:12px;padding:12px 8px;border-bottom:1px solid #E7E5E4;text-decoration:none;color:inherit;cursor:pointer;border-radius:6px;transition:background .15s" onmouseover="this.style.background=\'#FAFAF9\'" onmouseout="this.style.background=\'\'"><img src="' + escapeHtml(imgSrc) + '" style="width:60px;height:75px;object-fit:cover;border-radius:6px;background:#f0f0f0" onerror="this.src=\'https://via.placeholder.com/60x75?text=?\'"><div style="flex:1"><div style="font-weight:600;margin-bottom:2px;color:#0F0F0F">' + escapeHtml(it.name) + '</div><div style="font-size:.8rem;color:#737373">' + meta + '</div><div style="font-size:.85rem;margin-top:4px;color:#0F0F0F">الكمية: ' + it.qty + ' × ' + priceStr(it.price, currency) + '</div><div style="font-size:.8rem;color:#1A4D3A;font-weight:600;margin-top:4px">عرض المنتج ←</div></div></a>';
     });
 
     const statusClass = 'status-' + order.status;
@@ -1060,6 +1061,23 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
       updateBadges();
       refreshOrdersCount();
       await loadProducts(true);
+
+      // Handle ?product=UUID — opens specific product (from tracking page link)
+      const productParam = new URLSearchParams(window.location.search).get('product');
+      if (productParam) {
+        const existing = state.products.find(x => x.id === productParam);
+        if (existing) {
+          openProduct(existing.id);
+        } else {
+          const { data } = await sb.from('products').select('*').eq('id', productParam).eq('is_active', true).maybeSingle();
+          if (data) {
+            state.products.push(data);
+            openProduct(data.id);
+          } else {
+            toast('المنتج لم يعد متوفراً', 'error');
+          }
+        }
+      }
     } catch (e) {
       console.error(e);
       $('#productsGrid').innerHTML = '<div class="empty-state" style="grid-column:1/-1"><p>تعذر تحميل المتجر.</p></div>';
