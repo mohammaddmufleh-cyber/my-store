@@ -451,6 +451,13 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
     return arr[0] || fallback || 'https://via.placeholder.com/400x500?text=No+Image';
   }
 
+  function cleanImgUrl(url) {
+    if (!url) return 'https://via.placeholder.com/60x75?text=?';
+    if (typeof url !== 'string') return 'https://via.placeholder.com/60x75?text=?';
+    if (!url.startsWith('http')) return 'https://via.placeholder.com/60x75?text=?';
+    return url;
+  }
+
   function getSiteUrl() {
     return window.location.href.split('?')[0].split('#')[0];
   }
@@ -469,7 +476,7 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
     return Number(n || 0).toLocaleString('ar-EG') + ' ' + (SYM[currency] || 'ل.س');
   }
 
-  // ============ TRACKING PAGE (independent, products clickable) ============
+  // ============ TRACKING PAGE ============
   async function showTrackingPage(orderNumber) {
     const main = document.querySelector('main');
     const header = document.querySelector('header');
@@ -507,8 +514,7 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
       let meta = '';
       if (it.size) meta += 'مقاس: ' + escapeHtml(it.size) + ' ';
       if (it.color) meta += 'لون: ' + escapeHtml(it.color);
-      let imgSrc = it.image || '';
-      if (imgSrc.startsWith('file://') || !imgSrc.startsWith('http')) imgSrc = 'https://via.placeholder.com/60x75?text=?';
+      const imgSrc = cleanImgUrl(it.image);
       const productLink = it.id ? getSiteUrl() + '?product=' + encodeURIComponent(it.id) : getSiteUrl();
       itemsHtml += '<a href="' + productLink + '" style="display:flex;gap:12px;padding:12px 8px;border-bottom:1px solid #E7E5E4;text-decoration:none;color:inherit;cursor:pointer;border-radius:6px;transition:background .15s" onmouseover="this.style.background=\'#FAFAF9\'" onmouseout="this.style.background=\'\'"><img src="' + escapeHtml(imgSrc) + '" style="width:60px;height:75px;object-fit:cover;border-radius:6px;background:#f0f0f0" onerror="this.src=\'https://via.placeholder.com/60x75?text=?\'"><div style="flex:1"><div style="font-weight:600;margin-bottom:2px;color:#0F0F0F">' + escapeHtml(it.name) + '</div><div style="font-size:.8rem;color:#737373">' + meta + '</div><div style="font-size:.85rem;margin-top:4px;color:#0F0F0F">الكمية: ' + it.qty + ' × ' + priceStr(it.price, currency) + '</div><div style="font-size:.8rem;color:#1A4D3A;font-weight:600;margin-top:4px">عرض المنتج ←</div></div></a>';
     });
@@ -944,7 +950,7 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
   function openCart() { renderCart(); $('#cartBackdrop').classList.add('open'); $('#cartDrawer').classList.add('open'); }
   function closeCart() { $('#cartBackdrop').classList.remove('open'); $('#cartDrawer').classList.remove('open'); }
 
-  // ============ ORDERS ============
+  // ============ ORDERS (with product images!) ============
   async function openOrders() {
     $('#ordersBackdrop').classList.add('open');
     $('#ordersDrawer').classList.add('open');
@@ -959,8 +965,21 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
     const statusMap = { pending:'قيد المراجعة', confirmed:'تم التأكيد', shipped:'تم الشحن', delivered:'تم التسليم', cancelled:'ملغى' };
     $('#ordersBody').innerHTML = data.map(o => {
       const statusLabel = statusMap[o.status] || o.status;
-      const itemsCount = (o.items || []).reduce((s,i)=>s+(i.qty||1), 0);
-      return '<a href="' + getSiteUrl() + '?order=' + encodeURIComponent(o.order_number) + '" class="order-card" style="display:block;text-decoration:none;color:inherit;cursor:pointer"><div class="order-header"><span class="order-number">' + escapeHtml(o.order_number) + '</span><span class="order-status status-' + escapeHtml(o.status) + '">' + statusLabel + '</span></div><div style="font-size:.8rem;color:var(--muted);margin-bottom:8px">' + new Date(o.created_at).toLocaleDateString('ar-EG') + ' • ' + itemsCount + ' منتج</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><span class="order-total">' + formatPrice(o.total) + '</span><span style="font-size:.85rem;color:var(--accent);font-weight:600">عرض التفاصيل ←</span></div></a>';
+      const items = o.items || [];
+      const itemsCount = items.reduce((s,i)=>s+(i.qty||1), 0);
+      // Build product thumbnails (max 3 + counter)
+      const maxShow = 3;
+      const showItems = items.slice(0, maxShow);
+      let thumbsHtml = '<div style="display:flex;gap:6px;margin:10px 0 8px">';
+      showItems.forEach(it => {
+        const imgSrc = cleanImgUrl(it.image);
+        thumbsHtml += '<div style="position:relative"><img src="' + escapeHtml(imgSrc) + '" style="width:44px;height:56px;object-fit:cover;border-radius:6px;background:#f0f0f0;border:1px solid #E7E5E4" onerror="this.src=\'https://via.placeholder.com/44x56?text=?\'"><span style="position:absolute;bottom:-3px;left:-3px;background:#1A4D3A;color:#fff;font-size:9px;font-weight:700;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center">' + (it.qty||1) + '</span></div>';
+      });
+      if (items.length > maxShow) {
+        thumbsHtml += '<div style="width:44px;height:56px;border-radius:6px;background:#E7E5E4;display:flex;align-items:center;justify-content:center;color:#737373;font-size:.75rem;font-weight:700">+' + (items.length - maxShow) + '</div>';
+      }
+      thumbsHtml += '</div>';
+      return '<a href="' + getSiteUrl() + '?order=' + encodeURIComponent(o.order_number) + '" class="order-card" style="display:block;text-decoration:none;color:inherit;cursor:pointer"><div class="order-header"><span class="order-number">' + escapeHtml(o.order_number) + '</span><span class="order-status status-' + escapeHtml(o.status) + '">' + statusLabel + '</span></div><div style="font-size:.8rem;color:var(--muted)">' + new Date(o.created_at).toLocaleDateString('ar-EG') + ' • ' + itemsCount + ' منتج</div>' + thumbsHtml + '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)"><span class="order-total">' + formatPrice(o.total) + '</span><span style="font-size:.85rem;color:var(--accent);font-weight:600">عرض التفاصيل ←</span></div></a>';
     }).join('');
     $('#ordersBadge').textContent = data.length;
     $('#ordersBadge').dataset.count = data.length;
@@ -1062,7 +1081,6 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
       refreshOrdersCount();
       await loadProducts(true);
 
-      // Handle ?product=UUID — opens specific product (from tracking page link)
       const productParam = new URLSearchParams(window.location.search).get('product');
       if (productParam) {
         const existing = state.products.find(x => x.id === productParam);
