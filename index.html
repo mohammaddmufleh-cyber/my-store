@@ -91,6 +91,10 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
 .wish-btn:hover{transform:scale(1.1)}
 .wish-btn svg{width:18px;height:18px;stroke:var(--muted);fill:none;stroke-width:2;transition:all .15s}
 .wish-btn.active svg{stroke:var(--danger);fill:var(--danger)}
+.share-btn{position:absolute;top:10px;left:56px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;box-shadow:var(--sh-sm);cursor:pointer;z-index:3;transition:transform .15s}
+.share-btn:hover{transform:scale(1.1)}
+.share-btn svg{width:18px;height:18px;stroke:var(--muted);fill:none;stroke-width:2;transition:all .15s}
+.share-btn:hover svg{stroke:var(--accent)}
 .product-info{padding:16px 4px 8px}
 .product-category{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
 .product-name{font-size:1rem;font-weight:600;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
@@ -191,11 +195,16 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
 .specs-table td{padding:10px 0}
 .specs-table td:first-child{color:var(--muted);width:40%}
 
-.detail-wish{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface);font-size:.85rem;font-weight:600;cursor:pointer;transition:all .15s;align-self:flex-start}
+.detail-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.detail-wish{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface);font-size:.85rem;font-weight:600;cursor:pointer;transition:all .15s}
 .detail-wish:hover{border-color:var(--danger)}
 .detail-wish svg{width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:2}
 .detail-wish.active{border-color:var(--danger);color:var(--danger)}
 .detail-wish.active svg{stroke:var(--danger);fill:var(--danger)}
+.detail-share{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface);font-size:.85rem;font-weight:600;cursor:pointer;transition:all .15s}
+.detail-share:hover{border-color:var(--accent);color:var(--accent)}
+.detail-share svg{width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:2;transition:stroke .15s}
+.detail-share:hover svg{stroke:var(--accent)}
 
 .reviews-section{margin-top:8px;padding-top:20px;border-top:1px solid var(--border)}
 .reviews-title{font-weight:700;font-size:1rem;margin-bottom:12px}
@@ -476,6 +485,40 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
     return Number(n || 0).toLocaleString('ar-EG') + ' ' + (SYM[currency] || 'ل.س');
   }
 
+  // ============ SHARE (Web Share API + fallback) ============
+  async function shareProduct(productId, productName, productPrice) {
+    const productUrl = getSiteUrl() + '?product=' + encodeURIComponent(productId);
+    const shareTitle = productName;
+    const shareText = productName + ' - ' + productPrice + '\nشاهد المنتج على متجرنا:';
+
+    // المحاولة 1: Web Share API (مثالي للهواتف)
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: shareTitle,
+          text: shareText,
+          url: productUrl
+        });
+        return;
+      } catch (err) {
+        if (err.name === 'AbortError') return; // المستخدم أغلق القائمة
+        console.warn('Share API failed:', err);
+      }
+    }
+
+    // المحاولة 2: نسخ الرابط (للحاسوب)
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(productUrl);
+        toast('تم نسخ رابط المنتج ✓ شاركه مع أصدقائك');
+        return;
+      }
+    } catch (e) {}
+
+    // المحاولة 3: نافذة منبثقة (بديل أخير)
+    window.prompt('انسخ رابط المنتج وشاركه:', productUrl);
+  }
+
   // ============ TRACKING PAGE ============
   async function showTrackingPage(orderNumber) {
     const main = document.querySelector('main');
@@ -688,7 +731,7 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
     const old = p.compare_at_price ? '<span class="price-old">' + formatPrice(p.compare_at_price) + '</span>' : '';
     const rh = r ? '<div class="product-rating"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><span>' + r.avg + ' (' + r.count + ')</span></div>' : '';
     const wishActive = isInWishlist(p.id) ? 'active' : '';
-    return '<article class="product-card" data-id="' + p.id + '"><div class="product-image"><img src="' + escapeHtml(img) + '" alt="' + escapeHtml(p.name) + '" loading="lazy">' + badge + '<button class="wish-btn ' + wishActive + '" data-wish-id="' + p.id + '" title="المفضلة"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button></div><div class="product-info"><div class="product-category">' + escapeHtml(p.category) + '</div><h3 class="product-name">' + escapeHtml(p.name) + '</h3><div class="product-price"><span class="price-current">' + formatPrice(p.price) + '</span>' + old + '</div>' + rh + '</div></article>';
+    return '<article class="product-card" data-id="' + p.id + '"><div class="product-image"><img src="' + escapeHtml(img) + '" alt="' + escapeHtml(p.name) + '" loading="lazy">' + badge + '<button class="wish-btn ' + wishActive + '" data-wish-id="' + p.id + '" title="المفضلة"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button><button class="share-btn" data-share-id="' + p.id + '" data-share-name="' + escapeHtml(p.name) + '" data-share-price="' + formatPrice(p.price) + '" title="مشاركة"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button></div><div class="product-info"><div class="product-category">' + escapeHtml(p.category) + '</div><h3 class="product-name">' + escapeHtml(p.name) + '</h3><div class="product-price"><span class="price-current">' + formatPrice(p.price) + '</span>' + old + '</div>' + rh + '</div></article>';
   }
 
   function appendProductCards(products) {
@@ -698,7 +741,7 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
       if (!el.dataset.bound) {
         el.dataset.bound = '1';
         el.addEventListener('click', e => {
-          if (e.target.closest('.wish-btn')) return;
+          if (e.target.closest('.wish-btn') || e.target.closest('.share-btn')) return;
           openProduct(el.dataset.id);
         });
       }
@@ -707,6 +750,15 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
       if (!btn.dataset.bound) {
         btn.dataset.bound = '1';
         btn.addEventListener('click', e => { e.stopPropagation(); toggleWishlist(btn.dataset.wishId); });
+      }
+    });
+    $$('#productsGrid .share-btn').forEach(btn => {
+      if (!btn.dataset.bound) {
+        btn.dataset.bound = '1';
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          shareProduct(btn.dataset.shareId, btn.dataset.shareName, btn.dataset.sharePrice);
+        });
       }
     });
   }
@@ -771,7 +823,7 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
     const descH = p.description ? '<p class="product-description">' + escapeHtml(p.description) + '</p>' : '';
     const wishActive = isInWishlist(p.id) ? 'active' : '';
     const wishText = isInWishlist(p.id) ? 'في المفضلة' : 'أضف للمفضلة';
-    $('#productModalContent').innerHTML = '<div class="product-detail"><div class="product-gallery" id="productGalleryTrigger"><img src="' + escapeHtml(imgs[0]) + '" id="mainProductImg">' + thumbs + '</div><div class="product-detail-info"><div class="product-category">' + escapeHtml(p.category) + '</div><h1 class="product-detail-title">' + escapeHtml(p.name) + '</h1><button class="detail-wish ' + wishActive + '" id="detailWishBtn"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> <span id="detailWishText">' + wishText + '</span></button><div class="product-detail-price">' + formatPrice(p.price) + '</div>' + ratingH + descH + sizesH + colorsH + specsH + actionH + '<div class="reviews-section"><div class="reviews-title">التقييمات والتعليقات</div><div class="reviews-list" id="reviewsList"><p style="color:var(--muted);font-size:.85rem;text-align:center;padding:8px">جارٍ التحميل...</p></div><div class="review-form"><h4>أضف تقييمك</h4><div class="star-picker" id="starPicker"><span data-val="1">★</span><span data-val="2">★</span><span data-val="3">★</span><span data-val="4">★</span><span data-val="5">★</span></div><input type="text" id="reviewAuthor" placeholder="اسمك" maxlength="50"><textarea id="reviewComment" rows="2" placeholder="تعليقك..." maxlength="500"></textarea><button id="submitReviewBtn">إرسال التقييم</button></div></div></div></div>';
+    $('#productModalContent').innerHTML = '<div class="product-detail"><div class="product-gallery" id="productGalleryTrigger"><img src="' + escapeHtml(imgs[0]) + '" id="mainProductImg">' + thumbs + '</div><div class="product-detail-info"><div class="product-category">' + escapeHtml(p.category) + '</div><h1 class="product-detail-title">' + escapeHtml(p.name) + '</h1><div class="detail-actions"><button class="detail-wish ' + wishActive + '" id="detailWishBtn"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> <span id="detailWishText">' + wishText + '</span></button><button class="detail-share" id="detailShareBtn"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg> <span>مشاركة</span></button></div><div class="product-detail-price">' + formatPrice(p.price) + '</div>' + ratingH + descH + sizesH + colorsH + specsH + actionH + '<div class="reviews-section"><div class="reviews-title">التقييمات والتعليقات</div><div class="reviews-list" id="reviewsList"><p style="color:var(--muted);font-size:.85rem;text-align:center;padding:8px">جارٍ التحميل...</p></div><div class="review-form"><h4>أضف تقييمك</h4><div class="star-picker" id="starPicker"><span data-val="1">★</span><span data-val="2">★</span><span data-val="3">★</span><span data-val="4">★</span><span data-val="5">★</span></div><input type="text" id="reviewAuthor" placeholder="اسمك" maxlength="50"><textarea id="reviewComment" rows="2" placeholder="تعليقك..." maxlength="500"></textarea><button id="submitReviewBtn">إرسال التقييم</button></div></div></div></div>';
     $('#productModal').classList.add('open');
     document.body.style.overflow = 'hidden';
     $('#productGalleryTrigger').addEventListener('click', () => openGallery(0));
@@ -782,6 +834,9 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
       const active = isInWishlist(p.id);
       $('#detailWishBtn').classList.toggle('active', active);
       $('#detailWishText').textContent = active ? 'في المفضلة' : 'أضف للمفضلة';
+    });
+    $('#detailShareBtn').addEventListener('click', () => {
+      shareProduct(p.id, p.name, formatPrice(p.price));
     });
     $$('#productModalContent .thumb').forEach(t => {
       t.addEventListener('click', e => {
@@ -950,7 +1005,7 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
   function openCart() { renderCart(); $('#cartBackdrop').classList.add('open'); $('#cartDrawer').classList.add('open'); }
   function closeCart() { $('#cartBackdrop').classList.remove('open'); $('#cartDrawer').classList.remove('open'); }
 
-  // ============ ORDERS (with product images!) ============
+  // ============ ORDERS (with product images) ============
   async function openOrders() {
     $('#ordersBackdrop').classList.add('open');
     $('#ordersDrawer').classList.add('open');
@@ -967,7 +1022,6 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
       const statusLabel = statusMap[o.status] || o.status;
       const items = o.items || [];
       const itemsCount = items.reduce((s,i)=>s+(i.qty||1), 0);
-      // Build product thumbnails (max 3 + counter)
       const maxShow = 3;
       const showItems = items.slice(0, maxShow);
       let thumbsHtml = '<div style="display:flex;gap:6px;margin:10px 0 8px">';
