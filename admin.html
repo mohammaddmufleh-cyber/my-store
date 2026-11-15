@@ -229,7 +229,7 @@ tr:hover td{background:#FAFBFC}
 .upload-zone small{font-size:.75rem;color:var(--muted)}
 .upload-zone input[type="file"]{display:none}
 
-/* IMAGE GRID - container only. All card/image styles are INLINE via JS. */
+/* imageGrid — كل الأنماط inline من JS */
 #imageGrid{display:block;width:100%;margin-top:16px;font-size:0;line-height:0}
 
 /* CONFIRM */
@@ -268,7 +268,6 @@ tr:hover td{background:#FAFBFC}
 </head>
 <body>
 
-<!-- LOGIN SCREEN -->
 <div id="loginScreen">
   <div class="login-card">
     <div class="login-logo">م</div>
@@ -289,7 +288,6 @@ tr:hover td{background:#FAFBFC}
   </div>
 </div>
 
-<!-- DASHBOARD -->
 <div id="dashboard">
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
@@ -427,7 +425,6 @@ tr:hover td{background:#FAFBFC}
   </main>
 </div>
 
-<!-- PRODUCT MODAL -->
 <div class="modal-overlay" id="productModal">
   <div class="modal-box">
     <div class="modal-header">
@@ -437,67 +434,30 @@ tr:hover td{background:#FAFBFC}
     <div class="modal-body">
       <form id="productForm" onsubmit="return false;">
         <input type="hidden" id="pfId" value="">
-
         <div class="form-section">
           <div class="form-section-title">المعلومات الأساسية</div>
           <div class="form-grid">
-            <div class="form-field full">
-              <label class="form-label">اسم المنتج <span class="req">*</span></label>
-              <input type="text" class="form-input" id="pfName" required maxlength="200">
-            </div>
-            <div class="form-field">
-              <label class="form-label">الفئة <span class="req">*</span></label>
-              <select class="form-select" id="pfCategory" required>
-                <option value="ملابس">ملابس</option>
-                <option value="أحذية وحقائب">أحذية وحقائب</option>
-                <option value="إكسسوارات">إكسسوارات</option>
-              </select>
-            </div>
-            <div class="form-field">
-              <label class="form-label">الشارة (اختياري)</label>
-              <input type="text" class="form-input" id="pfBadge" placeholder="جديد، خصم 20%..." maxlength="50">
-            </div>
-            <div class="form-field">
-              <label class="form-label">السعر (ل.س) <span class="req">*</span></label>
-              <input type="number" class="form-input" id="pfPrice" required min="0" step="0.01">
-            </div>
-            <div class="form-field">
-              <label class="form-label">السعر قبل الخصم (اختياري)</label>
-              <input type="number" class="form-input" id="pfComparePrice" min="0" step="0.01">
-            </div>
-            <div class="form-field full">
-              <label class="form-label">الوصف</label>
-              <textarea class="form-textarea" id="pfDescription" rows="3" maxlength="2000"></textarea>
-            </div>
-            <div class="form-field">
-              <div class="checkbox-row"><input type="checkbox" id="pfInStock" checked><label for="pfInStock">متوفر في المخزون</label></div>
-            </div>
-            <div class="form-field">
-              <div class="checkbox-row"><input type="checkbox" id="pfIsActive" checked><label for="pfIsActive">نشط (ظاهر في المتجر)</label></div>
-            </div>
+            <div class="form-field full"><label class="form-label">اسم المنتج <span class="req">*</span></label><input type="text" class="form-input" id="pfName" required maxlength="200"></div>
+            <div class="form-field"><label class="form-label">الفئة <span class="req">*</span></label><select class="form-select" id="pfCategory" required><option value="ملابس">ملابس</option><option value="أحذية وحقائب">أحذية وحقائب</option><option value="إكسسوارات">إكسسوارات</option></select></div>
+            <div class="form-field"><label class="form-label">الشارة (اختياري)</label><input type="text" class="form-input" id="pfBadge" placeholder="جديد، خصم 20%..." maxlength="50"></div>
+            <div class="form-field"><label class="form-label">السعر (ل.س) <span class="req">*</span></label><input type="number" class="form-input" id="pfPrice" required min="0" step="0.01"></div>
+            <div class="form-field"><label class="form-label">السعر قبل الخصم (اختياري)</label><input type="number" class="form-input" id="pfComparePrice" min="0" step="0.01"></div>
+            <div class="form-field full"><label class="form-label">الوصف</label><textarea class="form-textarea" id="pfDescription" rows="3" maxlength="2000"></textarea></div>
+            <div class="form-field"><div class="checkbox-row"><input type="checkbox" id="pfInStock" checked><label for="pfInStock">متوفر في المخزون</label></div></div>
+            <div class="form-field"><div class="checkbox-row"><input type="checkbox" id="pfIsActive" checked><label for="pfIsActive">نشط (ظاهر في المتجر)</label></div></div>
           </div>
         </div>
 
         <div class="form-section">
           <div class="form-section-title">المقاسات</div>
           <div class="dynamic-list" id="sizesList"></div>
-          <div style="margin-top:10px">
-            <button type="button" class="add-dyn-btn" id="addSizeBtn">
-              <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              إضافة مقاس
-            </button>
-          </div>
+          <div style="margin-top:10px"><button type="button" class="add-dyn-btn" id="addSizeBtn"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> إضافة مقاس</button></div>
         </div>
 
         <div class="form-section">
           <div class="form-section-title">الألوان</div>
           <div class="dynamic-list" id="colorsList"></div>
-          <div style="margin-top:10px">
-            <button type="button" class="add-dyn-btn" id="addColorBtn">
-              <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              إضافة لون
-            </button>
-          </div>
+          <div style="margin-top:10px"><button type="button" class="add-dyn-btn" id="addColorBtn"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> إضافة لون</button></div>
         </div>
 
         <div class="form-section">
@@ -528,7 +488,6 @@ tr:hover td{background:#FAFBFC}
   </div>
 </div>
 
-<!-- CONFIRM DELETE MODAL -->
 <div class="modal-overlay" id="confirmModal">
   <div class="modal-box narrow">
     <div class="modal-body" style="padding:32px 28px">
@@ -544,11 +503,8 @@ tr:hover td{background:#FAFBFC}
   </div>
 </div>
 
-<!-- IMAGE LIGHTBOX -->
 <div id="imageLightbox">
-  <button class="lightbox-close" id="closeLightboxBtn">
-    <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
-  </button>
+  <button class="lightbox-close" id="closeLightboxBtn"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
   <img id="lightboxImg" src="" alt="">
 </div>
 
@@ -559,6 +515,10 @@ tr:hover td{background:#FAFBFC}
 <script>
 (function() {
   'use strict';
+
+  const ADMIN_VERSION = 'v3-final';
+  console.log('[ADMIN] Version: ' + ADMIN_VERSION);
+  console.log('[ADMIN] If you do not see this line, you are running an old cached version.');
 
   const SUPABASE_URL = 'https://smjrowqoxoxsvikjdpay.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_UEDOsxue9Y_mDYLJ0uvk2Q_lJdGH5Un';
@@ -636,23 +596,25 @@ tr:hover td{background:#FAFBFC}
     return `products/${ts}-${rand}.${ext}`;
   }
 
-  // FIX: Absolute URL to index.html — never opens admin.html
-  function getIndexUrl(productId) {
-    const loc = window.location;
-    let basePath = loc.pathname;
-    // Remove any *.html at the end, keep the directory
-    basePath = basePath.replace(/\/[^/]*\.html?$/i, '/');
-    if (!basePath.endsWith('/')) basePath += '/';
-    const base = loc.origin + basePath;
-    const url = base + 'index.html?product=' + encodeURIComponent(productId);
-    console.log('[getIndexUrl] origin=' + loc.origin + ' pathname=' + loc.pathname + ' => ' + url);
-    return url;
+  // ================================================
+  // URL: root + ?product=xxx — Cloudflare serves index.html at /
+  // ================================================
+  function getProductUrl(productId) {
+    const url = new URL(window.location.origin + '/');
+    url.searchParams.set('product', productId);
+    const finalUrl = url.toString();
+    console.log('[getProductUrl] ' + window.location.href + ' => ' + finalUrl);
+    return finalUrl;
   }
 
   function openProductInStore(productId) {
-    const url = getIndexUrl(productId);
-    console.log('[openProductInStore] Opening:', url);
-    window.open(url, '_blank', 'noopener,noreferrer');
+    const url = getProductUrl(productId);
+    console.log('[openProductInStore] Opening: ' + url);
+    const w = window.open(url, '_blank', 'noopener,noreferrer');
+    if (!w) {
+      console.warn('[openProductInStore] window.open blocked, using location.href');
+      window.location.href = url;
+    }
   }
 
   // ============ IMAGE LIGHTBOX ============
@@ -1152,18 +1114,30 @@ tr:hover td{background:#FAFBFC}
     renderDynamicColors();
   }
 
-  // ============ IMAGE GRID ============
+  // ============================================
+  // IMAGES — 100% inline styles, no external CSS
+  // ============================================
   function renderImageGrid() {
-    const grid = $('#imageGrid');
-    if (!grid) return;
+    const grid = document.getElementById('imageGrid');
+    if (!grid) { console.warn('[renderImageGrid] #imageGrid not found'); return; }
 
+    // Wipe completely
     grid.innerHTML = '';
-    grid.style.cssText = 'display: block !important; width: 100% !important; margin-top: 16px !important; font-size: 0 !important; line-height: 0 !important;';
+    grid.removeAttribute('class');
+    grid.style.display = 'block';
+    grid.style.width = '100%';
+    grid.style.marginTop = '16px';
+    grid.style.fontSize = '0';
+    grid.style.lineHeight = '0';
+    grid.style.padding = '0';
 
     if (!state.form.images.length) {
       const empty = document.createElement('p');
       empty.textContent = 'لم يتم رفع صور بعد. استخدم منطقة الرفع أعلاه.';
-      empty.style.cssText = 'color:#6B7280;font-size:14px;margin:8px 0;font-family:Cairo,sans-serif;';
+      empty.style.color = '#6B7280';
+      empty.style.fontSize = '14px';
+      empty.style.margin = '8px 0';
+      empty.style.fontFamily = 'Cairo, sans-serif';
       grid.appendChild(empty);
       return;
     }
@@ -1171,60 +1145,55 @@ tr:hover td{background:#FAFBFC}
     state.form.images.forEach((url, idx) => {
       // CARD
       const card = document.createElement('div');
-      card.style.cssText =
-        'display: inline-block !important;' +
-        'width: 160px !important;' +
-        'height: 200px !important;' +
-        'margin: 0 12px 12px 0 !important;' +
-        'position: relative !important;' +
-        'overflow: hidden !important;' +
-        'border-radius: 8px !important;' +
-        'background-color: #F4F5F7 !important;' +
-        'border: 1px solid #E5E7EB !important;' +
-        'cursor: pointer !important;' +
-        'vertical-align: top !important;' +
-        'font-size: 14px !important;' +
-        'line-height: 1.4 !important;' +
-        'opacity: 1 !important;';
+      card.style.display = 'inline-block';
+      card.style.width = '160px';
+      card.style.height = '200px';
+      card.style.margin = '0 12px 12px 0';
+      card.style.position = 'relative';
+      card.style.overflow = 'hidden';
+      card.style.borderRadius = '8px';
+      card.style.backgroundColor = '#F4F5F7';
+      card.style.border = '1px solid #E5E7EB';
+      card.style.cursor = 'pointer';
+      card.style.verticalAlign = 'top';
+      card.style.opacity = '1';
+      card.style.filter = 'none';
 
       // IMAGE
       const img = document.createElement('img');
       img.src = url;
-      img.style.cssText =
-        'position: absolute !important;' +
-        'top: 0 !important;' +
-        'left: 0 !important;' +
-        'width: 100% !important;' +
-        'height: 100% !important;' +
-        'object-fit: cover !important;' +
-        'display: block !important;' +
-        'pointer-events: none !important;' +
-        'user-select: none !important;' +
-        'opacity: 1 !important;' +
-        'filter: none !important;' +
-        '-webkit-filter: none !important;' +
-        'visibility: visible !important;' +
-        'transition: none !important;';
-      img.onerror = function() { this.src = 'https://via.placeholder.com/160x200?text=?'; };
+      img.style.position = 'absolute';
+      img.style.top = '0';
+      img.style.left = '0';
+      img.style.width = '100%';
+      img.style.height = '100%';
+      img.style.objectFit = 'cover';
+      img.style.display = 'block';
+      img.style.pointerEvents = 'none';
+      img.style.userSelect = 'none';
+      img.style.opacity = '1';
+      img.style.filter = 'none';
+      img.style.visibility = 'visible';
+      img.style.transition = 'none';
+      img.style.border = 'none';
       card.appendChild(img);
 
       // PRIMARY BADGE
       if (idx === 0) {
         const badge = document.createElement('span');
         badge.textContent = 'رئيسية';
-        badge.style.cssText =
-          'position: absolute !important;' +
-          'bottom: 8px !important;' +
-          'right: 8px !important;' +
-          'background-color: #B8894A !important;' +
-          'color: #fff !important;' +
-          'font-size: 11px !important;' +
-          'padding: 4px 10px !important;' +
-          'border-radius: 4px !important;' +
-          'font-weight: 700 !important;' +
-          'z-index: 2 !important;' +
-          'pointer-events: none !important;' +
-          'opacity: 1 !important;';
+        badge.style.position = 'absolute';
+        badge.style.bottom = '8px';
+        badge.style.right = '8px';
+        badge.style.backgroundColor = '#B8894A';
+        badge.style.color = '#fff';
+        badge.style.fontSize = '11px';
+        badge.style.padding = '4px 10px';
+        badge.style.borderRadius = '4px';
+        badge.style.fontWeight = '700';
+        badge.style.zIndex = '2';
+        badge.style.pointerEvents = 'none';
+        badge.style.opacity = '1';
         card.appendChild(badge);
       }
 
@@ -1232,25 +1201,23 @@ tr:hover td{background:#FAFBFC}
       const removeBtn = document.createElement('button');
       removeBtn.type = 'button';
       removeBtn.innerHTML = '<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>';
-      removeBtn.style.cssText =
-        'position: absolute !important;' +
-        'top: 8px !important;' +
-        'left: 8px !important;' +
-        'width: 30px !important;' +
-        'height: 30px !important;' +
-        'border-radius: 50% !important;' +
-        'background-color: rgba(220,38,38,0.95) !important;' +
-        'color: #fff !important;' +
-        'display: flex !important;' +
-        'align-items: center !important;' +
-        'justify-content: center !important;' +
-        'border: none !important;' +
-        'cursor: pointer !important;' +
-        'z-index: 3 !important;' +
-        'padding: 0 !important;' +
-        'font-family: inherit !important;' +
-        'opacity: 0 !important;' +
-        'transition: opacity 0.15s !important;';
+      removeBtn.style.position = 'absolute';
+      removeBtn.style.top = '8px';
+      removeBtn.style.left = '8px';
+      removeBtn.style.width = '30px';
+      removeBtn.style.height = '30px';
+      removeBtn.style.borderRadius = '50%';
+      removeBtn.style.backgroundColor = 'rgba(220,38,38,0.95)';
+      removeBtn.style.color = '#fff';
+      removeBtn.style.display = 'flex';
+      removeBtn.style.alignItems = 'center';
+      removeBtn.style.justifyContent = 'center';
+      removeBtn.style.border = 'none';
+      removeBtn.style.cursor = 'pointer';
+      removeBtn.style.zIndex = '3';
+      removeBtn.style.padding = '0';
+      removeBtn.style.opacity = '0';
+      removeBtn.style.transition = 'opacity 0.15s';
       removeBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         e.preventDefault();
@@ -1259,7 +1226,7 @@ tr:hover td{background:#FAFBFC}
       });
       card.appendChild(removeBtn);
 
-      // HOVER: only scale/shadow + show remove button
+      // HOVER: only scale + show remove button (image itself stays opaque)
       card.addEventListener('mouseenter', () => {
         card.style.transform = 'scale(1.02)';
         card.style.boxShadow = '0 6px 16px rgba(0,0,0,0.15)';
@@ -1271,10 +1238,7 @@ tr:hover td{background:#FAFBFC}
         removeBtn.style.opacity = '0';
       });
 
-      // CLICK: open lightbox
-      card.addEventListener('click', () => {
-        openLightbox(url);
-      });
+      card.addEventListener('click', () => { openLightbox(url); });
 
       grid.appendChild(card);
     });
