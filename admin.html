@@ -102,7 +102,7 @@ tr:hover td{background:#FAFBFC}
 .cell-name{font-weight:600;color:var(--ink)}
 .cell-muted{color:var(--muted);font-size:.85rem}
 
-/* TOP PRODUCTS (Dashboard) */
+/* TOP PRODUCTS */
 .top-prod-cell{display:flex;align-items:center;gap:12px}
 .top-prod-img{width:44px;height:54px;object-fit:cover;border-radius:var(--r-sm);background:var(--bg);flex-shrink:0;border:1px solid var(--border)}
 .top-prod-info{display:flex;flex-direction:column;gap:2px;min-width:0}
@@ -228,19 +228,25 @@ tr:hover td{background:#FAFBFC}
 .upload-zone p{font-size:.9rem;color:var(--ink);font-weight:500;margin-bottom:4px}
 .upload-zone small{font-size:.75rem;color:var(--muted)}
 .upload-zone input[type="file"]{display:none}
-.image-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-top:16px}
-.image-item{position:relative;width:100%;height:175px;border-radius:var(--r-sm);overflow:hidden;background:var(--bg);border:1px solid var(--border)}
-.image-item img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-.image-item .remove-img-btn{position:absolute;top:6px;left:6px;width:28px;height:28px;border-radius:50%;background:rgba(220,38,38,.95);color:#fff;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s;border:none;cursor:pointer;z-index:2}
-.image-item:hover .remove-img-btn{opacity:1}
-.image-item .remove-img-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.5}
-.image-item .primary-badge{position:absolute;bottom:6px;right:6px;background:var(--gold);color:#fff;font-size:.65rem;padding:3px 8px;border-radius:4px;font-weight:700;z-index:2}
+
+/* IMAGE GRID - CSS only base. Inline styles will override. */
+.image-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin-top:16px}
+.image-item{position:relative;height:180px;border-radius:var(--r-sm);overflow:hidden;background:var(--bg);border:1px solid var(--border);cursor:pointer}
+.image-item img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
 
 /* CONFIRM */
 .confirm-icon{width:56px;height:56px;border-radius:50%;background:#FEE2E2;color:var(--danger);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
 .confirm-icon svg{width:28px;height:28px;stroke:currentColor;fill:none;stroke-width:2}
 .confirm-text{text-align:center;font-size:.95rem;color:var(--muted);margin-bottom:8px}
 .confirm-bold{text-align:center;font-size:1.05rem;font-weight:700;color:var(--ink);margin-bottom:24px}
+
+/* IMAGE LIGHTBOX */
+#imageLightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:600;display:none;align-items:center;justify-content:center;padding:20px;cursor:zoom-out}
+#imageLightbox.show{display:flex}
+#imageLightbox img{max-width:92vw;max-height:88vh;object-fit:contain;border-radius:8px;box-shadow:0 12px 32px rgba(0,0,0,.5)}
+#imageLightbox .lightbox-close{position:absolute;top:20px;right:20px;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.15);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;transition:background .15s}
+#imageLightbox .lightbox-close:hover{background:rgba(255,255,255,.3)}
+#imageLightbox .lightbox-close svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2.5}
 
 @media(max-width:1200px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:900px){
@@ -259,14 +265,12 @@ tr:hover td{background:#FAFBFC}
   .modal-body{max-height:none}
   .topbar h1{font-size:1.4rem}
   .dynamic-item{flex-wrap:wrap}
-  .image-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}
-  .image-item{height:140px}
+  .image-item{height:150px}
 }
 </style>
 </head>
 <body>
 
-<!-- LOGIN SCREEN -->
 <div id="loginScreen">
   <div class="login-card">
     <div class="login-logo">م</div>
@@ -287,7 +291,6 @@ tr:hover td{background:#FAFBFC}
   </div>
 </div>
 
-<!-- DASHBOARD -->
 <div id="dashboard">
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
@@ -337,26 +340,10 @@ tr:hover td{background:#FAFBFC}
 
     <div class="page active" id="page-dashboard">
       <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-card-header"><div class="stat-icon green"><svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div></div>
-          <div class="stat-label">إجمالي المنتجات</div>
-          <div class="stat-value" id="statProducts">—</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-card-header"><div class="stat-icon blue"><svg viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg></div></div>
-          <div class="stat-label">إجمالي الطلبات</div>
-          <div class="stat-value" id="statOrders">—</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-card-header"><div class="stat-icon gold"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div></div>
-          <div class="stat-label">الإيرادات</div>
-          <div class="stat-value" id="statRevenue">—</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-card-header"><div class="stat-icon purple"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div></div>
-          <div class="stat-label">إجمالي المشاهدات</div>
-          <div class="stat-value" id="statViews">—</div>
-        </div>
+        <div class="stat-card"><div class="stat-card-header"><div class="stat-icon green"><svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div></div><div class="stat-label">إجمالي المنتجات</div><div class="stat-value" id="statProducts">—</div></div>
+        <div class="stat-card"><div class="stat-card-header"><div class="stat-icon blue"><svg viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg></div></div><div class="stat-label">إجمالي الطلبات</div><div class="stat-value" id="statOrders">—</div></div>
+        <div class="stat-card"><div class="stat-card-header"><div class="stat-icon gold"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div></div><div class="stat-label">الإيرادات</div><div class="stat-value" id="statRevenue">—</div></div>
+        <div class="stat-card"><div class="stat-card-header"><div class="stat-icon purple"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div></div><div class="stat-label">إجمالي المشاهدات</div><div class="stat-value" id="statViews">—</div></div>
       </div>
 
       <div class="card">
@@ -425,7 +412,6 @@ tr:hover td{background:#FAFBFC}
   </main>
 </div>
 
-<!-- PRODUCT MODAL -->
 <div class="modal-overlay" id="productModal">
   <div class="modal-box">
     <div class="modal-header">
@@ -435,67 +421,30 @@ tr:hover td{background:#FAFBFC}
     <div class="modal-body">
       <form id="productForm" onsubmit="return false;">
         <input type="hidden" id="pfId" value="">
-
         <div class="form-section">
           <div class="form-section-title">المعلومات الأساسية</div>
           <div class="form-grid">
-            <div class="form-field full">
-              <label class="form-label">اسم المنتج <span class="req">*</span></label>
-              <input type="text" class="form-input" id="pfName" required maxlength="200">
-            </div>
-            <div class="form-field">
-              <label class="form-label">الفئة <span class="req">*</span></label>
-              <select class="form-select" id="pfCategory" required>
-                <option value="ملابس">ملابس</option>
-                <option value="أحذية وحقائب">أحذية وحقائب</option>
-                <option value="إكسسوارات">إكسسوارات</option>
-              </select>
-            </div>
-            <div class="form-field">
-              <label class="form-label">الشارة (اختياري)</label>
-              <input type="text" class="form-input" id="pfBadge" placeholder="جديد، خصم 20%..." maxlength="50">
-            </div>
-            <div class="form-field">
-              <label class="form-label">السعر (ل.س) <span class="req">*</span></label>
-              <input type="number" class="form-input" id="pfPrice" required min="0" step="0.01">
-            </div>
-            <div class="form-field">
-              <label class="form-label">السعر قبل الخصم (اختياري)</label>
-              <input type="number" class="form-input" id="pfComparePrice" min="0" step="0.01">
-            </div>
-            <div class="form-field full">
-              <label class="form-label">الوصف</label>
-              <textarea class="form-textarea" id="pfDescription" rows="3" maxlength="2000"></textarea>
-            </div>
-            <div class="form-field">
-              <div class="checkbox-row"><input type="checkbox" id="pfInStock" checked><label for="pfInStock">متوفر في المخزون</label></div>
-            </div>
-            <div class="form-field">
-              <div class="checkbox-row"><input type="checkbox" id="pfIsActive" checked><label for="pfIsActive">نشط (ظاهر في المتجر)</label></div>
-            </div>
+            <div class="form-field full"><label class="form-label">اسم المنتج <span class="req">*</span></label><input type="text" class="form-input" id="pfName" required maxlength="200"></div>
+            <div class="form-field"><label class="form-label">الفئة <span class="req">*</span></label><select class="form-select" id="pfCategory" required><option value="ملابس">ملابس</option><option value="أحذية وحقائب">أحذية وحقائب</option><option value="إكسسوارات">إكسسوارات</option></select></div>
+            <div class="form-field"><label class="form-label">الشارة (اختياري)</label><input type="text" class="form-input" id="pfBadge" placeholder="جديد، خصم 20%..." maxlength="50"></div>
+            <div class="form-field"><label class="form-label">السعر (ل.س) <span class="req">*</span></label><input type="number" class="form-input" id="pfPrice" required min="0" step="0.01"></div>
+            <div class="form-field"><label class="form-label">السعر قبل الخصم (اختياري)</label><input type="number" class="form-input" id="pfComparePrice" min="0" step="0.01"></div>
+            <div class="form-field full"><label class="form-label">الوصف</label><textarea class="form-textarea" id="pfDescription" rows="3" maxlength="2000"></textarea></div>
+            <div class="form-field"><div class="checkbox-row"><input type="checkbox" id="pfInStock" checked><label for="pfInStock">متوفر في المخزون</label></div></div>
+            <div class="form-field"><div class="checkbox-row"><input type="checkbox" id="pfIsActive" checked><label for="pfIsActive">نشط (ظاهر في المتجر)</label></div></div>
           </div>
         </div>
 
         <div class="form-section">
           <div class="form-section-title">المقاسات</div>
           <div class="dynamic-list" id="sizesList"></div>
-          <div style="margin-top:10px">
-            <button type="button" class="add-dyn-btn" id="addSizeBtn">
-              <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              إضافة مقاس
-            </button>
-          </div>
+          <div style="margin-top:10px"><button type="button" class="add-dyn-btn" id="addSizeBtn"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> إضافة مقاس</button></div>
         </div>
 
         <div class="form-section">
           <div class="form-section-title">الألوان</div>
           <div class="dynamic-list" id="colorsList"></div>
-          <div style="margin-top:10px">
-            <button type="button" class="add-dyn-btn" id="addColorBtn">
-              <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              إضافة لون
-            </button>
-          </div>
+          <div style="margin-top:10px"><button type="button" class="add-dyn-btn" id="addColorBtn"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> إضافة لون</button></div>
         </div>
 
         <div class="form-section">
@@ -526,7 +475,6 @@ tr:hover td{background:#FAFBFC}
   </div>
 </div>
 
-<!-- CONFIRM DELETE MODAL -->
 <div class="modal-overlay" id="confirmModal">
   <div class="modal-box narrow">
     <div class="modal-body" style="padding:32px 28px">
@@ -540,6 +488,11 @@ tr:hover td{background:#FAFBFC}
       <button class="btn btn-danger" id="confirmDeleteBtn">نعم، احذف</button>
     </div>
   </div>
+</div>
+
+<div id="imageLightbox">
+  <button class="lightbox-close" id="closeLightboxBtn"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+  <img id="lightboxImg" src="" alt="">
 </div>
 
 <div class="loading-overlay" id="loadingOverlay"><div class="spinner"></div></div>
@@ -626,8 +579,22 @@ tr:hover td{background:#FAFBFC}
     return `products/${ts}-${rand}.${ext}`;
   }
 
-  function getSiteUrl() {
-    return window.location.origin + window.location.pathname.replace(/admin\.html.*$/, '');
+  // FIXED: Use relative URL to index.html - works everywhere
+  function getProductUrl(productId) {
+    return 'index.html?product=' + encodeURIComponent(productId);
+  }
+
+  // ============ IMAGE LIGHTBOX ============
+  function openLightbox(url) {
+    if (!url) return;
+    $('#lightboxImg').src = url;
+    $('#imageLightbox').classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    $('#imageLightbox').classList.remove('show');
+    $('#lightboxImg').src = '';
+    document.body.style.overflow = '';
   }
 
   // ============ AUTH ============
@@ -771,7 +738,6 @@ tr:hover td{background:#FAFBFC}
       const top = data.slice(0, 10);
       const ids = top.map(p => p.product_id);
 
-      // Fetch images in one batch
       const { data: productsData } = await sb.from('products').select('id, images').in('id', ids);
       const imgMap = {};
       (productsData || []).forEach(p => {
@@ -779,11 +745,11 @@ tr:hover td{background:#FAFBFC}
         imgMap[p.id] = imgs[0] || '';
       });
 
-      const siteUrl = getSiteUrl();
       tbody.innerHTML = top.map((p, i) => {
         const rating = p.rating_count > 0 ? `${Number(p.rating_avg).toFixed(1)} (${p.rating_count})` : '—';
         const img = imgMap[p.product_id] || 'https://via.placeholder.com/44x54?text=?';
-        const link = siteUrl + '?product=' + encodeURIComponent(p.product_id);
+        // FIXED: relative URL to index.html
+        const link = getProductUrl(p.product_id);
         return `<tr>
           <td style="color:var(--muted);font-weight:600">${i + 1}</td>
           <td>
@@ -791,7 +757,7 @@ tr:hover td{background:#FAFBFC}
               <img src="${escapeHtml(img)}" class="top-prod-img" onerror="this.src='https://via.placeholder.com/44x54?text=?'">
               <div class="top-prod-info">
                 <span class="top-prod-name" title="${escapeHtml(p.product_name)}">${escapeHtml(p.product_name)}</span>
-                <a href="${link}" target="_blank" class="top-prod-link">
+                <a href="${link}" target="_blank" rel="noopener noreferrer" class="top-prod-link">
                   فتح في المتجر
                   <svg viewBox="0 0 24 24"><path d="M7 17L17 7M7 7h10v10"/></svg>
                 </a>
@@ -938,7 +904,6 @@ tr:hover td{background:#FAFBFC}
       fillForm(p);
       $('#productModalTitle').textContent = 'تعديل المنتج';
     } else {
-      // Default rows for new product
       state.form.sizes = [{ value: '', available: true }];
       state.form.colors = [{ value: '', hex: '#000000', available: true }];
       renderDynamicSizes();
@@ -1110,28 +1075,134 @@ tr:hover td{background:#FAFBFC}
     renderDynamicColors();
   }
 
-  // ============ IMAGES ============
+  // ============ IMAGES - INLINE STYLES FORCED ============
   function renderImageGrid() {
     const grid = $('#imageGrid');
     grid.innerHTML = '';
-    state.form.images.forEach((url, idx) => {
-      const div = document.createElement('div');
-      div.className = 'image-item';
-      div.innerHTML = `
-        <img src="${escapeHtml(url)}" onerror="this.src='https://via.placeholder.com/140x175?text=?'">
-        ${idx === 0 ? '<span class="primary-badge">رئيسية</span>' : ''}
-        <button type="button" class="remove-img-btn" data-img-remove="${idx}">
-          <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
-        </button>
-      `;
-      grid.appendChild(div);
-    });
 
-    $$('[data-img-remove]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        state.form.images.splice(Number(btn.dataset.imgRemove), 1);
+    // Force inline styles on the grid itself
+    grid.style.display = 'grid';
+    grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(150px, 1fr))';
+    grid.style.gap = '14px';
+    grid.style.marginTop = '16px';
+    grid.style.width = '100%';
+
+    state.form.images.forEach((url, idx) => {
+      // Container
+      const div = document.createElement('div');
+      div.style.position = 'relative';
+      div.style.width = '100%';
+      div.style.height = '180px';
+      div.style.borderRadius = '6px';
+      div.style.overflow = 'hidden';
+      div.style.backgroundColor = '#F4F5F7';
+      div.style.border = '1px solid #E5E7EB';
+      div.style.cursor = 'pointer';
+      div.style.transition = 'transform 0.15s, box-shadow 0.15s';
+      div.style.display = 'block';
+
+      // Image
+      const img = document.createElement('img');
+      img.src = url;
+      img.style.position = 'absolute';
+      img.style.top = '0';
+      img.style.left = '0';
+      img.style.width = '100%';
+      img.style.height = '100%';
+      img.style.objectFit = 'cover';
+      img.style.display = 'block';
+      img.style.pointerEvents = 'none';
+      img.style.userSelect = 'none';
+      img.onerror = function() { this.src = 'https://via.placeholder.com/150x180?text=?'; };
+      div.appendChild(img);
+
+      // Zoom hint (visible on hover)
+      const zoomHint = document.createElement('div');
+      zoomHint.style.position = 'absolute';
+      zoomHint.style.top = '50%';
+      zoomHint.style.left = '50%';
+      zoomHint.style.transform = 'translate(-50%, -50%)';
+      zoomHint.style.width = '40px';
+      zoomHint.style.height = '40px';
+      zoomHint.style.borderRadius = '50%';
+      zoomHint.style.backgroundColor = 'rgba(0,0,0,0.55)';
+      zoomHint.style.display = 'flex';
+      zoomHint.style.alignItems = 'center';
+      zoomHint.style.justifyContent = 'center';
+      zoomHint.style.opacity = '0';
+      zoomHint.style.transition = 'opacity 0.15s';
+      zoomHint.style.pointerEvents = 'none';
+      zoomHint.style.zIndex = '2';
+      zoomHint.innerHTML = '<svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>';
+      div.appendChild(zoomHint);
+
+      // Primary badge
+      if (idx === 0) {
+        const badge = document.createElement('span');
+        badge.textContent = 'رئيسية';
+        badge.style.position = 'absolute';
+        badge.style.bottom = '6px';
+        badge.style.right = '6px';
+        badge.style.backgroundColor = '#B8894A';
+        badge.style.color = '#fff';
+        badge.style.fontSize = '11px';
+        badge.style.padding = '3px 8px';
+        badge.style.borderRadius = '4px';
+        badge.style.fontWeight = '700';
+        badge.style.zIndex = '2';
+        badge.style.pointerEvents = 'none';
+        div.appendChild(badge);
+      }
+
+      // Remove button
+      const removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.innerHTML = '<svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>';
+      removeBtn.style.position = 'absolute';
+      removeBtn.style.top = '6px';
+      removeBtn.style.left = '6px';
+      removeBtn.style.width = '28px';
+      removeBtn.style.height = '28px';
+      removeBtn.style.borderRadius = '50%';
+      removeBtn.style.backgroundColor = 'rgba(220,38,38,0.95)';
+      removeBtn.style.color = '#fff';
+      removeBtn.style.display = 'flex';
+      removeBtn.style.alignItems = 'center';
+      removeBtn.style.justifyContent = 'center';
+      removeBtn.style.opacity = '0';
+      removeBtn.style.transition = 'opacity 0.15s';
+      removeBtn.style.border = 'none';
+      removeBtn.style.cursor = 'pointer';
+      removeBtn.style.zIndex = '3';
+      removeBtn.style.padding = '0';
+      removeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        state.form.images.splice(idx, 1);
         renderImageGrid();
       });
+      div.appendChild(removeBtn);
+
+      // Hover effects
+      div.addEventListener('mouseenter', () => {
+        removeBtn.style.opacity = '1';
+        zoomHint.style.opacity = '1';
+        div.style.transform = 'scale(1.02)';
+        div.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+      });
+      div.addEventListener('mouseleave', () => {
+        removeBtn.style.opacity = '0';
+        zoomHint.style.opacity = '0';
+        div.style.transform = 'scale(1)';
+        div.style.boxShadow = 'none';
+      });
+
+      // Click to open lightbox
+      div.addEventListener('click', (e) => {
+        if (e.target === removeBtn || removeBtn.contains(e.target)) return;
+        openLightbox(url);
+      });
+
+      grid.appendChild(div);
     });
   }
 
@@ -1153,7 +1224,7 @@ tr:hover td{background:#FAFBFC}
     for (const file of validFiles) {
       try {
         const fileName = generateFileName(file);
-        const { data, error } = await sb.storage.from(STORAGE_BUCKET).upload(fileName, file, {
+        const { error } = await sb.storage.from(STORAGE_BUCKET).upload(fileName, file, {
           cacheControl: '3600', upsert: false, contentType: file.type
         });
         if (error) throw error;
@@ -1343,12 +1414,18 @@ tr:hover td{background:#FAFBFC}
   $('#cancelDeleteBtn').addEventListener('click', closeDeleteConfirm);
   $('#confirmDeleteBtn').addEventListener('click', confirmDelete);
 
+  $('#closeLightboxBtn').addEventListener('click', closeLightbox);
+  $('#imageLightbox').addEventListener('click', e => {
+    if (e.target.id === 'imageLightbox') closeLightbox();
+  });
+
   $('#productModal').addEventListener('click', e => { if (e.target.id === 'productModal') closeProductModal(); });
   $('#confirmModal').addEventListener('click', e => { if (e.target.id === 'confirmModal') closeDeleteConfirm(); });
 
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
-      if ($('#confirmModal').classList.contains('show')) closeDeleteConfirm();
+      if ($('#imageLightbox').classList.contains('show')) closeLightbox();
+      else if ($('#confirmModal').classList.contains('show')) closeDeleteConfirm();
       else if ($('#productModal').classList.contains('show')) closeProductModal();
     }
   });
