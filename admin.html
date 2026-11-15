@@ -105,11 +105,11 @@ tr:hover td{background:#FAFBFC}
 /* TOP PRODUCTS */
 .top-prod-cell{display:flex;align-items:center;gap:12px}
 .top-prod-img{width:44px;height:54px;object-fit:cover;border-radius:var(--r-sm);background:var(--bg);flex-shrink:0;border:1px solid var(--border)}
-.top-prod-info{display:flex;flex-direction:column;gap:2px;min-width:0}
+.top-prod-info{display:flex;flex-direction:column;gap:4px;min-width:0}
 .top-prod-name{font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
-.top-prod-link{font-size:.75rem;color:var(--accent);text-decoration:none;font-weight:600;display:inline-flex;align-items:center;gap:3px;transition:color .15s}
-.top-prod-link:hover{color:var(--accent-h);text-decoration:underline}
-.top-prod-link svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2.5}
+.top-prod-link-btn{background:none;border:none;padding:0;cursor:pointer;font-size:.75rem;color:var(--accent);font-weight:600;display:inline-flex;align-items:center;gap:3px;font-family:inherit;transition:color .15s;text-decoration:underline}
+.top-prod-link-btn:hover{color:var(--accent-h)}
+.top-prod-link-btn svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2.5}
 
 /* BADGES */
 .badge-pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:.75rem;font-weight:600}
@@ -229,8 +229,8 @@ tr:hover td{background:#FAFBFC}
 .upload-zone small{font-size:.75rem;color:var(--muted)}
 .upload-zone input[type="file"]{display:none}
 
-/* IMAGE GRID - Only fallback. Real styles come from JS inline. */
-.image-grid{display:block;width:100%;margin-top:16px;font-size:0;line-height:0}
+/* IMAGE GRID - container only. All card/image styles are INLINE via JS. */
+#imageGrid{display:block;width:100%;margin-top:16px;font-size:0;line-height:0}
 
 /* CONFIRM */
 .confirm-icon{width:56px;height:56px;border-radius:50%;background:#FEE2E2;color:var(--danger);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
@@ -517,7 +517,7 @@ tr:hover td{background:#FAFBFC}
             <p>اسحب الصور هنا أو انقر للاختيار</p>
             <small>JPG, PNG, WebP — حتى 2MB لكل صورة</small>
           </div>
-          <div class="image-grid" id="imageGrid"></div>
+          <div id="imageGrid"></div>
         </div>
       </form>
     </div>
@@ -555,9 +555,6 @@ tr:hover td{background:#FAFBFC}
 <div class="loading-overlay" id="loadingOverlay"><div class="spinner"></div></div>
 <div class="toast-container" id="toastContainer"></div>
 
-
-</body>
-</html>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (function() {
@@ -639,23 +636,22 @@ tr:hover td{background:#FAFBFC}
     return `products/${ts}-${rand}.${ext}`;
   }
 
-  // ================================================
-  // FIX: Absolute URL for product link
-  // ================================================
-  function getProductUrl(productId) {
-    // Build absolute URL: origin + directory + index.html?product=id
+  // FIX: Absolute URL to index.html — never opens admin.html
+  function getIndexUrl(productId) {
     const loc = window.location;
-    let path = loc.pathname;
-    const lastSlash = path.lastIndexOf('/');
-    if (lastSlash >= 0) path = path.substring(0, lastSlash + 1);
-    const base = loc.origin + path;
+    let basePath = loc.pathname;
+    // Remove any *.html at the end, keep the directory
+    basePath = basePath.replace(/\/[^/]*\.html?$/i, '/');
+    if (!basePath.endsWith('/')) basePath += '/';
+    const base = loc.origin + basePath;
     const url = base + 'index.html?product=' + encodeURIComponent(productId);
-    console.log('[getProductUrl]', { origin: loc.origin, pathname: loc.pathname, base, url });
+    console.log('[getIndexUrl] origin=' + loc.origin + ' pathname=' + loc.pathname + ' => ' + url);
     return url;
   }
 
   function openProductInStore(productId) {
-    const url = getProductUrl(productId);
+    const url = getIndexUrl(productId);
+    console.log('[openProductInStore] Opening:', url);
     window.open(url, '_blank', 'noopener,noreferrer');
   }
 
@@ -830,7 +826,7 @@ tr:hover td{background:#FAFBFC}
               <img src="${escapeHtml(img)}" class="top-prod-img" onerror="this.src='https://via.placeholder.com/44x54?text=?'">
               <div class="top-prod-info">
                 <span class="top-prod-name" title="${escapeHtml(p.product_name)}">${escapeHtml(p.product_name)}</span>
-                <button type="button" class="top-prod-link" data-open-product="${p.product_id}" style="background:none;border:none;padding:0;cursor:pointer;font-family:inherit">
+                <button type="button" class="top-prod-link-btn" data-open-product="${p.product_id}">
                   فتح في المتجر
                   <svg viewBox="0 0 24 24"><path d="M7 17L17 7M7 7h10v10"/></svg>
                 </button>
@@ -844,7 +840,6 @@ tr:hover td{background:#FAFBFC}
         </tr>`;
       }).join('');
 
-      // Bind click handlers to open product
       $$('[data-open-product]').forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.preventDefault();
@@ -1157,39 +1152,42 @@ tr:hover td{background:#FAFBFC}
     renderDynamicColors();
   }
 
-  // ============================================
-  // IMAGES — INLINE-BLOCK with FIXED PIXEL SIZE
-  // Guaranteed no overlap. Period.
-  // ============================================
+  // ============ IMAGE GRID ============
   function renderImageGrid() {
     const grid = $('#imageGrid');
     if (!grid) return;
 
     grid.innerHTML = '';
-
-    // Reset grid to block layout with inline-block children
     grid.style.cssText = 'display: block !important; width: 100% !important; margin-top: 16px !important; font-size: 0 !important; line-height: 0 !important;';
 
+    if (!state.form.images.length) {
+      const empty = document.createElement('p');
+      empty.textContent = 'لم يتم رفع صور بعد. استخدم منطقة الرفع أعلاه.';
+      empty.style.cssText = 'color:#6B7280;font-size:14px;margin:8px 0;font-family:Cairo,sans-serif;';
+      grid.appendChild(empty);
+      return;
+    }
+
     state.form.images.forEach((url, idx) => {
-      // Outer card — inline-block, fixed size, NO overlap possible
+      // CARD
       const card = document.createElement('div');
       card.style.cssText =
-        'display: inline-block;' +
-        'width: 160px;' +
-        'height: 200px;' +
-        'margin: 0 12px 12px 0;' +
-        'position: relative;' +
-        'overflow: hidden;' +
-        'border-radius: 8px;' +
-        'background-color: #F4F5F7;' +
-        'border: 1px solid #E5E7EB;' +
-        'cursor: pointer;' +
-        'vertical-align: top;' +
-        'font-size: 14px;' +
-        'line-height: 1.4;' +
-        'transition: transform 0.15s, box-shadow 0.15s;';
+        'display: inline-block !important;' +
+        'width: 160px !important;' +
+        'height: 200px !important;' +
+        'margin: 0 12px 12px 0 !important;' +
+        'position: relative !important;' +
+        'overflow: hidden !important;' +
+        'border-radius: 8px !important;' +
+        'background-color: #F4F5F7 !important;' +
+        'border: 1px solid #E5E7EB !important;' +
+        'cursor: pointer !important;' +
+        'vertical-align: top !important;' +
+        'font-size: 14px !important;' +
+        'line-height: 1.4 !important;' +
+        'opacity: 1 !important;';
 
-      // Image — absolute within the card
+      // IMAGE
       const img = document.createElement('img');
       img.src = url;
       img.style.cssText =
@@ -1201,73 +1199,58 @@ tr:hover td{background:#FAFBFC}
         'object-fit: cover !important;' +
         'display: block !important;' +
         'pointer-events: none !important;' +
-        'user-select: none !important;';
+        'user-select: none !important;' +
+        'opacity: 1 !important;' +
+        'filter: none !important;' +
+        '-webkit-filter: none !important;' +
+        'visibility: visible !important;' +
+        'transition: none !important;';
       img.onerror = function() { this.src = 'https://via.placeholder.com/160x200?text=?'; };
       card.appendChild(img);
 
-      // Zoom hint
-      const zoomHint = document.createElement('div');
-      zoomHint.style.cssText =
-        'position: absolute;' +
-        'top: 50%;' +
-        'left: 50%;' +
-        'transform: translate(-50%, -50%);' +
-        'width: 44px;' +
-        'height: 44px;' +
-        'border-radius: 50%;' +
-        'background-color: rgba(0,0,0,0.55);' +
-        'display: flex;' +
-        'align-items: center;' +
-        'justify-content: center;' +
-        'opacity: 0;' +
-        'transition: opacity 0.15s;' +
-        'pointer-events: none;' +
-        'z-index: 2;';
-      zoomHint.innerHTML = '<svg viewBox="0 0 24 24" style="width:22px;height:22px;stroke:#fff;fill:none;stroke-width:2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>';
-      card.appendChild(zoomHint);
-
-      // Primary badge
+      // PRIMARY BADGE
       if (idx === 0) {
         const badge = document.createElement('span');
         badge.textContent = 'رئيسية';
         badge.style.cssText =
-          'position: absolute;' +
-          'bottom: 8px;' +
-          'right: 8px;' +
-          'background-color: #B8894A;' +
-          'color: #fff;' +
-          'font-size: 11px;' +
-          'padding: 4px 10px;' +
-          'border-radius: 4px;' +
-          'font-weight: 700;' +
-          'z-index: 2;' +
-          'pointer-events: none;';
+          'position: absolute !important;' +
+          'bottom: 8px !important;' +
+          'right: 8px !important;' +
+          'background-color: #B8894A !important;' +
+          'color: #fff !important;' +
+          'font-size: 11px !important;' +
+          'padding: 4px 10px !important;' +
+          'border-radius: 4px !important;' +
+          'font-weight: 700 !important;' +
+          'z-index: 2 !important;' +
+          'pointer-events: none !important;' +
+          'opacity: 1 !important;';
         card.appendChild(badge);
       }
 
-      // Remove button
+      // REMOVE BUTTON (visible on hover)
       const removeBtn = document.createElement('button');
       removeBtn.type = 'button';
       removeBtn.innerHTML = '<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>';
       removeBtn.style.cssText =
-        'position: absolute;' +
-        'top: 8px;' +
-        'left: 8px;' +
-        'width: 30px;' +
-        'height: 30px;' +
-        'border-radius: 50%;' +
-        'background-color: rgba(220,38,38,0.95);' +
-        'color: #fff;' +
-        'display: flex;' +
-        'align-items: center;' +
-        'justify-content: center;' +
-        'opacity: 0;' +
-        'transition: opacity 0.15s;' +
-        'border: none;' +
-        'cursor: pointer;' +
-        'z-index: 3;' +
-        'padding: 0;' +
-        'font-family: inherit;';
+        'position: absolute !important;' +
+        'top: 8px !important;' +
+        'left: 8px !important;' +
+        'width: 30px !important;' +
+        'height: 30px !important;' +
+        'border-radius: 50% !important;' +
+        'background-color: rgba(220,38,38,0.95) !important;' +
+        'color: #fff !important;' +
+        'display: flex !important;' +
+        'align-items: center !important;' +
+        'justify-content: center !important;' +
+        'border: none !important;' +
+        'cursor: pointer !important;' +
+        'z-index: 3 !important;' +
+        'padding: 0 !important;' +
+        'font-family: inherit !important;' +
+        'opacity: 0 !important;' +
+        'transition: opacity 0.15s !important;';
       removeBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         e.preventDefault();
@@ -1276,35 +1259,25 @@ tr:hover td{background:#FAFBFC}
       });
       card.appendChild(removeBtn);
 
-      // Hover
+      // HOVER: only scale/shadow + show remove button
       card.addEventListener('mouseenter', () => {
-        removeBtn.style.opacity = '1';
-        zoomHint.style.opacity = '1';
-        card.style.transform = 'scale(1.03)';
+        card.style.transform = 'scale(1.02)';
         card.style.boxShadow = '0 6px 16px rgba(0,0,0,0.15)';
+        removeBtn.style.opacity = '1';
       });
       card.addEventListener('mouseleave', () => {
-        removeBtn.style.opacity = '0';
-        zoomHint.style.opacity = '0';
         card.style.transform = 'scale(1)';
         card.style.boxShadow = 'none';
+        removeBtn.style.opacity = '0';
       });
 
-      // Click opens lightbox
+      // CLICK: open lightbox
       card.addEventListener('click', () => {
         openLightbox(url);
       });
 
       grid.appendChild(card);
     });
-
-    // Empty state
-    if (!state.form.images.length) {
-      const empty = document.createElement('p');
-      empty.textContent = 'لم يتم رفع صور بعد. استخدم منطقة الرفع أعلاه.';
-      empty.style.cssText = 'color:#6B7280;font-size:14px;margin:8px 0;font-family:Cairo,sans-serif;';
-      grid.appendChild(empty);
-    }
   }
 
   async function handleImageUpload(files) {
