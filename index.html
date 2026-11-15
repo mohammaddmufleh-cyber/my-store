@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
 :root{
   --bg:#FAFAF9;--surface:#FFF;--ink:#0F0F0F;--muted:#737373;
@@ -183,28 +185,14 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
 
 .thumb,
 .product-gallery-thumbs .thumb{
-  width:48px !important;
-  height:60px !important;
-  border-radius:4px;
-  object-fit:cover;
-  cursor:pointer;
-  border:2px solid rgba(255,255,255,0.4);
-  opacity:1;
-  transition:border-color .15s, box-shadow .15s;
-  background:#f0f0f0;
-  flex-shrink:0;
-  display:block;
+  width:48px !important;height:60px !important;border-radius:4px;object-fit:cover;cursor:pointer;
+  border:2px solid rgba(255,255,255,0.4);opacity:1;transition:border-color .15s, box-shadow .15s;
+  background:#f0f0f0;flex-shrink:0;display:block;
 }
 .thumb:hover,
-.product-gallery-thumbs .thumb:hover{
-  border-color:#fff;
-  box-shadow:0 0 0 2px rgba(0,0,0,0.2);
-}
+.product-gallery-thumbs .thumb:hover{border-color:#fff;box-shadow:0 0 0 2px rgba(0,0,0,0.2)}
 .thumb.active,
-.product-gallery-thumbs .thumb.active{
-  border-color:#fff;
-  box-shadow:0 0 0 2px rgba(26,77,58,0.8);
-}
+.product-gallery-thumbs .thumb.active{border-color:#fff;box-shadow:0 0 0 2px rgba(26,77,58,0.8)}
 
 .product-detail-info{padding:40px;display:flex;flex-direction:column;gap:16px}
 .product-detail-title{font-size:1.75rem;font-weight:700;line-height:1.2}
@@ -265,6 +253,23 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
 .toast.success{background:var(--success)}
 .toast.error{background:var(--danger)}
 @keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+/* ===== Checkout additions ===== */
+.leaflet-container{direction:ltr;font-family:'Cairo',sans-serif}
+.co-two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.co-field{padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r)}
+.co-field:focus{outline:none;border-color:var(--accent)}
+.co-radio{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--border);border-radius:var(--r);cursor:pointer;background:var(--surface);transition:border-color .15s,background .15s}
+.co-radio:hover{border-color:var(--accent)}
+.co-radio input{width:18px;height:18px;cursor:pointer;accent-color:var(--accent)}
+.co-radio-title{flex:1;font-weight:600;font-size:.92rem}
+.co-radio-fee{font-size:.82rem;color:var(--muted);font-weight:600}
+#pickupInfo{margin-top:10px;padding:12px;background:#F0F5F1;border:1px solid #86EFAC;border-radius:var(--r);font-size:.85rem;line-height:1.85}
+#deliveryFeeRow{display:none;justify-content:space-between;padding:12px;background:#FEF3C7;border-radius:var(--r);font-size:.9rem;color:#92400E;font-weight:600}
+.co-subtotal-row{display:flex;justify-content:space-between;padding:12px;background:var(--bg);border-radius:var(--r);font-size:.95rem}
+#mapSection{display:none}
+#checkoutMap{height:220px;border-radius:var(--r);border:1px solid var(--border);overflow:hidden;background:#eee}
+@media(max-width:480px){.co-two-col{grid-template-columns:1fr}}
 
 @media(max-width:1024px){.products-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:768px){
@@ -421,19 +426,62 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
   </div>
 </div>
 
+<!-- ============ CHECKOUT MODAL (NEW) ============ -->
 <div class="modal" id="checkoutModal">
   <div class="modal-backdrop" id="checkoutModalBackdrop"></div>
-  <div class="modal-content" style="max-width:520px">
+  <div class="modal-content" style="max-width:560px">
     <button class="modal-close" id="closeCheckoutBtn"><svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
-    <div style="padding:40px">
-      <h2 style="font-size:1.5rem;margin-bottom:24px">معلومات الشحن</h2>
-      <form id="checkoutForm" style="display:flex;flex-direction:column;gap:16px">
-        <input class="search-input" type="text" id="coName" placeholder="الاسم الكامل" required style="background:var(--surface);padding:12px 16px">
-        <input class="search-input" type="tel" id="coPhone" placeholder="رقم الهاتف" required style="background:var(--surface);padding:12px 16px">
-        <textarea class="search-input" id="coAddress" placeholder="العنوان التفصيلي" rows="2" required style="background:var(--surface);padding:12px 16px;resize:vertical"></textarea>
-        <textarea class="search-input" id="coNotes" placeholder="ملاحظات (اختياري)" rows="2" style="background:var(--surface);padding:12px 16px;resize:vertical"></textarea>
-        <div class="cart-total-row grand" style="margin-top:8px"><span>الإجمالي</span><span id="coTotal">0</span></div>
-        <button type="submit" class="btn btn-primary btn-block">تأكيد الطلب عبر واتساب</button>
+    <div style="padding:36px 28px">
+      <h2 style="font-size:1.35rem;margin-bottom:20px">معلومات الشحن والدفع</h2>
+      <form id="checkoutForm" style="display:flex;flex-direction:column;gap:12px" novalidate>
+
+        <div class="co-two-col">
+          <input class="co-field" type="text" id="coFirstName" placeholder="الاسم الأول *" required>
+          <input class="co-field" type="text" id="coFatherName" placeholder="اسم الأب">
+        </div>
+        <input class="co-field" type="text" id="coLastName" placeholder="الكنية *" required>
+
+        <div style="display:flex;gap:8px">
+          <select id="coCountry" style="padding:12px 8px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface);font-family:inherit;font-size:.9rem;min-width:160px;cursor:pointer"></select>
+          <input class="co-field" type="tel" id="coPhone" placeholder="رقم الهاتف *" inputmode="tel" required style="flex:1">
+        </div>
+
+        <div class="co-two-col">
+          <input class="co-field" type="text" id="coCity" placeholder="المدينة *" required>
+          <input class="co-field" type="text" id="coDistrict" placeholder="الحي *" required>
+        </div>
+        <textarea class="co-field" id="coAddressDetails" placeholder="تفاصيل العنوان (الشارع، البناء، الطابق...)" rows="2" style="resize:vertical"></textarea>
+        <textarea class="co-field" id="coNotes" placeholder="ملاحظات (اختياري)" rows="2" style="resize:vertical"></textarea>
+
+        <div style="padding-top:2px">
+          <div style="font-weight:600;font-size:.9rem;margin-bottom:8px">طريقة الدفع *</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <label id="codOption" class="co-radio">
+              <input type="radio" name="payment" value="cod" id="payCod">
+              <span class="co-radio-title">💵 كاش عند التوصيل</span>
+              <span class="co-radio-fee" id="codFeeLabel"></span>
+            </label>
+            <label id="pickupOption" class="co-radio">
+              <input type="radio" name="payment" value="pickup" id="payPickup">
+              <span class="co-radio-title">🏪 استلام شخصي</span>
+            </label>
+          </div>
+          <div id="pickupInfo" style="display:none"></div>
+        </div>
+
+        <div id="mapSection">
+          <div style="font-weight:600;font-size:.9rem;margin-bottom:8px">📍 حدد موقعك على الخريطة (اختياري)</div>
+          <div id="checkoutMap"></div>
+          <button type="button" id="clearMarkerBtn" style="display:none;margin-top:6px;font-size:.8rem;color:var(--danger);font-weight:600">✕ إزالة الموقع</button>
+          <input type="hidden" id="coLat">
+          <input type="hidden" id="coLng">
+        </div>
+
+        <div class="co-subtotal-row"><span>المنتجات</span><span id="coSubtotal">0</span></div>
+        <div id="deliveryFeeRow"><span>🚚 أجور التوصيل</span><span id="coDeliveryFee">0</span></div>
+        <div class="cart-total-row grand" style="margin-top:2px"><span>الإجمالي</span><span id="coTotal">0</span></div>
+
+        <button type="submit" class="btn btn-primary btn-block" id="coSubmitBtn">تأكيد الطلب عبر واتساب</button>
       </form>
     </div>
   </div>
@@ -448,7 +496,6 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
 </div>
 
 <div class="toast-container" id="toastContainer"></div>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (function() {
@@ -491,6 +538,73 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
   }
   const SYM = { SYP:'ل.س', USD:'$', EUR:'€', SAR:'ر.س', AED:'د.إ' };
   function priceStr(n, currency) { return Number(n || 0).toLocaleString('ar-EG') + ' ' + (SYM[currency] || 'ل.س'); }
+
+  // ============ COUNTRIES ============
+  const COUNTRIES = [
+    ['SY','سوريا','963'],['LB','لبنان','961'],['JO','الأردن','962'],['PS','فلسطين','970'],['IQ','العراق','964'],
+    ['SA','السعودية','966'],['YE','اليمن','967'],['EG','مصر','20'],['SD','السودان','249'],['LY','ليبيا','218'],
+    ['TN','تونس','216'],['DZ','الجزائر','213'],['MA','المغرب','212'],['MR','موريتانيا','222'],['KW','الكويت','965'],
+    ['BH','البحرين','973'],['QA','قطر','974'],['AE','الإمارات','971'],['OM','عمان','968'],['KM','جزر القمر','269'],
+    ['DJ','جيبوتي','253'],['SO','الصومال','252'],
+    ['TR','تركيا','90'],['IR','إيران','98'],
+    ['GB','بريطانيا','44'],['FR','فرنسا','33'],['DE','ألمانيا','49'],['IT','إيطاليا','39'],['ES','إسبانيا','34'],
+    ['PT','البرتغال','351'],['NL','هولندا','31'],['BE','بلجيكا','32'],['LU','لوكسمبورغ','352'],['CH','سويسرا','41'],
+    ['AT','النمسا','43'],['IE','إيرلندا','353'],['DK','الدنمارك','45'],['SE','السويد','46'],['NO','النرويج','47'],
+    ['FI','فنلندا','358'],['IS','آيسلندا','354'],['PL','بولندا','48'],['CZ','التشيك','420'],['SK','سلوفاكيا','421'],
+    ['HU','المجر','36'],['RO','رومانيا','40'],['BG','بلغاريا','359'],['GR','اليونان','30'],['HR','كرواتيا','385'],
+    ['SI','سلوفينيا','386'],['RS','صربيا','381'],['BA','البوسنة','387'],['ME','الجبل الأسود','382'],['MK','مقدونيا','389'],
+    ['AL','ألبانيا','355'],['EE','إستونيا','372'],['LV','لاتفيا','371'],['LT','ليتوانيا','370'],['UA','أوكرانيا','380'],
+    ['BY','روسيا البيضاء','375'],['MD','مولدوفا','373'],['RU','روسيا','7'],['MT','مالطا','356'],['CY','قبرص','357'],
+    ['AD','أندورا','376'],['MC','موناكو','377'],['SM','سان مارينو','378'],['VA','الفاتيكان','379'],['LI','ليختنشتاين','423'],
+    ['US','الولايات المتحدة','1'],['CA','كندا','1'],['MX','المكسيك','52'],['GT','غواتيمالا','502'],['BZ','بليز','501'],
+    ['SV','السلفادور','503'],['HN','هندوراس','504'],['NI','نيكاراغوا','505'],['CR','كوستاريكا','506'],['PA','بنما','507'],
+    ['CU','كوبا','53'],['DO','الدومينيكان','1'],['HT','هايتي','509'],['JM','جامايكا','1'],['TT','ترينيداد','1'],
+    ['BB','بربادوس','1'],['BS','الباهاما','1'],['PR','بورتوريكو','1'],['CO','كولومبيا','57'],['VE','فنزويلا','58'],
+    ['EC','الإكوادور','593'],['PE','بيرو','51'],['BO','بوليفيا','591'],['BR','البرازيل','55'],['PY','باراغواي','595'],
+    ['UY','أوروغواي','598'],['AR','الأرجنتين','54'],['CL','تشيلي','56'],['GY','غيانا','592'],['SR','سورينام','597'],
+    ['CN','الصين','86'],['JP','اليابان','81'],['KR','كوريا الجنوبية','82'],['KP','كوريا الشمالية','850'],['MN','منغوليا','976'],
+    ['IN','الهند','91'],['PK','باكستان','92'],['BD','بنغلاديش','880'],['LK','سريلانكا','94'],['NP','نيبال','977'],
+    ['BT','بوتان','975'],['MV','المالديف','960'],['AF','أفغانستان','93'],['KZ','كازاخستان','7'],['UZ','أوزبكستان','998'],
+    ['TM','تركمانستان','993'],['TJ','طاجيكستان','992'],['KG','قيرغيزستان','996'],['AZ','أذربيجان','994'],['GE','جورجيا','995'],
+    ['AM','أرمينيا','374'],['TH','تايلاند','66'],['VN','فيتنام','84'],['LA','لاوس','856'],['KH','كمبوديا','855'],
+    ['MM','ميانمار','95'],['MY','ماليزيا','60'],['SG','سنغافورة','65'],['ID','إندونيسيا','62'],['PH','الفلبين','63'],
+    ['BN','بروناي','673'],['TL','تيمور الشرقية','670'],
+    ['NG','نيجيريا','234'],['GH','غانا','233'],['CI','ساحل العاج','225'],['SN','السنغال','221'],['ML','مالي','223'],
+    ['BF','بوركينا فاسو','226'],['NE','النيجر','227'],['TD','تشاد','235'],['CM','الكاميرون','237'],['CF','أفريقيا الوسطى','236'],
+    ['GA','الغابون','241'],['CG','الكونغو','242'],['CD','الكونغو الديمقراطية','243'],['AO','أنغولا','244'],['ZM','زامبيا','260'],
+    ['ZW','زيمبابوي','263'],['MZ','موزمبيق','258'],['MW','مالاوي','265'],['TZ','تنزانيا','255'],['KE','كينيا','254'],
+    ['UG','أوغندا','256'],['RW','رواندا','250'],['BI','بوروندي','257'],['ET','إثيوبيا','251'],['ER','إريتريا','291'],
+    ['SS','جنوب السودان','211'],['ZA','جنوب أفريقيا','27'],['NA','ناميبيا','264'],['BW','بوتسوانا','267'],['LS','ليسوتو','266'],
+    ['SZ','إسواتيني','268'],['MG','مدغشقر','261'],['MU','موريشيوس','230'],['SC','سيشل','248'],['CV','الرأس الأخضر','238'],
+    ['GW','غينيا بيساو','245'],['GN','غينيا','224'],['SL','سيراليون','232'],['LR','ليبيريا','231'],['TG','توغو','228'],
+    ['BJ','بنين','229'],['GM','غامبيا','220'],['GQ','غينيا الاستوائية','240'],['ST','ساو تومي','239'],
+    ['AU','أستراليا','61'],['NZ','نيوزيلندا','64'],['PG','بابوا غينيا الجديدة','675'],['FJ','فيجي','679'],['SB','جزر سليمان','677'],
+    ['VU','فانواتو','678'],['WS','ساموا','685'],['TO','تونغا','676'],['KI','كيريباتي','686'],['TV','توفالو','688'],
+    ['NR','ناورو','674'],['PW','بالاو','680'],['FM','ميكرونيزيا','691'],['MH','جزر مارشال','692']
+  ];
+
+  function flagEmoji(iso){
+    try { return iso.toUpperCase().replace(/./g, ch => String.fromCodePoint(0x1F1E6 + ch.charCodeAt(0) - 65)); }
+    catch(e){ return '🏳️'; }
+  }
+
+  let detectedCountryIso = null;
+  async function detectCountryFromIP(){
+    try {
+      const r = await fetch('https://ipapi.co/json/', { cache: 'no-store' });
+      if (!r.ok) return null;
+      const j = await r.json();
+      return (j.country_code || '').toUpperCase() || null;
+    } catch(e){ return null; }
+  }
+
+  function getActiveWhatsAppNumber(){
+    const recips = Array.isArray(state.settings.whatsapp_recipients) ? state.settings.whatsapp_recipients : [];
+    const activeId = state.settings.active_recipient_id;
+    const active = recips.find(r => r.id === activeId);
+    if (active && active.enabled !== false && active.number) return String(active.number).replace(/\D/g,'');
+    return null;
+  }
 
   // ============ SHARE ============
   async function shareProduct(productId, productName, productPrice) {
@@ -538,7 +652,7 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
       itemsHtml += '<a href="' + productLink + '" style="display:flex;gap:12px;padding:12px 8px;border-bottom:1px solid #E7E5E4;text-decoration:none;color:inherit;border-radius:6px"><img src="' + escapeHtml(imgSrc) + '" style="width:60px;height:75px;object-fit:cover;border-radius:6px" onerror="this.src=\'https://via.placeholder.com/60x75?text=?\'"><div style="flex:1"><div style="font-weight:600;color:#0F0F0F">' + escapeHtml(it.name) + '</div><div style="font-size:.8rem;color:#737373">' + meta + '</div><div style="font-size:.85rem;margin-top:4px">الكمية: ' + it.qty + ' × ' + priceStr(it.price, currency) + '</div><div style="font-size:.8rem;color:#1A4D3A;font-weight:600;margin-top:4px">عرض المنتج ←</div></div></a>';
     });
 
-    let phoneHtml = order.customer_phone ? '<div style="margin-bottom:6px"><strong>الهاتف:</strong> ' + escapeHtml(order.customer_phone) + '</div>' : '';
+    let phoneHtml = order.customer_phone ? '<div style="margin-bottom:6px"><strong>الهاتف:</strong> ' + escapeHtml((order.country_code||'') + ' ' + order.customer_phone) + '</div>' : '';
 
     main.innerHTML = '<div style="max-width:600px;margin:40px auto;background:#fff;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.06);padding:32px;font-family:Cairo,sans-serif" dir="rtl"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #E7E5E4"><div><div style="font-size:.85rem;color:#737373">رقم الطلب</div><div style="font-weight:700;font-size:1.2rem;color:#1A4D3A">' + escapeHtml(order.order_number) + '</div></div><span class="status-' + escapeHtml(order.status) + '">' + escapeHtml(statusLabel) + '</span></div><div style="margin-bottom:20px;font-size:.9rem"><div style="margin-bottom:6px"><strong>التاريخ:</strong> ' + new Date(order.created_at).toLocaleString('ar-EG') + '</div><div style="margin-bottom:6px"><strong>الاسم:</strong> ' + escapeHtml(order.customer_name) + '</div>' + phoneHtml + '<div><strong>العنوان:</strong> ' + escapeHtml(order.customer_address || '') + '</div></div><div style="margin-bottom:16px"><h3 style="font-size:1rem;font-weight:700;margin-bottom:8px">المنتجات</h3>' + itemsHtml + '</div><div style="display:flex;justify-content:space-between;padding-top:16px;border-top:1px solid #E7E5E4;font-size:1.1rem;font-weight:700"><span>الإجمالي</span><span>' + priceStr(order.total, currency) + '</span></div><a href="' + getSiteUrl() + '" style="display:block;margin-top:24px;text-align:center;padding:12px;background:#1A4D3A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">العودة للمتجر</a></div>';
   }
@@ -591,10 +705,11 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
     if (s.hero_image && typeof s.hero_image === 'string' && s.hero_image.startsWith('http')) {
       $('#heroImage img').src = s.hero_image;
     }
-    if (s.whatsapp_number) {
+    // رابط واتساب في الفوتر — fallback على الرقم النشط
+    const wa = s.whatsapp_number ? String(s.whatsapp_number).replace(/\D/g,'') : getActiveWhatsAppNumber();
+    if (wa) {
       const w = $('#footerWhatsapp');
-      w.href = 'https://wa.me/' + s.whatsapp_number.replace(/\D/g,'');
-      w.target = '_blank';
+      if (w) { w.href = 'https://wa.me/' + wa; w.target = '_blank'; }
     }
     const annBar = $('#announcementBar');
     if (annBar) {
@@ -954,36 +1069,251 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
   function closeOrders() { $('#ordersBackdrop').classList.remove('open'); $('#ordersDrawer').classList.remove('open'); }
   async function refreshOrdersCount() { const token = getClientToken(); const { data } = await sb.rpc('get_my_orders', { p_token: token }); const cnt = (data && data.length) || 0; $('#ordersBadge').textContent = cnt; $('#ordersBadge').dataset.count = cnt; }
 
-  // ============ CHECKOUT ============
-  function openCheckout() {
-    if (!state.cart.length) return;
-    $('#coTotal').textContent = formatPrice(state.cart.reduce((s,i)=>s+i.price*i.qty, 0));
-    const phoneField = $('#coPhone');
-    if (phoneField) {
-      if (state.settings.phone_required === false) {
-        phoneField.style.display = 'none';
-        phoneField.removeAttribute('required');
-        phoneField.value = '';
+  // ============ CHECKOUT (NEW) ============
+  let checkoutMap = null, checkoutMarker = null;
+
+  function populateCountrySelect(defaultIso){
+    const sel = $('#coCountry');
+    if (!sel) return;
+    if (!sel.dataset.populated) {
+      sel.innerHTML = COUNTRIES.map(c =>
+        '<option value="' + c[0] + '">' + flagEmoji(c[0]) + ' ' + escapeHtml(c[1]) + ' (+' + c[2] + ')</option>'
+      ).join('');
+      sel.dataset.populated = '1';
+    }
+    if (defaultIso) sel.value = defaultIso;
+  }
+
+  function applyCheckoutSettings(){
+    const s = state.settings || {};
+
+    // اسم الأب
+    const middleMode = s.middle_name_mode || 'optional';
+    const fatherField = $('#coFatherName');
+    if (fatherField) {
+      fatherField.style.display = (middleMode === 'hidden') ? 'none' : '';
+      if (middleMode === 'required') fatherField.setAttribute('required','');
+      else fatherField.removeAttribute('required');
+    }
+
+    // الكنية
+    const lastNameReq = s.last_name_required !== false;
+    const lastNameField = $('#coLastName');
+    if (lastNameField) {
+      if (lastNameReq) lastNameField.setAttribute('required','');
+      else lastNameField.removeAttribute('required');
+    }
+
+    // الهاتف
+    const phoneReq = s.phone_required !== false;
+    const phoneField = $('#coPhone'), countrySel = $('#coCountry');
+    if (phoneReq) {
+      phoneField.setAttribute('required','');
+      phoneField.style.display = '';
+      if (countrySel) countrySel.style.display = '';
+    } else {
+      phoneField.removeAttribute('required');
+      phoneField.value = '';
+      phoneField.style.display = 'none';
+      if (countrySel) countrySel.style.display = 'none';
+    }
+
+    // طرق الدفع
+    const codEnabled = s.enable_cod !== false;
+    const pickupEnabled = s.enable_pickup !== false;
+    const codOpt = $('#codOption'), pickupOpt = $('#pickupOption');
+    if (codOpt) codOpt.style.display = codEnabled ? '' : 'none';
+    if (pickupOpt) pickupOpt.style.display = pickupEnabled ? '' : 'none';
+
+    const payCod = $('#payCod'), payPickup = $('#payPickup');
+    if (payCod) payCod.checked = false;
+    if (payPickup) payPickup.checked = false;
+    if (codEnabled && !pickupEnabled && payCod) payCod.checked = true;
+    else if (!codEnabled && pickupEnabled && payPickup) payPickup.checked = true;
+    else if (codEnabled && pickupEnabled && payCod) payCod.checked = true;
+
+    // أجور التوصيل
+    const codFee = Number(s.cod_delivery_fee || 0);
+    const codFeeLabel = $('#codFeeLabel');
+    if (codFeeLabel) codFeeLabel.textContent = codFee > 0 ? '+ ' + formatPrice(codFee) : '';
+
+    // الخريطة
+    const mapEnabled = s.enable_map_picker !== false;
+    const mapSec = $('#mapSection');
+    if (mapSec) mapSec.style.display = mapEnabled ? '' : 'none';
+
+    updateCheckoutPaymentUI();
+  }
+
+  function updateCheckoutPaymentUI(){
+    const s = state.settings || {};
+    const isCod = $('#payCod') && $('#payCod').checked;
+    const isPickup = $('#payPickup') && $('#payPickup').checked;
+    const codFee = Number(s.cod_delivery_fee || 0);
+
+    // سطر أجور التوصيل
+    const feeRow = $('#deliveryFeeRow');
+    if (feeRow) {
+      if (isCod && codFee > 0) {
+        feeRow.style.display = 'flex';
+        $('#coDeliveryFee').textContent = formatPrice(codFee);
       } else {
-        phoneField.style.display = '';
-        phoneField.setAttribute('required', '');
+        feeRow.style.display = 'none';
       }
     }
+
+    // تفاصيل الاستلام
+    const pickupInfo = $('#pickupInfo');
+    if (pickupInfo) {
+      if (isPickup) {
+        let html = '';
+        if (s.pickup_address_text) html += '<div><strong>📍 عنوان الاستلام:</strong> ' + escapeHtml(s.pickup_address_text) + '</div>';
+        if (s.pickup_phone) html += '<div><strong>📞 هاتف:</strong> <span style="direction:ltr;display:inline-block">' + escapeHtml(s.pickup_phone) + '</span></div>';
+        if (s.pickup_working_hours) html += '<div><strong>🕐 ساعات العمل:</strong> ' + escapeHtml(s.pickup_working_hours) + '</div>';
+        pickupInfo.innerHTML = html || '<div style="color:var(--muted)">—</div>';
+        pickupInfo.style.display = 'block';
+      } else {
+        pickupInfo.style.display = 'none';
+      }
+    }
+
+    // الإجمالي
+    const subtotal = state.cart.reduce((sum,i)=>sum+i.price*i.qty, 0);
+    const st = $('#coSubtotal'); if (st) st.textContent = formatPrice(subtotal);
+    const total = subtotal + (isCod ? codFee : 0);
+    const tt = $('#coTotal'); if (tt) tt.textContent = formatPrice(total);
+  }
+
+  function initCheckoutMap(){
+    const el = document.getElementById('checkoutMap');
+    if (!el || typeof L === 'undefined') return;
+
+    if (checkoutMap) {
+      setTimeout(()=>{ try{ checkoutMap.invalidateSize(); }catch(e){} }, 150);
+      return;
+    }
+
+    checkoutMap = L.map('checkoutMap').setView([33.5138, 36.2765], 8);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap', maxZoom: 19
+    }).addTo(checkoutMap);
+
+    checkoutMap.on('click', function(e){
+      if (checkoutMarker) checkoutMarker.setLatLng(e.latlng);
+      else checkoutMarker = L.marker(e.latlng).addTo(checkoutMap);
+      $('#coLat').value = e.latlng.lat;
+      $('#coLng').value = e.latlng.lng;
+      $('#clearMarkerBtn').style.display = 'inline';
+    });
+
+    $('#clearMarkerBtn').onclick = function(){
+      if (checkoutMarker) { checkoutMap.removeLayer(checkoutMarker); checkoutMarker = null; }
+      $('#coLat').value = ''; $('#coLng').value = '';
+      $('#clearMarkerBtn').style.display = 'none';
+    };
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        p => { try{ checkoutMap.setView([p.coords.latitude, p.coords.longitude], 14); }catch(e){} },
+        ()=>{}, { timeout: 5000 }
+      );
+    }
+  }
+
+  async function openCheckout(){
+    if (!state.cart.length) return;
+
+    // البلد الافتراضي: settings → IP → سوريا
+    let defaultIso = null;
+    const adminDefault = String(state.settings.phone_default_country || '').replace(/[^\d]/g,'');
+    if (adminDefault) {
+      const found = COUNTRIES.find(c => c[2] === adminDefault);
+      if (found) defaultIso = found[0];
+    }
+    if (!defaultIso && detectedCountryIso && COUNTRIES.find(c => c[0] === detectedCountryIso)) {
+      defaultIso = detectedCountryIso;
+    }
+    if (!defaultIso) defaultIso = 'SY';
+
+    populateCountrySelect(defaultIso);
+    applyCheckoutSettings();
+
     $('#checkoutModal').classList.add('open');
     document.body.style.overflow = 'hidden';
+
+    if (state.settings.enable_map_picker !== false) {
+      setTimeout(initCheckoutMap, 120);
+    }
   }
-  function closeCheckout() { $('#checkoutModal').classList.remove('open'); document.body.style.overflow = ''; }
 
-  async function submitCheckout(e) {
+  function closeCheckout(){
+    $('#checkoutModal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  async function submitCheckout(e){
     e.preventDefault();
-    const name = $('#coName').value.trim();
-    const phoneRequired = state.settings.phone_required !== false;
-    const phone = phoneRequired ? $('#coPhone').value.trim() : null;
-    const address = $('#coAddress').value.trim(), notes = $('#coNotes').value.trim();
 
-    if (!name || !address) { toast('يرجى ملء الحقول المطلوبة','error'); return; }
-    if (phoneRequired && !phone) { toast('يرجى إدخال رقم الهاتف','error'); return; }
+    const s = state.settings || {};
 
+    // 1) منع الطلب بدون رقم واتساب نشط
+    const wa = getActiveWhatsAppNumber();
+    if (!wa) {
+      toast('لا يمكن إتمام الطلب حاليًا — لم يتم إعداد رقم واتساب. حاول لاحقًا.','error');
+      return;
+    }
+
+    // 2) الاسم
+    const firstName = $('#coFirstName').value.trim();
+    const middleMode = s.middle_name_mode || 'optional';
+    const fatherName = (middleMode === 'hidden') ? '' : $('#coFatherName').value.trim();
+    const lastName = $('#coLastName').value.trim();
+    const lastNameReq = s.last_name_required !== false;
+
+    if (!firstName) { toast('الاسم الأول مطلوب','error'); return; }
+    if (middleMode === 'required' && !fatherName) { toast('اسم الأب مطلوب','error'); return; }
+    if (lastNameReq && !lastName) { toast('الكنية مطلوبة','error'); return; }
+
+    const fullName = [firstName, fatherName, lastName].filter(x=>x).join(' ');
+
+    // 3) الهاتف
+    const phoneReq = s.phone_required !== false;
+    let countryCode = null, phoneNumber = null;
+    if (phoneReq) {
+      const iso = $('#coCountry').value;
+      const found = COUNTRIES.find(c => c[0] === iso);
+      countryCode = '+' + (found ? found[2] : '963');
+      phoneNumber = $('#coPhone').value.replace(/\s/g,'').trim();
+      if (!phoneNumber) { toast('رقم الهاتف مطلوب','error'); return; }
+      if (!/^\d{6,15}$/.test(phoneNumber)) { toast('رقم الهاتف غير صالح','error'); return; }
+    }
+
+    // 4) العنوان
+    const city = $('#coCity').value.trim();
+    const district = $('#coDistrict').value.trim();
+    const addressDetails = $('#coAddressDetails').value.trim();
+    if (!city) { toast('المدينة مطلوبة','error'); return; }
+    if (!district) { toast('الحي مطلوب','error'); return; }
+
+    const fullAddress = [city, district, addressDetails].filter(x=>x).join(' - ');
+    const notes = $('#coNotes').value.trim();
+
+    // 5) طريقة الدفع
+    const isCod = $('#payCod') && $('#payCod').checked;
+    const isPickup = $('#payPickup') && $('#payPickup').checked;
+    if (!isCod && !isPickup) { toast('اختر طريقة الدفع','error'); return; }
+    const paymentMethod = isCod ? 'cod' : 'pickup';
+
+    // 6) الإجمالي
+    const codFee = isCod ? Number(s.cod_delivery_fee || 0) : 0;
+    const subtotal = state.cart.reduce((sum,i)=>sum+i.price*i.qty, 0);
+    const total = subtotal + codFee;
+
+    // 7) الموقع
+    const lat = $('#coLat').value ? Number($('#coLat').value) : null;
+    const lng = $('#coLng').value ? Number($('#coLng').value) : null;
+
+    // 8) حظر / rate limit
     const blocked = await checkIfBlocked();
     if (blocked) { toast('تم حظرك من إتمام الطلبات','error'); return; }
 
@@ -993,40 +1323,76 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
       if (allowed === false) { toast('لقد وصلت للحد الأقصى من الطلبات. حاول مجددًا بعد ساعة.','error'); return; }
     } catch(e) { console.warn('Rate check failed:', e); }
 
-    const total = state.cart.reduce((s,i)=>s+i.price*i.qty, 0);
     const orderNumber = 'ORD-' + Date.now().toString(36).toUpperCase();
+    const submitBtn = $('#coSubmitBtn');
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'جارٍ إرسال الطلب...'; }
 
-    const { error } = await sb.from('orders').insert({
-      order_number: orderNumber, customer_name: name, customer_phone: phone,
-      customer_address: address, customer_notes: notes, items: state.cart,
-      total: total, currency: state.settings.currency || 'SYP',
-      status: 'pending', payment_method: 'whatsapp', client_token: clientToken
-    });
+    try {
+      const { error } = await sb.from('orders').insert({
+        order_number: orderNumber,
+        customer_name: fullName,
+        customer_phone: phoneNumber,
+        country_code: countryCode,
+        city: city,
+        district: district,
+        customer_address: fullAddress,
+        customer_notes: notes || null,
+        items: state.cart,
+        total: total,
+        delivery_fee: codFee > 0 ? codFee : null,
+        currency: s.currency || 'SYP',
+        status: 'pending',
+        payment_method: paymentMethod,
+        client_token: clientToken,
+        latitude: lat,
+        longitude: lng
+      });
 
-    if (error) {
-      console.error(error);
-      const msg = error.message || '';
-      if (msg.includes('رقم الهاتف')) { toast(msg, 'error'); return; }
-      toast('حدث خطأ، حاول مجدداً','error'); return;
+      if (error) {
+        console.error(error);
+        const msg = error.message || '';
+        if (msg.includes('رقم الهاتف')) { toast(msg,'error'); return; }
+        toast('حدث خطأ، حاول مجدداً','error'); return;
+      }
+
+      try { await sb.rpc('record_rate_limit', { p_token: clientToken, p_action: 'order' }); } catch(e) {}
+
+      // بناء رسالة واتساب
+      const trackingUrl = getSiteUrl() + '?order=' + encodeURIComponent(orderNumber);
+      let msg = '*طلب جديد* #' + orderNumber + '\n\n';
+      msg += '*الاسم:* ' + fullName + '\n';
+      if (phoneNumber) msg += '*الهاتف:* ' + countryCode + ' ' + phoneNumber + '\n';
+      msg += '*العنوان:* ' + fullAddress + '\n';
+      if (lat && lng) msg += '*الموقع:* https://www.google.com/maps?q=' + lat + ',' + lng + '\n';
+      if (notes) msg += '*ملاحظات:* ' + notes + '\n';
+      msg += '\n*طريقة الدفع:* ' + (isCod ? 'كاش عند التوصيل' : 'استلام شخصي') + '\n';
+      if (isCod && codFee > 0) msg += '*أجور التوصيل:* ' + formatPrice(codFee) + '\n';
+      msg += '\n*المنتجات:*\n';
+      state.cart.forEach((i,n) => {
+        msg += (n+1) + '. ' + i.name + (i.size?' - '+i.size:'') + (i.color?' - '+i.color:'') + ' × ' + i.qty + ' = ' + formatPrice(i.price*i.qty) + '\n';
+      });
+      msg += '\n*الإجمالي:* ' + formatPrice(total);
+      msg += '\n\n🔗 *تتبع الطلب:*\n' + trackingUrl;
+
+      // تفريغ الفورم قبل الإغلاق
+      ['coFirstName','coFatherName','coLastName','coPhone','coCity','coDistrict','coAddressDetails','coNotes'].forEach(id=>{
+        const el = document.getElementById(id); if (el) el.value = '';
+      });
+      $('#coLat').value = ''; $('#coLng').value = '';
+      if (checkoutMarker && checkoutMap) { checkoutMap.removeLayer(checkoutMarker); checkoutMarker = null; }
+      const cmb = $('#clearMarkerBtn'); if (cmb) cmb.style.display = 'none';
+
+      state.cart = []; saveCart(); updateBadges(); refreshOrdersCount();
+      closeCheckout(); closeCart();
+      toast('تم استلام طلبك ✓');
+      setTimeout(() => window.open('https://wa.me/' + wa + '?text=' + encodeURIComponent(msg), '_blank'), 400);
+
+    } catch(err) {
+      console.error(err);
+      toast('حدث خطأ، حاول مجدداً','error');
+    } finally {
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'تأكيد الطلب عبر واتساب'; }
     }
-
-    try { await sb.rpc('record_rate_limit', { p_token: clientToken, p_action: 'order' }); } catch(e) {}
-
-    const trackingUrl = getSiteUrl() + '?order=' + encodeURIComponent(orderNumber);
-    let msg = '*طلب جديد* #' + orderNumber + '\n\n*الاسم:* ' + name + '\n';
-    if (phone) msg += '*الهاتف:* ' + phone + '\n';
-    msg += '*العنوان:* ' + address + '\n';
-    if (notes) msg += '*ملاحظات:* ' + notes + '\n';
-    msg += '\n*المنتجات:*\n';
-    state.cart.forEach((i,n) => { msg += (n+1) + '. ' + i.name + (i.size?' - '+i.size:'') + (i.color?' - '+i.color:'') + ' × ' + i.qty + ' = ' + formatPrice(i.price*i.qty) + '\n'; });
-    msg += '\n*الإجمالي:* ' + formatPrice(total);
-    msg += '\n\n🔗 *تتبع الطلب:*\n' + trackingUrl;
-
-    const wa = (state.settings.whatsapp_number||'').replace(/\D/g,'');
-    state.cart = []; saveCart(); updateBadges(); refreshOrdersCount();
-    closeCheckout(); closeCart();
-    toast('تم استلام طلبك ✓');
-    if (wa) setTimeout(() => window.open('https://wa.me/' + wa + '?text=' + encodeURIComponent(msg), '_blank'), 400);
   }
 
   // ============ WIRE UP ============
@@ -1061,6 +1427,12 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
   $('#checkoutModalBackdrop').addEventListener('click', closeCheckout);
   $('#shopNowBtn').addEventListener('click', scrollToProducts);
 
+  // ربط أزرار طريقة الدفع
+  ['payCod','payPickup'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('change', updateCheckoutPaymentUI);
+  });
+
   $$('[data-cat]').forEach(el => {
     if (el.tagName === 'A') el.addEventListener('click', e => { e.preventDefault(); filterCategory(el.dataset.cat); });
   });
@@ -1068,6 +1440,10 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
   (async () => {
     try {
       await loadSettings();
+
+      // كشف البلد عبر IP (اختياري، لا يعطل البدء إذا فشل)
+      try { detectedCountryIso = await detectCountryFromIP(); } catch(e) {}
+
       await loadCategoryCounts();
       renderCategories();
       renderChips();
