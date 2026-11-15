@@ -623,7 +623,7 @@ tr:hover td{background:#FAFBFC}
 <script>
 (function() {
   'use strict';
-  const ADMIN_VERSION = 'v9-owner-revenue';
+  const ADMIN_VERSION = 'v10-owner-fix';
   console.log('[ADMIN] Version:', ADMIN_VERSION);
 
   const SUPABASE_URL = 'https://smjrowqoxoxsvikjdpay.supabase.co';
@@ -667,14 +667,22 @@ tr:hover td{background:#FAFBFC}
   function openLightbox(url){if(!url)return;$('#lightboxImg').src=url;$('#imageLightbox').classList.add('show');document.body.style.overflow='hidden'}
   function closeLightbox(){$('#imageLightbox').classList.remove('show');$('#lightboxImg').src='';document.body.style.overflow=''}
 
-  // ============ OWNER VISIBILITY ============
+  // ============ OWNER VISIBILITY (FIXED) ============
   function applyOwnerVisibility(){
-    if(state.isOwner){
-      $$('.owner-only').forEach(el=>el.style.display='');
-      $('#navAdmins').style.display='flex';
-    }else{
-      $$('.owner-only').forEach(el=>el.style.display='none');
-      $('#navAdmins').style.display='none';
+    var nodes = document.querySelectorAll('.owner-only');
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i];
+      if (state.isOwner) {
+        el.classList.remove('owner-only');
+        el.style.display = '';
+      } else {
+        el.classList.add('owner-only');
+        el.style.display = 'none';
+      }
+    }
+    var navAdmins = document.getElementById('navAdmins');
+    if (navAdmins) {
+      navAdmins.style.display = state.isOwner ? 'flex' : 'none';
     }
   }
 
@@ -686,7 +694,15 @@ tr:hover td{background:#FAFBFC}
       const {data:isAdmin,error}=await sb.rpc('is_admin');
       if(error||!isAdmin){await sb.auth.signOut();showLoginScreen();showLoginError('هذا الحساب ليس لديه صلاحيات الإدارة');return}
       state.user=session.user;
-      try{const {data:o}=await sb.rpc('is_owner');state.isOwner=o===true}catch(e){state.isOwner=false}
+      try{
+        const {data:o,error:e2}=await sb.rpc('is_owner');
+        console.log('[checkSession] is_owner result:', o, 'error:', e2);
+        state.isOwner = (o === true);
+      }catch(e){
+        console.warn('[checkSession] is_owner failed:', e);
+        state.isOwner=false;
+      }
+      console.log('[checkSession] state.isOwner =', state.isOwner);
       showDashboard();
       await refreshNavCounts();
       await Promise.all([loadDashboardStats(),loadTopProducts()]);
@@ -714,7 +730,15 @@ tr:hover td{background:#FAFBFC}
       const {data:isAdmin}=await sb.rpc('is_admin');
       if(!isAdmin){await sb.auth.signOut();showLoginError('هذا الحساب ليس لديه صلاحيات الإدارة');return}
       state.user=data.user;
-      try{const {data:o}=await sb.rpc('is_owner');state.isOwner=o===true}catch(e){state.isOwner=false}
+      try{
+        const {data:o,error:e2}=await sb.rpc('is_owner');
+        console.log('[handleLogin] is_owner result:', o, 'error:', e2);
+        state.isOwner = (o === true);
+      }catch(e){
+        console.warn('[handleLogin] is_owner failed:', e);
+        state.isOwner=false;
+      }
+      console.log('[handleLogin] state.isOwner =', state.isOwner);
       showDashboard();
       await refreshNavCounts();
       await Promise.all([loadDashboardStats(),loadTopProducts()]);
@@ -1419,7 +1443,6 @@ tr:hover td{background:#FAFBFC}
   $('#cancelWaBtn').addEventListener('click',closeWaModal);
   $('#confirmWaBtn').addEventListener('click',confirmWa);
 
-  // ✅ Reset revenue
   $('#resetRevenueBtn').addEventListener('click',openResetRevenueModal);
   $('#closeResetRevenueBtn').addEventListener('click',closeResetRevenueModal);
   $('#cancelResetRevenueBtn').addEventListener('click',closeResetRevenueModal);
