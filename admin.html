@@ -54,6 +54,8 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
 .nav-item.active{background:var(--sidebar-active);color:#fff;font-weight:600}
 .nav-item svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0}
 .nav-item.disabled{opacity:.4;cursor:not-allowed;pointer-events:none}
+.nav-count{margin-right:auto;background:var(--danger);color:#fff;font-size:.7rem;font-weight:700;min-width:20px;height:20px;padding:0 6px;border-radius:10px;display:none;align-items:center;justify-content:center}
+.nav-count.show{display:inline-flex}
 .sidebar-footer{padding:16px 20px;border-top:1px solid rgba(255,255,255,.08)}
 .user-info{font-size:.8rem;color:rgba(255,255,255,.5);margin-bottom:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .btn-logout{width:100%;padding:8px 12px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.8);border-radius:var(--r-sm);font-size:.85rem;font-weight:500;transition:background .15s}
@@ -112,16 +114,18 @@ tr:hover td{background:#FAFBFC}
 .top-prod-link-btn svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2.5}
 
 /* BADGES */
-.badge-pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:.75rem;font-weight:600}
+.badge-pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:.75rem;font-weight:600;white-space:nowrap}
 .badge-success{background:#D1FAE5;color:#065F46}
 .badge-warning{background:#FEF3C7;color:#92400E}
 .badge-danger{background:#FEE2E2;color:#991B1B}
 .badge-info{background:#DBEAFE;color:#1E40AF}
 .badge-gray{background:#F3F4F6;color:#4B5563}
+.badge-purple{background:#F3E8FF;color:#7C3AED}
+.badge-orange{background:#FFEDD5;color:#C2410C}
 
 /* FILTERS */
 .filters-row{display:flex;gap:12px;padding:16px 24px;border-bottom:1px solid var(--border);flex-wrap:wrap}
-.search-input-wrap{flex:1;min-width:240px;position:relative}
+.search-input-wrap{flex:1;min-width:200px;position:relative}
 .search-input-wrap svg{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--muted);pointer-events:none;stroke:currentColor;fill:none;stroke-width:2}
 .filters-row input[type="text"],.filters-row select{padding:9px 14px;border:1px solid var(--border);border-radius:var(--r);font-size:.9rem;background:var(--surface)}
 .search-input-wrap input{width:100%;padding:9px 38px 9px 14px}
@@ -159,8 +163,11 @@ tr:hover td{background:#FAFBFC}
 .btn-primary:hover{background:var(--accent-h)}
 .btn-danger{background:var(--danger);color:#fff}
 .btn-danger:hover{background:#B91C1C}
+.btn-success{background:var(--success);color:#fff}
+.btn-success:hover{background:#15803D}
 .btn-ghost{background:var(--surface);color:var(--ink);border-color:var(--border)}
 .btn-ghost:hover{background:var(--bg)}
+.btn-sm{padding:6px 12px;font-size:.8rem}
 .btn:disabled{opacity:.6;cursor:not-allowed}
 .btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2}
 
@@ -174,19 +181,26 @@ tr:hover td{background:#FAFBFC}
 .action-btn.delete:hover{background:#FECACA}
 .action-btn.toggle{color:var(--warning);background:#FEF3C7}
 .action-btn.toggle:hover{background:#FDE68A}
+.action-btn.view{color:var(--accent);background:#F0F5F1}
+.action-btn.view:hover{background:#E8F0EC}
+.action-btn.ban{color:var(--danger);background:#FEE2E2}
+.action-btn.ban:hover{background:#FECACA}
+.action-btn.approve{color:var(--success);background:#ECFDF5}
+.action-btn.approve:hover{background:#D1FAE5}
 
 /* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:none;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto}
 .modal-overlay.show{display:flex}
 .modal-box{background:var(--surface);border-radius:var(--r-lg);width:100%;max-width:900px;box-shadow:var(--sh-lg);margin:auto;position:relative}
 .modal-box.narrow{max-width:480px}
+.modal-box.wide{max-width:1000px}
 .modal-header{padding:20px 28px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--surface);border-radius:var(--r-lg) var(--r-lg) 0 0;z-index:2}
 .modal-title{font-size:1.15rem;font-weight:700}
 .modal-close{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--muted);transition:background .15s}
 .modal-close:hover{background:var(--bg);color:var(--ink)}
 .modal-close svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2}
 .modal-body{padding:24px 28px;max-height:calc(100vh - 220px);overflow-y:auto}
-.modal-footer{padding:16px 28px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;position:sticky;bottom:0;background:var(--surface);border-radius:0 0 var(--r-lg) var(--r-lg);z-index:2}
+.modal-footer{padding:16px 28px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;position:sticky;bottom:0;background:var(--surface);border-radius:0 0 var(--r-lg) var(--r-lg);z-index:2;flex-wrap:wrap}
 
 /* FORM */
 .form-section{margin-bottom:24px}
@@ -228,8 +242,6 @@ tr:hover td{background:#FAFBFC}
 .upload-zone p{font-size:.9rem;color:var(--ink);font-weight:500;margin-bottom:4px}
 .upload-zone small{font-size:.75rem;color:var(--muted)}
 .upload-zone input[type="file"]{display:none}
-
-/* imageGrid — كل الأنماط inline من JS */
 #imageGrid{display:block;width:100%;margin-top:16px;font-size:0;line-height:0}
 
 /* CONFIRM */
@@ -246,6 +258,57 @@ tr:hover td{background:#FAFBFC}
 #imageLightbox .lightbox-close:hover{background:rgba(255,255,255,.3)}
 #imageLightbox .lightbox-close svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2.5}
 
+/* ===== ORDER DETAIL ===== */
+.order-detail-grid{display:flex;flex-direction:column;gap:20px}
+.order-detail-header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.order-detail-number{font-size:1.3rem;font-weight:700;color:var(--accent)}
+.order-detail-date{font-size:.85rem;color:var(--muted);margin-top:2px}
+.order-detail-info-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.order-info-box{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:14px}
+.order-info-box h4{font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:6px;letter-spacing:.05em}
+.order-info-box p{font-size:.9rem;color:var(--ink);font-weight:500}
+.order-items-list{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:4px 16px}
+.order-item-row{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);align-items:center}
+.order-item-row:last-child{border-bottom:none}
+.order-item-row img{width:56px;height:70px;object-fit:cover;border-radius:var(--r-sm);background:#f0f0f0;flex-shrink:0}
+.order-item-info{flex:1;min-width:0}
+.order-item-name{font-weight:600;font-size:.9rem;margin-bottom:2px}
+.order-item-meta{font-size:.8rem;color:var(--muted)}
+.order-item-price{font-weight:700;font-size:.9rem;white-space:nowrap}
+.order-detail-total{display:flex;justify-content:space-between;padding:16px;background:var(--bg);border-radius:var(--r);border:1px solid var(--border);font-size:1.1rem;font-weight:700}
+
+.order-status-select{display:flex;gap:8px;flex-wrap:wrap}
+.order-status-select select{padding:9px 14px;border:1px solid var(--border);border-radius:var(--r);font-size:.9rem;background:var(--surface);flex:1;min-width:180px}
+
+/* ===== REVIEWS ===== */
+.reviews-tabs{display:flex;gap:4px;padding:16px 24px;border-bottom:1px solid var(--border);background:#F9FAFB;overflow-x:auto}
+.reviews-tab{padding:8px 16px;border-radius:var(--r-sm);font-size:.85rem;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s;border:1px solid transparent;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.reviews-tab:hover{color:var(--ink)}
+.reviews-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.reviews-tab .tab-count{background:rgba(255,255,255,.25);padding:1px 7px;border-radius:10px;font-size:.7rem}
+.reviews-tab:not(.active) .tab-count{background:var(--border);color:var(--muted)}
+
+.review-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin:12px 24px;transition:border-color .15s}
+.review-card:hover{border-color:var(--accent)}
+.review-card.pending{border-right:4px solid var(--warning)}
+.review-card.approved{border-right:4px solid var(--success)}
+.review-card-header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.review-card-product{font-size:.8rem;color:var(--muted);margin-bottom:4px}
+.review-card-product strong{color:var(--accent)}
+.review-card-author{font-weight:700;font-size:.95rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.review-stars{color:var(--gold);font-size:1rem;letter-spacing:1px}
+.review-card-date{font-size:.75rem;color:var(--muted)}
+.review-card-comment{font-size:.9rem;color:var(--ink);line-height:1.6;background:var(--bg);padding:10px 14px;border-radius:var(--r-sm);margin-bottom:12px}
+.review-card-actions{display:flex;gap:8px;flex-wrap:wrap}
+
+/* ===== BLOCKED ===== */
+.blocked-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.blocked-info{flex:1;min-width:200px}
+.blocked-type{font-size:.75rem;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.blocked-value{font-size:.95rem;font-weight:600;color:var(--ink);word-break:break-all}
+.blocked-reason{font-size:.8rem;color:var(--muted);margin-top:4px;font-style:italic}
+.blocked-date{font-size:.75rem;color:var(--muted);margin-top:6px}
+
 @media(max-width:1200px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:900px){
   .sidebar{transform:translateX(100%)}
@@ -254,6 +317,7 @@ tr:hover td{background:#FAFBFC}
   .mobile-menu-btn{display:flex}
   .stats-grid{grid-template-columns:1fr}
   .top-prod-name{max-width:140px}
+  .order-detail-info-grid{grid-template-columns:1fr}
 }
 @media(max-width:768px){
   .form-grid,.form-grid.three{grid-template-columns:1fr}
@@ -263,11 +327,13 @@ tr:hover td{background:#FAFBFC}
   .modal-body{max-height:none}
   .topbar h1{font-size:1.4rem}
   .dynamic-item{flex-wrap:wrap}
+  .review-card{margin:12px 16px}
 }
 </style>
 </head>
 <body>
 
+<!-- LOGIN SCREEN -->
 <div id="loginScreen">
   <div class="login-card">
     <div class="login-logo">م</div>
@@ -288,6 +354,7 @@ tr:hover td{background:#FAFBFC}
   </div>
 </div>
 
+<!-- DASHBOARD -->
 <div id="dashboard">
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
@@ -303,13 +370,19 @@ tr:hover td{background:#FAFBFC}
         <svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
         المنتجات
       </a>
-      <a class="nav-item disabled">
+      <a class="nav-item" data-page="orders">
         <svg viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>
-        الطلبات <span style="margin-right:auto;font-size:.7rem;opacity:.6">قريبًا</span>
+        الطلبات
+        <span class="nav-count" id="navOrdersCount">0</span>
       </a>
-      <a class="nav-item disabled">
+      <a class="nav-item" data-page="reviews">
         <svg viewBox="0 0 24 24"><path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 0 0 .95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 0 0-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 0 0-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 0 0-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 0 0 .951-.69l1.519-4.674z"/></svg>
-        التقييمات <span style="margin-right:auto;font-size:.7rem;opacity:.6">قريبًا</span>
+        التقييمات
+        <span class="nav-count" id="navReviewsCount">0</span>
+      </a>
+      <a class="nav-item" data-page="blocked">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+        المحظورون
       </a>
       <a class="nav-item disabled">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/></svg>
@@ -335,6 +408,7 @@ tr:hover td{background:#FAFBFC}
       </div>
     </div>
 
+    <!-- PAGE: Dashboard -->
     <div class="page active" id="page-dashboard">
       <div class="stats-grid">
         <div class="stat-card">
@@ -360,9 +434,7 @@ tr:hover td{background:#FAFBFC}
       </div>
 
       <div class="card">
-        <div class="card-header">
-          <div><div class="card-title">أعلى المنتجات مشاهدةً</div><div class="card-title-sub">المنتجات الأكثر تفاعلًا</div></div>
-        </div>
+        <div class="card-header"><div><div class="card-title">أعلى المنتجات مشاهدةً</div><div class="card-title-sub">المنتجات الأكثر تفاعلًا</div></div></div>
         <div class="table-wrap">
           <table>
             <thead><tr><th>#</th><th>المنتج</th><th>المشاهدات</th><th>الطلبات</th><th>الإيرادات</th><th>التقييم</th></tr></thead>
@@ -372,14 +444,12 @@ tr:hover td{background:#FAFBFC}
       </div>
     </div>
 
+    <!-- PAGE: Products -->
     <div class="page" id="page-products">
       <div class="card">
         <div class="card-header">
           <div><div class="card-title">المنتجات</div><div class="card-title-sub" id="productsSubtitle">—</div></div>
-          <button class="btn btn-primary" id="addProductBtn">
-            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            إضافة منتج
-          </button>
+          <button class="btn btn-primary" id="addProductBtn"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> إضافة منتج</button>
         </div>
         <div class="filters-row">
           <div class="search-input-wrap">
@@ -401,18 +471,7 @@ tr:hover td{background:#FAFBFC}
         </div>
         <div class="table-wrap">
           <table>
-            <thead>
-              <tr>
-                <th style="width:60px">صورة</th>
-                <th>الاسم</th>
-                <th>الفئة</th>
-                <th>السعر</th>
-                <th>المخزون</th>
-                <th>المشاهدات</th>
-                <th>الحالة</th>
-                <th style="width:120px;text-align:left">الإجراءات</th>
-              </tr>
-            </thead>
+            <thead><tr><th style="width:60px">صورة</th><th>الاسم</th><th>الفئة</th><th>السعر</th><th>المخزون</th><th>المشاهدات</th><th>الحالة</th><th style="width:120px;text-align:left">الإجراءات</th></tr></thead>
             <tbody id="productsTableBody"><tr><td colspan="8" style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</td></tr></tbody>
           </table>
         </div>
@@ -422,9 +481,80 @@ tr:hover td{background:#FAFBFC}
         </div>
       </div>
     </div>
+
+    <!-- PAGE: Orders -->
+    <div class="page" id="page-orders">
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">الطلبات</div><div class="card-title-sub" id="ordersSubtitle">—</div></div>
+        </div>
+        <div class="filters-row">
+          <div class="search-input-wrap">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" id="ordersSearch" placeholder="ابحث برقم الطلب، الاسم، الهاتف...">
+          </div>
+          <select id="ordersStatusFilter">
+            <option value="">كل الحالات</option>
+            <option value="pending">قيد المراجعة</option>
+            <option value="confirmed">تم التأكيد</option>
+            <option value="shipped">تم الشحن</option>
+            <option value="delivered">تم التسليم</option>
+            <option value="cancelled">ملغى</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>رقم الطلب</th><th>التاريخ</th><th>الاسم</th><th>الهاتف</th><th>الإجمالي</th><th>الحالة</th><th style="width:130px;text-align:left">الإجراءات</th></tr></thead>
+            <tbody id="ordersTableBody"><tr><td colspan="7" style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</td></tr></tbody>
+          </table>
+        </div>
+        <div class="pagination" id="ordersPagination" style="display:none">
+          <div id="ordersPaginationInfo">—</div>
+          <div class="pagination-btns" id="ordersPaginationBtns"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: Reviews -->
+    <div class="page" id="page-reviews">
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">التقييمات</div><div class="card-title-sub">الموافقة على التقييمات المعلقة</div></div>
+        </div>
+        <div class="reviews-tabs">
+          <button class="reviews-tab active" data-tab="pending">
+            معلقة <span class="tab-count" id="reviewsPendingCount">0</span>
+          </button>
+          <button class="reviews-tab" data-tab="approved">
+            مقبولة <span class="tab-count" id="reviewsApprovedCount">0</span>
+          </button>
+          <button class="reviews-tab" data-tab="rejected">
+            مرفوضة <span class="tab-count" id="reviewsRejectedCount">0</span>
+          </button>
+        </div>
+        <div id="reviewsListContainer" style="padding:0 0 24px">
+          <div style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: Blocked Customers -->
+    <div class="page" id="page-blocked">
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">الزبائن المحظورون</div><div class="card-title-sub" id="blockedSubtitle">—</div></div>
+          <button class="btn btn-danger" id="addBlockedBtn"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg> حظر يدوي</button>
+        </div>
+        <div id="blockedListContainer" style="padding:16px 0">
+          <div style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</div>
+        </div>
+      </div>
+    </div>
+
   </main>
 </div>
 
+<!-- PRODUCT MODAL -->
 <div class="modal-overlay" id="productModal">
   <div class="modal-box">
     <div class="modal-header">
@@ -447,19 +577,16 @@ tr:hover td{background:#FAFBFC}
             <div class="form-field"><div class="checkbox-row"><input type="checkbox" id="pfIsActive" checked><label for="pfIsActive">نشط (ظاهر في المتجر)</label></div></div>
           </div>
         </div>
-
         <div class="form-section">
           <div class="form-section-title">المقاسات</div>
           <div class="dynamic-list" id="sizesList"></div>
           <div style="margin-top:10px"><button type="button" class="add-dyn-btn" id="addSizeBtn"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> إضافة مقاس</button></div>
         </div>
-
         <div class="form-section">
           <div class="form-section-title">الألوان</div>
           <div class="dynamic-list" id="colorsList"></div>
           <div style="margin-top:10px"><button type="button" class="add-dyn-btn" id="addColorBtn"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> إضافة لون</button></div>
         </div>
-
         <div class="form-section">
           <div class="form-section-title">المواصفات</div>
           <div class="form-grid three">
@@ -468,7 +595,6 @@ tr:hover td{background:#FAFBFC}
             <div class="form-field"><label class="form-label">العناية</label><input type="text" class="form-input" id="pfCare" maxlength="200"></div>
           </div>
         </div>
-
         <div class="form-section">
           <div class="form-section-title">الصور</div>
           <div class="upload-zone" id="uploadZone">
@@ -488,13 +614,14 @@ tr:hover td{background:#FAFBFC}
   </div>
 </div>
 
+<!-- CONFIRM DELETE MODAL -->
 <div class="modal-overlay" id="confirmModal">
   <div class="modal-box narrow">
     <div class="modal-body" style="padding:32px 28px">
       <div class="confirm-icon"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
-      <p class="confirm-text">هل أنت متأكد من حذف المنتج؟</p>
+      <p class="confirm-text" id="confirmText">هل أنت متأكد؟</p>
       <p class="confirm-bold" id="confirmProductName">—</p>
-      <p class="confirm-text" style="font-size:.85rem">لا يمكن التراجع عن هذا الإجراء.</p>
+      <p class="confirm-text" style="font-size:.85rem" id="confirmSubtext">لا يمكن التراجع عن هذا الإجراء.</p>
     </div>
     <div class="modal-footer" style="justify-content:center">
       <button class="btn btn-ghost" id="cancelDeleteBtn">إلغاء</button>
@@ -503,6 +630,56 @@ tr:hover td{background:#FAFBFC}
   </div>
 </div>
 
+<!-- ORDER DETAIL MODAL -->
+<div class="modal-overlay" id="orderDetailModal">
+  <div class="modal-box wide">
+    <div class="modal-header">
+      <h2 class="modal-title">تفاصيل الطلب</h2>
+      <button class="modal-close" id="closeOrderDetailBtn"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    </div>
+    <div class="modal-body" id="orderDetailBody">
+      <div style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="closeOrderDetailFooterBtn">إغلاق</button>
+      <button class="btn btn-danger" id="blockOrderCustomerBtn" style="display:none">حظر الزبون</button>
+      <button class="btn btn-primary" id="saveOrderStatusBtn" style="display:none">حفظ الحالة</button>
+    </div>
+  </div>
+</div>
+
+<!-- BLOCK CUSTOMER MODAL -->
+<div class="modal-overlay" id="blockCustomerModal">
+  <div class="modal-box narrow">
+    <div class="modal-header">
+      <h2 class="modal-title">حظر زبون</h2>
+      <button class="modal-close" id="closeBlockModalBtn"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-section">
+        <div class="form-field full" style="margin-bottom:12px">
+          <label class="form-label">رقم الهاتف (اختياري)</label>
+          <input type="text" class="form-input" id="blockPhoneInput" placeholder="مثال: 963912345678" maxlength="30">
+        </div>
+        <div class="form-field full" style="margin-bottom:12px">
+          <label class="form-label">Client Token (اختياري)</label>
+          <input type="text" class="form-input" id="blockTokenInput" placeholder="c_xxxxxxxxxx" maxlength="100">
+        </div>
+        <div class="form-field full">
+          <label class="form-label">سبب الحظر (اختياري)</label>
+          <textarea class="form-textarea" id="blockReasonInput" rows="2" maxlength="200" placeholder="مثال: طلبات وهمية متكررة"></textarea>
+        </div>
+        <p style="font-size:.8rem;color:var(--muted);margin-top:8px">يجب إدخال هاتف أو token واحد على الأقل.</p>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="cancelBlockBtn">إلغاء</button>
+      <button class="btn btn-danger" id="confirmBlockBtn">حظر</button>
+    </div>
+  </div>
+</div>
+
+<!-- IMAGE LIGHTBOX -->
 <div id="imageLightbox">
   <button class="lightbox-close" id="closeLightboxBtn"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
   <img id="lightboxImg" src="" alt="">
@@ -516,9 +693,8 @@ tr:hover td{background:#FAFBFC}
 (function() {
   'use strict';
 
-  const ADMIN_VERSION = 'v3-final';
-  console.log('[ADMIN] Version: ' + ADMIN_VERSION);
-  console.log('[ADMIN] If you do not see this line, you are running an old cached version.');
+  const ADMIN_VERSION = 'v4-orders-reviews';
+  console.log('[ADMIN] Version:', ADMIN_VERSION);
 
   const SUPABASE_URL = 'https://smjrowqoxoxsvikjdpay.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_UEDOsxue9Y_mDYLJ0uvk2Q_lJdGH5Un';
@@ -538,11 +714,26 @@ tr:hover td{background:#FAFBFC}
       page: 0, pageSize: PAGE_SIZE, total: 0,
       search: '', category: '', status: '', data: []
     },
+    orders: {
+      page: 0, pageSize: PAGE_SIZE, total: 0,
+      search: '', status: '', data: [],
+      detail: null
+    },
+    reviews: {
+      tab: 'pending',
+      all: [],
+      counts: { pending: 0, approved: 0, rejected: 0 }
+    },
+    blocked: {
+      data: [],
+      targetInfo: null
+    },
     form: {
       editingId: null, images: [], sizes: [], colors: [],
       uploadingCount: 0
     },
-    deleteTarget: null
+    deleteTarget: null,
+    deleteType: null
   };
 
   // ============ HELPERS ============
@@ -562,6 +753,11 @@ tr:hover td{background:#FAFBFC}
 
   function fmtPrice(n) { return Number(n || 0).toLocaleString('ar-EG') + ' ل.س'; }
   function fmtNum(n) { return Number(n || 0).toLocaleString('ar-EG'); }
+  function fmtDate(d) {
+    if (!d) return '—';
+    try { return new Date(d).toLocaleString('ar-EG', { year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' }); }
+    catch(e) { return '—'; }
+  }
 
   function normalizeImages(images) {
     if (!images) return [];
@@ -591,30 +787,34 @@ tr:hover td{background:#FAFBFC}
 
   function generateFileName(file) {
     const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
-    const ts = Date.now();
-    const rand = Math.random().toString(36).substring(2, 10);
-    return `products/${ts}-${rand}.${ext}`;
+    return `products/${Date.now()}-${Math.random().toString(36).substring(2, 10)}.${ext}`;
   }
 
-  // ================================================
-  // URL: root + ?product=xxx — Cloudflare serves index.html at /
-  // ================================================
   function getProductUrl(productId) {
     const url = new URL(window.location.origin + '/');
     url.searchParams.set('product', productId);
-    const finalUrl = url.toString();
-    console.log('[getProductUrl] ' + window.location.href + ' => ' + finalUrl);
-    return finalUrl;
+    return url.toString();
   }
 
   function openProductInStore(productId) {
     const url = getProductUrl(productId);
-    console.log('[openProductInStore] Opening: ' + url);
     const w = window.open(url, '_blank', 'noopener,noreferrer');
-    if (!w) {
-      console.warn('[openProductInStore] window.open blocked, using location.href');
-      window.location.href = url;
-    }
+    if (!w) window.location.href = url;
+  }
+
+  function getStatusLabel(status) {
+    const map = { pending: 'قيد المراجعة', confirmed: 'تم التأكيد', shipped: 'تم الشحن', delivered: 'تم التسليم', cancelled: 'ملغى' };
+    return map[status] || status;
+  }
+
+  function getStatusBadgeClass(status) {
+    const map = { pending: 'badge-warning', confirmed: 'badge-info', shipped: 'badge-purple', delivered: 'badge-success', cancelled: 'badge-danger' };
+    return map[status] || 'badge-gray';
+  }
+
+  function getReviewStatusLabel(status) {
+    const map = { pending: 'معلق', approved: 'مقبول', rejected: 'مرفوض' };
+    return map[status] || status;
   }
 
   // ============ IMAGE LIGHTBOX ============
@@ -644,6 +844,7 @@ tr:hover td{background:#FAFBFC}
       }
       state.user = session.user;
       showDashboard();
+      await refreshNavCounts();
       await Promise.all([loadDashboardStats(), loadTopProducts()]);
     } catch (e) {
       console.error(e);
@@ -668,7 +869,6 @@ tr:hover td{background:#FAFBFC}
     el.textContent = msg;
     el.style.display = 'block';
   }
-
   function hideLoginError() { $('#loginError').style.display = 'none'; }
 
   async function handleLogin(e) {
@@ -698,6 +898,7 @@ tr:hover td{background:#FAFBFC}
       }
       state.user = data.user;
       showDashboard();
+      await refreshNavCounts();
       await Promise.all([loadDashboardStats(), loadTopProducts()]);
     } catch (e) {
       console.error(e);
@@ -714,7 +915,25 @@ tr:hover td{background:#FAFBFC}
     showLoginScreen();
   }
 
-  // ============ NAVIGATION ============
+  // ============ NAV ============
+  async function refreshNavCounts() {
+    try {
+      const { count: pendingOrders } = await sb.from('orders')
+        .select('*', { count: 'exact', head: true }).eq('status', 'pending');
+      const { count: pendingReviews } = await sb.from('reviews')
+        .select('*', { count: 'exact', head: true }).eq('status', 'pending');
+
+      const ocEl = $('#navOrdersCount');
+      const rcEl = $('#navReviewsCount');
+
+      if (pendingOrders > 0) { ocEl.textContent = pendingOrders; ocEl.classList.add('show'); }
+      else ocEl.classList.remove('show');
+
+      if (pendingReviews > 0) { rcEl.textContent = pendingReviews; rcEl.classList.add('show'); }
+      else rcEl.classList.remove('show');
+    } catch(e) { console.warn('refreshNavCounts:', e); }
+  }
+
   function switchPage(page) {
     state.currentPage = page;
     $$('.nav-item').forEach(el => el.classList.toggle('active', el.dataset.page === page));
@@ -724,13 +943,19 @@ tr:hover td{background:#FAFBFC}
 
     const titles = {
       dashboard: { title: 'لوحة القيادة', sub: 'نظرة عامة على أداء متجرك' },
-      products: { title: 'المنتجات', sub: 'إدارة منتجات المتجر' }
+      products: { title: 'المنتجات', sub: 'إدارة منتجات المتجر' },
+      orders: { title: 'الطلبات', sub: 'إدارة طلبات الزبائن' },
+      reviews: { title: 'التقييمات', sub: 'مراجعة تقييمات الزبائن' },
+      blocked: { title: 'المحظورون', sub: 'الزبائن المحظورون من المتجر' }
     };
     const t = titles[page] || titles.dashboard;
     $('#pageTitle').textContent = t.title;
     $('#pageSubtitle').textContent = t.sub;
 
     if (page === 'products') loadProducts();
+    else if (page === 'orders') loadOrders();
+    else if (page === 'reviews') loadReviews();
+    else if (page === 'blocked') loadBlocked();
     else if (page === 'dashboard') {
       loadDashboardStats();
       loadTopProducts();
@@ -770,7 +995,6 @@ tr:hover td{background:#FAFBFC}
 
       const top = data.slice(0, 10);
       const ids = top.map(p => p.product_id);
-
       const { data: productsData } = await sb.from('products').select('id, images').in('id', ids);
       const imgMap = {};
       (productsData || []).forEach(p => {
@@ -789,8 +1013,7 @@ tr:hover td{background:#FAFBFC}
               <div class="top-prod-info">
                 <span class="top-prod-name" title="${escapeHtml(p.product_name)}">${escapeHtml(p.product_name)}</span>
                 <button type="button" class="top-prod-link-btn" data-open-product="${p.product_id}">
-                  فتح في المتجر
-                  <svg viewBox="0 0 24 24"><path d="M7 17L17 7M7 7h10v10"/></svg>
+                  فتح في المتجر <svg viewBox="0 0 24 24"><path d="M7 17L17 7M7 7h10v10"/></svg>
                 </button>
               </div>
             </div>
@@ -805,7 +1028,6 @@ tr:hover td{background:#FAFBFC}
       $$('[data-open-product]').forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.preventDefault();
-          e.stopPropagation();
           openProductInStore(btn.dataset.openProduct);
         });
       });
@@ -815,17 +1037,15 @@ tr:hover td{background:#FAFBFC}
     }
   }
 
-  // ============ PRODUCTS LIST ============
+  // ============ PRODUCTS ============
   async function loadProducts() {
     const tbody = $('#productsTableBody');
     tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</td></tr>';
 
     try {
       let query = sb.from('products').select('*', { count: 'exact' });
-
       if (state.products.search) {
-        const normalized = normalizeArabicClient(state.products.search);
-        query = query.ilike('name_normalized', '%' + normalized + '%');
+        query = query.ilike('name_normalized', '%' + normalizeArabicClient(state.products.search) + '%');
       }
       if (state.products.category) query = query.eq('category', state.products.category);
       if (state.products.status === 'active') query = query.eq('is_active', true).eq('in_stock', true);
@@ -834,15 +1054,13 @@ tr:hover td{background:#FAFBFC}
 
       const from = state.products.page * state.products.pageSize;
       const to = from + state.products.pageSize - 1;
-
       const { data, count, error } = await query.order('created_at', { ascending: false }).range(from, to);
       if (error) throw error;
 
       state.products.data = data || [];
       state.products.total = count || 0;
-
       renderProductsTable();
-      renderPagination();
+      renderProductsPagination();
       $('#productsSubtitle').textContent = `${fmtNum(state.products.total)} منتج`;
     } catch (e) {
       console.error('Products error:', e);
@@ -853,25 +1071,17 @@ tr:hover td{background:#FAFBFC}
   function renderProductsTable() {
     const tbody = $('#productsTableBody');
     if (!state.products.data.length) {
-      tbody.innerHTML = '<tr><td colspan="8"><div class="empty"><svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/></svg><p>لا توجد منتجات مطابقة</p></div></td></tr>';
+      tbody.innerHTML = '<tr><td colspan="8"><div class="empty"><p>لا توجد منتجات مطابقة</p></div></td></tr>';
       return;
     }
-
     tbody.innerHTML = state.products.data.map(p => {
       const imgs = normalizeImages(p.images);
       const img = imgs[0] || 'https://via.placeholder.com/48x60?text=?';
-      const stock = p.in_stock !== false
-        ? '<span class="badge-pill badge-success">متوفر</span>'
-        : '<span class="badge-pill badge-danger">نفد</span>';
-      const status = p.is_active !== false
-        ? '<span class="badge-pill badge-info">نشط</span>'
-        : '<span class="badge-pill badge-gray">مخفي</span>';
+      const stock = p.in_stock !== false ? '<span class="badge-pill badge-success">متوفر</span>' : '<span class="badge-pill badge-danger">نفد</span>';
+      const status = p.is_active !== false ? '<span class="badge-pill badge-info">نشط</span>' : '<span class="badge-pill badge-gray">مخفي</span>';
       return `<tr>
         <td><img src="${escapeHtml(img)}" class="table-img" onerror="this.src='https://via.placeholder.com/48x60?text=?'"></td>
-        <td>
-          <span class="cell-name">${escapeHtml(p.name)}</span>
-          ${p.badge ? `<span class="badge-pill badge-warning" style="margin-right:6px;font-size:.65rem">${escapeHtml(p.badge)}</span>` : ''}
-        </td>
+        <td><span class="cell-name">${escapeHtml(p.name)}</span>${p.badge ? ` <span class="badge-pill badge-warning" style="font-size:.65rem">${escapeHtml(p.badge)}</span>` : ''}</td>
         <td class="cell-muted">${escapeHtml(p.category)}</td>
         <td><strong>${fmtPrice(p.price)}</strong></td>
         <td>${stock}</td>
@@ -879,58 +1089,40 @@ tr:hover td{background:#FAFBFC}
         <td>${status}</td>
         <td>
           <div class="actions-cell">
-            <button class="action-btn toggle" data-toggle-id="${p.id}" data-toggle-active="${p.is_active !== false}" title="إخفاء/إظهار">
-              <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-            </button>
-            <button class="action-btn edit" data-edit-id="${p.id}" title="تعديل">
-              <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-            </button>
-            <button class="action-btn delete" data-delete-id="${p.id}" title="حذف">
-              <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-            </button>
+            <button class="action-btn toggle" data-toggle-id="${p.id}" data-toggle-active="${p.is_active !== false}" title="إخفاء/إظهار"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+            <button class="action-btn edit" data-edit-id="${p.id}" title="تعديل"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+            <button class="action-btn delete" data-delete-id="${p.id}" title="حذف"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
           </div>
         </td>
       </tr>`;
     }).join('');
 
     $$('[data-edit-id]').forEach(btn => btn.addEventListener('click', () => openProductModal(btn.dataset.editId)));
-    $$('[data-delete-id]').forEach(btn => btn.addEventListener('click', () => openDeleteConfirm(btn.dataset.deleteId)));
+    $$('[data-delete-id]').forEach(btn => btn.addEventListener('click', () => openDeleteConfirm(btn.dataset.deleteId, 'product')));
     $$('[data-toggle-id]').forEach(btn => btn.addEventListener('click', () => toggleProductActive(btn.dataset.toggleId, btn.dataset.toggleActive === 'true')));
   }
 
-  function renderPagination() {
+  function renderProductsPagination() {
     const totalPages = Math.ceil(state.products.total / state.products.pageSize);
     const wrap = $('#productsPagination');
     if (totalPages <= 1) { wrap.style.display = 'none'; return; }
     wrap.style.display = 'flex';
-
     const current = state.products.page;
-    const from = current * state.products.pageSize + 1;
-    const to = Math.min((current + 1) * state.products.pageSize, state.products.total);
-    $('#paginationInfo').textContent = `${from}–${to} من ${state.products.total}`;
+    $('#paginationInfo').textContent = `${current * state.products.pageSize + 1}–${Math.min((current+1)*state.products.pageSize, state.products.total)} من ${state.products.total}`;
+    renderPaginationButtons('paginationBtns', current, totalPages, (p) => { state.products.page = p; loadProducts(); });
+  }
 
+  function renderPaginationButtons(containerId, current, totalPages, onPage) {
     let html = `<button class="pagination-btn" ${current === 0 ? 'disabled' : ''} data-page="${current - 1}">السابق</button>`;
     const start = Math.max(0, current - 2);
     const end = Math.min(totalPages - 1, current + 2);
-    if (start > 0) {
-      html += `<button class="pagination-btn" data-page="0">1</button>`;
-      if (start > 1) html += `<span style="padding:0 8px;color:var(--muted)">...</span>`;
-    }
-    for (let i = start; i <= end; i++) {
-      html += `<button class="pagination-btn ${i === current ? 'active' : ''}" data-page="${i}">${i + 1}</button>`;
-    }
-    if (end < totalPages - 1) {
-      if (end < totalPages - 2) html += `<span style="padding:0 8px;color:var(--muted)">...</span>`;
-      html += `<button class="pagination-btn" data-page="${totalPages - 1}">${totalPages}</button>`;
-    }
+    if (start > 0) { html += `<button class="pagination-btn" data-page="0">1</button>`; if (start > 1) html += `<span style="padding:0 8px;color:var(--muted)">...</span>`; }
+    for (let i = start; i <= end; i++) html += `<button class="pagination-btn ${i === current ? 'active' : ''}" data-page="${i}">${i + 1}</button>`;
+    if (end < totalPages - 1) { if (end < totalPages - 2) html += `<span style="padding:0 8px;color:var(--muted)">...</span>`; html += `<button class="pagination-btn" data-page="${totalPages - 1}">${totalPages}</button>`; }
     html += `<button class="pagination-btn" ${current === totalPages - 1 ? 'disabled' : ''} data-page="${current + 1}">التالي</button>`;
-
-    $('#paginationBtns').innerHTML = html;
-    $$('#paginationBtns .pagination-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const p = Number(btn.dataset.page);
-        if (!isNaN(p) && !btn.disabled) { state.products.page = p; loadProducts(); }
-      });
+    $('#' + containerId).innerHTML = html;
+    $$('#' + containerId + ' .pagination-btn').forEach(btn => {
+      btn.addEventListener('click', () => { const p = Number(btn.dataset.page); if (!isNaN(p) && !btn.disabled) onPage(p); });
     });
   }
 
@@ -952,36 +1144,15 @@ tr:hover td{background:#FAFBFC}
     $('#productModal').classList.add('show');
     document.body.style.overflow = 'hidden';
   }
-
-  function closeProductModal() {
-    $('#productModal').classList.remove('show');
-    document.body.style.overflow = '';
-    resetForm();
-  }
+  function closeProductModal() { $('#productModal').classList.remove('show'); document.body.style.overflow = ''; resetForm(); }
 
   function resetForm() {
-    state.form.editingId = null;
-    state.form.images = [];
-    state.form.sizes = [];
-    state.form.colors = [];
-    state.form.uploadingCount = 0;
-
-    $('#pfId').value = '';
-    $('#pfName').value = '';
-    $('#pfCategory').value = 'ملابس';
-    $('#pfBadge').value = '';
-    $('#pfPrice').value = '';
-    $('#pfComparePrice').value = '';
-    $('#pfDescription').value = '';
-    $('#pfInStock').checked = true;
-    $('#pfIsActive').checked = true;
-    $('#pfMaterial').value = '';
-    $('#pfOrigin').value = '';
-    $('#pfCare').value = '';
-
-    renderDynamicSizes();
-    renderDynamicColors();
-    renderImageGrid();
+    state.form.editingId = null; state.form.images = []; state.form.sizes = []; state.form.colors = []; state.form.uploadingCount = 0;
+    $('#pfId').value = ''; $('#pfName').value = ''; $('#pfCategory').value = 'ملابس'; $('#pfBadge').value = '';
+    $('#pfPrice').value = ''; $('#pfComparePrice').value = ''; $('#pfDescription').value = '';
+    $('#pfInStock').checked = true; $('#pfIsActive').checked = true;
+    $('#pfMaterial').value = ''; $('#pfOrigin').value = ''; $('#pfCare').value = '';
+    renderDynamicSizes(); renderDynamicColors(); renderImageGrid();
   }
 
   function fillForm(p) {
@@ -995,250 +1166,93 @@ tr:hover td{background:#FAFBFC}
     $('#pfDescription').value = p.description || '';
     $('#pfInStock').checked = p.in_stock !== false;
     $('#pfIsActive').checked = p.is_active !== false;
-
     const sp = p.specs || {};
     $('#pfMaterial').value = sp.material || '';
     $('#pfOrigin').value = sp.origin || '';
     $('#pfCare').value = sp.care || '';
 
-    if (Array.isArray(p.sizes) && p.sizes.length) {
-      state.form.sizes = p.sizes.map(s => ({ value: s.value || '', available: s.available !== false }));
-    } else if (sp.sizes) {
-      state.form.sizes = sp.sizes.split(/[,،]/).map(s => ({ value: s.trim(), available: true })).filter(s => s.value);
-    } else {
-      state.form.sizes = [{ value: '', available: true }];
-    }
+    if (Array.isArray(p.sizes) && p.sizes.length) state.form.sizes = p.sizes.map(s => ({ value: s.value || '', available: s.available !== false }));
+    else if (sp.sizes) state.form.sizes = sp.sizes.split(/[,،]/).map(s => ({ value: s.trim(), available: true })).filter(s => s.value);
+    else state.form.sizes = [{ value: '', available: true }];
 
-    if (Array.isArray(p.colors) && p.colors.length) {
-      state.form.colors = p.colors.map(c => ({ value: c.value || '', hex: c.hex || '#000000', available: c.available !== false }));
-    } else if (sp.colors) {
-      state.form.colors = sp.colors.split(/[,،]/).map(c => ({ value: c.trim(), hex: '#000000', available: true })).filter(c => c.value);
-    } else {
-      state.form.colors = [{ value: '', hex: '#000000', available: true }];
-    }
+    if (Array.isArray(p.colors) && p.colors.length) state.form.colors = p.colors.map(c => ({ value: c.value || '', hex: c.hex || '#000000', available: c.available !== false }));
+    else if (sp.colors) state.form.colors = sp.colors.split(/[,،]/).map(c => ({ value: c.trim(), hex: '#000000', available: true })).filter(c => c.value);
+    else state.form.colors = [{ value: '', hex: '#000000', available: true }];
 
     state.form.images = normalizeImages(p.images);
-
-    renderDynamicSizes();
-    renderDynamicColors();
-    renderImageGrid();
+    renderDynamicSizes(); renderDynamicColors(); renderImageGrid();
   }
 
-  // ============ DYNAMIC SIZES ============
   function renderDynamicSizes() {
-    const list = $('#sizesList');
-    list.innerHTML = '';
+    const list = $('#sizesList'); list.innerHTML = '';
     state.form.sizes.forEach((s, idx) => {
       const div = document.createElement('div');
       div.className = 'dynamic-item';
-      div.innerHTML = `
-        <input type="text" class="form-input" placeholder="S, M, L, XL..." value="${escapeHtml(s.value)}" data-size-idx="${idx}" maxlength="30">
-        <label class="available-toggle ${s.available ? 'on' : 'off'}">
-          <input type="checkbox" ${s.available ? 'checked' : ''} data-size-available="${idx}">
-          ${s.available ? '✓ متوفر' : '✗ نفد'}
-        </label>
-        <button type="button" class="remove-dyn-btn" data-size-remove="${idx}">
-          <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
-        </button>
-      `;
+      div.innerHTML = `<input type="text" class="form-input" placeholder="S, M, L..." value="${escapeHtml(s.value)}" data-size-idx="${idx}" maxlength="30"><label class="available-toggle ${s.available ? 'on' : 'off'}"><input type="checkbox" ${s.available ? 'checked' : ''} data-size-available="${idx}"> ${s.available ? '✓ متوفر' : '✗ نفد'}</label><button type="button" class="remove-dyn-btn" data-size-remove="${idx}"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>`;
       list.appendChild(div);
     });
-
-    $$('[data-size-idx]').forEach(inp => {
-      inp.addEventListener('input', e => { state.form.sizes[Number(e.target.dataset.sizeIdx)].value = e.target.value; });
-    });
-    $$('[data-size-available]').forEach(chk => {
-      chk.addEventListener('change', e => {
-        const idx = Number(e.target.dataset.sizeAvailable);
-        state.form.sizes[idx].available = e.target.checked;
-        renderDynamicSizes();
-      });
-    });
-    $$('[data-size-remove]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        state.form.sizes.splice(Number(btn.dataset.sizeRemove), 1);
-        renderDynamicSizes();
-      });
-    });
+    $$('[data-size-idx]').forEach(inp => inp.addEventListener('input', e => { state.form.sizes[+e.target.dataset.sizeIdx].value = e.target.value; }));
+    $$('[data-size-available]').forEach(chk => chk.addEventListener('change', e => { state.form.sizes[+e.target.dataset.sizeAvailable].available = e.target.checked; renderDynamicSizes(); }));
+    $$('[data-size-remove]').forEach(btn => btn.addEventListener('click', () => { state.form.sizes.splice(+btn.dataset.sizeRemove, 1); renderDynamicSizes(); }));
   }
+  function addSizeRow() { state.form.sizes.push({ value: '', available: true }); renderDynamicSizes(); }
 
-  function addSizeRow() {
-    state.form.sizes.push({ value: '', available: true });
-    renderDynamicSizes();
-  }
-
-  // ============ DYNAMIC COLORS ============
   function renderDynamicColors() {
-    const list = $('#colorsList');
-    list.innerHTML = '';
+    const list = $('#colorsList'); list.innerHTML = '';
     state.form.colors.forEach((c, idx) => {
       const div = document.createElement('div');
       div.className = 'dynamic-item';
-      div.innerHTML = `
-        <input type="color" class="color-picker" value="${c.hex || '#000000'}" data-color-hex="${idx}" title="اختر لونًا">
-        <input type="text" class="form-input" placeholder="أحمر، أسود، أزرق..." value="${escapeHtml(c.value)}" data-color-idx="${idx}" maxlength="30">
-        <label class="available-toggle ${c.available ? 'on' : 'off'}">
-          <input type="checkbox" ${c.available ? 'checked' : ''} data-color-available="${idx}">
-          ${c.available ? '✓ متوفر' : '✗ نفد'}
-        </label>
-        <button type="button" class="remove-dyn-btn" data-color-remove="${idx}">
-          <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
-        </button>
-      `;
+      div.innerHTML = `<input type="color" class="color-picker" value="${c.hex || '#000000'}" data-color-hex="${idx}"><input type="text" class="form-input" placeholder="أحمر، أسود..." value="${escapeHtml(c.value)}" data-color-idx="${idx}" maxlength="30"><label class="available-toggle ${c.available ? 'on' : 'off'}"><input type="checkbox" ${c.available ? 'checked' : ''} data-color-available="${idx}"> ${c.available ? '✓ متوفر' : '✗ نفد'}</label><button type="button" class="remove-dyn-btn" data-color-remove="${idx}"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>`;
       list.appendChild(div);
     });
-
-    $$('[data-color-idx]').forEach(inp => {
-      inp.addEventListener('input', e => { state.form.colors[Number(e.target.dataset.colorIdx)].value = e.target.value; });
-    });
-    $$('[data-color-hex]').forEach(inp => {
-      inp.addEventListener('input', e => { state.form.colors[Number(e.target.dataset.colorHex)].hex = e.target.value; });
-    });
-    $$('[data-color-available]').forEach(chk => {
-      chk.addEventListener('change', e => {
-        const idx = Number(e.target.dataset.colorAvailable);
-        state.form.colors[idx].available = e.target.checked;
-        renderDynamicColors();
-      });
-    });
-    $$('[data-color-remove]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        state.form.colors.splice(Number(btn.dataset.colorRemove), 1);
-        renderDynamicColors();
-      });
-    });
+    $$('[data-color-idx]').forEach(inp => inp.addEventListener('input', e => { state.form.colors[+e.target.dataset.colorIdx].value = e.target.value; }));
+    $$('[data-color-hex]').forEach(inp => inp.addEventListener('input', e => { state.form.colors[+e.target.dataset.colorHex].hex = e.target.value; }));
+    $$('[data-color-available]').forEach(chk => chk.addEventListener('change', e => { state.form.colors[+e.target.dataset.colorAvailable].available = e.target.checked; renderDynamicColors(); }));
+    $$('[data-color-remove]').forEach(btn => btn.addEventListener('click', () => { state.form.colors.splice(+btn.dataset.colorRemove, 1); renderDynamicColors(); }));
   }
+  function addColorRow() { state.form.colors.push({ value: '', hex: '#000000', available: true }); renderDynamicColors(); }
 
-  function addColorRow() {
-    state.form.colors.push({ value: '', hex: '#000000', available: true });
-    renderDynamicColors();
-  }
-
-  // ============================================
-  // IMAGES — 100% inline styles, no external CSS
-  // ============================================
   function renderImageGrid() {
     const grid = document.getElementById('imageGrid');
-    if (!grid) { console.warn('[renderImageGrid] #imageGrid not found'); return; }
-
-    // Wipe completely
+    if (!grid) return;
     grid.innerHTML = '';
-    grid.removeAttribute('class');
-    grid.style.display = 'block';
-    grid.style.width = '100%';
-    grid.style.marginTop = '16px';
-    grid.style.fontSize = '0';
-    grid.style.lineHeight = '0';
-    grid.style.padding = '0';
+    grid.style.cssText = 'display:block;width:100%;margin-top:16px;font-size:0;line-height:0;';
 
     if (!state.form.images.length) {
       const empty = document.createElement('p');
-      empty.textContent = 'لم يتم رفع صور بعد. استخدم منطقة الرفع أعلاه.';
-      empty.style.color = '#6B7280';
-      empty.style.fontSize = '14px';
-      empty.style.margin = '8px 0';
-      empty.style.fontFamily = 'Cairo, sans-serif';
+      empty.textContent = 'لم يتم رفع صور بعد.';
+      empty.style.cssText = 'color:#6B7280;font-size:14px;margin:8px 0;font-family:Cairo,sans-serif;';
       grid.appendChild(empty);
       return;
     }
 
     state.form.images.forEach((url, idx) => {
-      // CARD
       const card = document.createElement('div');
-      card.style.display = 'inline-block';
-      card.style.width = '160px';
-      card.style.height = '200px';
-      card.style.margin = '0 12px 12px 0';
-      card.style.position = 'relative';
-      card.style.overflow = 'hidden';
-      card.style.borderRadius = '8px';
-      card.style.backgroundColor = '#F4F5F7';
-      card.style.border = '1px solid #E5E7EB';
-      card.style.cursor = 'pointer';
-      card.style.verticalAlign = 'top';
-      card.style.opacity = '1';
-      card.style.filter = 'none';
+      card.style.cssText = 'display:inline-block;width:160px;height:200px;margin:0 12px 12px 0;position:relative;overflow:hidden;border-radius:8px;background-color:#F4F5F7;border:1px solid #E5E7EB;cursor:pointer;vertical-align:top;';
 
-      // IMAGE
       const img = document.createElement('img');
       img.src = url;
-      img.style.position = 'absolute';
-      img.style.top = '0';
-      img.style.left = '0';
-      img.style.width = '100%';
-      img.style.height = '100%';
-      img.style.objectFit = 'cover';
-      img.style.display = 'block';
-      img.style.pointerEvents = 'none';
-      img.style.userSelect = 'none';
-      img.style.opacity = '1';
-      img.style.filter = 'none';
-      img.style.visibility = 'visible';
-      img.style.transition = 'none';
-      img.style.border = 'none';
+      img.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;user-select:none;opacity:1;';
+      img.onerror = function() { this.src = 'https://via.placeholder.com/160x200?text=?'; };
       card.appendChild(img);
 
-      // PRIMARY BADGE
       if (idx === 0) {
         const badge = document.createElement('span');
         badge.textContent = 'رئيسية';
-        badge.style.position = 'absolute';
-        badge.style.bottom = '8px';
-        badge.style.right = '8px';
-        badge.style.backgroundColor = '#B8894A';
-        badge.style.color = '#fff';
-        badge.style.fontSize = '11px';
-        badge.style.padding = '4px 10px';
-        badge.style.borderRadius = '4px';
-        badge.style.fontWeight = '700';
-        badge.style.zIndex = '2';
-        badge.style.pointerEvents = 'none';
-        badge.style.opacity = '1';
+        badge.style.cssText = 'position:absolute;bottom:8px;right:8px;background-color:#B8894A;color:#fff;font-size:11px;padding:4px 10px;border-radius:4px;font-weight:700;z-index:2;';
         card.appendChild(badge);
       }
 
-      // REMOVE BUTTON (visible on hover)
       const removeBtn = document.createElement('button');
       removeBtn.type = 'button';
       removeBtn.innerHTML = '<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>';
-      removeBtn.style.position = 'absolute';
-      removeBtn.style.top = '8px';
-      removeBtn.style.left = '8px';
-      removeBtn.style.width = '30px';
-      removeBtn.style.height = '30px';
-      removeBtn.style.borderRadius = '50%';
-      removeBtn.style.backgroundColor = 'rgba(220,38,38,0.95)';
-      removeBtn.style.color = '#fff';
-      removeBtn.style.display = 'flex';
-      removeBtn.style.alignItems = 'center';
-      removeBtn.style.justifyContent = 'center';
-      removeBtn.style.border = 'none';
-      removeBtn.style.cursor = 'pointer';
-      removeBtn.style.zIndex = '3';
-      removeBtn.style.padding = '0';
-      removeBtn.style.opacity = '0';
-      removeBtn.style.transition = 'opacity 0.15s';
-      removeBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        state.form.images.splice(idx, 1);
-        renderImageGrid();
-      });
+      removeBtn.style.cssText = 'position:absolute;top:8px;left:8px;width:30px;height:30px;border-radius:50%;background-color:rgba(220,38,38,0.95);color:#fff;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;z-index:3;padding:0;opacity:0;transition:opacity 0.15s;';
+      removeBtn.addEventListener('click', (e) => { e.stopPropagation(); state.form.images.splice(idx, 1); renderImageGrid(); });
       card.appendChild(removeBtn);
 
-      // HOVER: only scale + show remove button (image itself stays opaque)
-      card.addEventListener('mouseenter', () => {
-        card.style.transform = 'scale(1.02)';
-        card.style.boxShadow = '0 6px 16px rgba(0,0,0,0.15)';
-        removeBtn.style.opacity = '1';
-      });
-      card.addEventListener('mouseleave', () => {
-        card.style.transform = 'scale(1)';
-        card.style.boxShadow = 'none';
-        removeBtn.style.opacity = '0';
-      });
-
-      card.addEventListener('click', () => { openLightbox(url); });
+      card.addEventListener('mouseenter', () => { removeBtn.style.opacity = '1'; card.style.transform = 'scale(1.02)'; card.style.boxShadow = '0 6px 16px rgba(0,0,0,0.15)'; });
+      card.addEventListener('mouseleave', () => { removeBtn.style.opacity = '0'; card.style.transform = 'scale(1)'; card.style.boxShadow = 'none'; });
+      card.addEventListener('click', () => openLightbox(url));
 
       grid.appendChild(card);
     });
@@ -1249,7 +1263,7 @@ tr:hover td{background:#FAFBFC}
     const validFiles = [];
     for (const f of files) {
       if (!f.type.startsWith('image/')) { toast('ملف غير صورة: ' + f.name, 'error'); continue; }
-      if (f.size > MAX_IMAGE_SIZE) { toast('حجم الصورة كبير (حد أقصى 2MB): ' + f.name, 'error'); continue; }
+      if (f.size > MAX_IMAGE_SIZE) { toast('حجم كبير (حد أقصى 2MB): ' + f.name, 'error'); continue; }
       validFiles.push(f);
     }
     if (!validFiles.length) return;
@@ -1262,31 +1276,21 @@ tr:hover td{background:#FAFBFC}
     for (const file of validFiles) {
       try {
         const fileName = generateFileName(file);
-        const { error } = await sb.storage.from(STORAGE_BUCKET).upload(fileName, file, {
-          cacheControl: '3600', upsert: false, contentType: file.type
-        });
+        const { error } = await sb.storage.from(STORAGE_BUCKET).upload(fileName, file, { cacheControl: '3600', upsert: false, contentType: file.type });
         if (error) throw error;
         const { data: urlData } = sb.storage.from(STORAGE_BUCKET).getPublicUrl(fileName);
-        if (urlData && urlData.publicUrl) {
-          state.form.images.push(urlData.publicUrl);
-          renderImageGrid();
-        }
+        if (urlData && urlData.publicUrl) { state.form.images.push(urlData.publicUrl); renderImageGrid(); }
       } catch (e) {
         console.error('Upload error:', e);
-        toast('فشل رفع: ' + file.name + ' — ' + (e.message || ''), 'error');
+        toast('فشل رفع: ' + file.name, 'error');
       } finally {
         state.form.uploadingCount--;
-        if (state.form.uploadingCount > 0) {
-          saveBtn.textContent = `جارٍ رفع ${state.form.uploadingCount} صورة...`;
-        } else {
-          saveBtn.disabled = false;
-          saveBtn.textContent = 'حفظ المنتج';
-        }
+        if (state.form.uploadingCount > 0) saveBtn.textContent = `جارٍ رفع ${state.form.uploadingCount} صورة...`;
+        else { saveBtn.disabled = false; saveBtn.textContent = 'حفظ المنتج'; }
       }
     }
   }
 
-  // ============ SAVE PRODUCT ============
   async function saveProduct() {
     const name = $('#pfName').value.trim();
     const price = parseFloat($('#pfPrice').value);
@@ -1294,7 +1298,6 @@ tr:hover td{background:#FAFBFC}
 
     if (!name) { toast('اسم المنتج مطلوب', 'error'); return; }
     if (!price || price <= 0) { toast('السعر يجب أن يكون أكبر من صفر', 'error'); return; }
-    if (!category) { toast('الفئة مطلوبة', 'error'); return; }
     if (state.form.uploadingCount > 0) { toast('انتظر انتهاء رفع الصور', 'error'); return; }
 
     const cleanSizes = state.form.sizes.filter(s => s.value.trim()).map(s => ({ value: s.value.trim(), available: s.available !== false }));
@@ -1309,11 +1312,9 @@ tr:hover td{background:#FAFBFC}
     };
 
     const comparePriceVal = $('#pfComparePrice').value.trim();
-    const comparePrice = comparePriceVal ? parseFloat(comparePriceVal) : null;
-
     const payload = {
       name, name_normalized: normalizeArabicClient(name),
-      price, compare_at_price: comparePrice, category,
+      price, compare_at_price: comparePriceVal ? parseFloat(comparePriceVal) : null, category,
       description: $('#pfDescription').value.trim() || null,
       badge: $('#pfBadge').value.trim() || null,
       in_stock: $('#pfInStock').checked,
@@ -1327,143 +1328,539 @@ tr:hover td{background:#FAFBFC}
       if (state.form.editingId) {
         const { error } = await sb.from('products').update(payload).eq('id', state.form.editingId);
         if (error) throw error;
-        toast('تم تعديل المنتج بنجاح ✓');
+        toast('تم تعديل المنتج ✓');
       } else {
         const { error } = await sb.from('products').insert(payload);
         if (error) throw error;
-        toast('تمت إضافة المنتج بنجاح ✓');
+        toast('تمت إضافة المنتج ✓');
       }
       closeProductModal();
       await loadProducts();
       await loadDashboardStats();
       await loadTopProducts();
     } catch (e) {
-      console.error('Save error:', e);
-      toast('حدث خطأ: ' + (e.message || 'غير معروف'), 'error');
-    } finally {
-      hideLoading();
+      console.error(e);
+      toast('حدث خطأ: ' + (e.message || ''), 'error');
+    } finally { hideLoading(); }
+  }
+
+  async function toggleProductActive(id, current) {
+    try {
+      const { error } = await sb.from('products').update({ is_active: !current }).eq('id', id);
+      if (error) throw error;
+      toast(current ? 'تم إخفاء المنتج' : 'تم إظهار المنتج');
+      await loadProducts();
+    } catch (e) { toast('تعذر التحديث', 'error'); }
+  }
+
+  // ============ ORDERS ============
+  async function loadOrders() {
+    const tbody = $('#ordersTableBody');
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</td></tr>';
+
+    try {
+      let query = sb.from('orders').select('*', { count: 'exact' });
+      if (state.orders.status) query = query.eq('status', state.orders.status);
+      if (state.orders.search) {
+        const s = state.orders.search;
+        query = query.or(`order_number.ilike.%${s}%,customer_name.ilike.%${s}%,customer_phone.ilike.%${s}%`);
+      }
+
+      const from = state.orders.page * state.orders.pageSize;
+      const to = from + state.orders.pageSize - 1;
+      const { data, count, error } = await query.order('created_at', { ascending: false }).range(from, to);
+      if (error) throw error;
+
+      state.orders.data = data || [];
+      state.orders.total = count || 0;
+      renderOrdersTable();
+      renderOrdersPagination();
+      $('#ordersSubtitle').textContent = `${fmtNum(state.orders.total)} طلب`;
+    } catch (e) {
+      console.error('Orders error:', e);
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--danger)">تعذر تحميل الطلبات</td></tr>';
     }
   }
 
-  // ============ DELETE ============
-  function openDeleteConfirm(productId) {
-    const p = state.products.data.find(x => x.id === productId);
-    if (!p) return;
-    state.deleteTarget = productId;
-    $('#confirmProductName').textContent = p.name;
+  function renderOrdersTable() {
+    const tbody = $('#ordersTableBody');
+    if (!state.orders.data.length) {
+      tbody.innerHTML = '<tr><td colspan="7"><div class="empty"><p>لا توجد طلبات</p></div></td></tr>';
+      return;
+    }
+    tbody.innerHTML = state.orders.data.map(o => {
+      const badgeClass = getStatusBadgeClass(o.status);
+      return `<tr>
+        <td><span class="cell-name" style="color:var(--accent)">${escapeHtml(o.order_number)}</span></td>
+        <td class="cell-muted" style="font-size:.8rem">${fmtDate(o.created_at)}</td>
+        <td>${escapeHtml(o.customer_name)}</td>
+        <td class="cell-muted" style="direction:ltr;text-align:right">${escapeHtml(o.customer_phone)}</td>
+        <td><strong>${fmtPrice(o.total)}</strong></td>
+        <td><span class="badge-pill ${badgeClass}">${getStatusLabel(o.status)}</span></td>
+        <td>
+          <div class="actions-cell">
+            <button class="action-btn view" data-view-order="${o.id}" title="عرض"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+            <button class="action-btn delete" data-delete-order="${o.id}" title="حذف"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+
+    $$('[data-view-order]').forEach(btn => btn.addEventListener('click', () => openOrderDetail(btn.dataset.viewOrder)));
+    $$('[data-delete-order]').forEach(btn => btn.addEventListener('click', () => openDeleteConfirm(btn.dataset.deleteOrder, 'order')));
+  }
+
+  function renderOrdersPagination() {
+    const totalPages = Math.ceil(state.orders.total / state.orders.pageSize);
+    const wrap = $('#ordersPagination');
+    if (totalPages <= 1) { wrap.style.display = 'none'; return; }
+    wrap.style.display = 'flex';
+    const current = state.orders.page;
+    $('#ordersPaginationInfo').textContent = `${current * state.orders.pageSize + 1}–${Math.min((current+1)*state.orders.pageSize, state.orders.total)} من ${state.orders.total}`;
+    renderPaginationButtons('ordersPaginationBtns', current, totalPages, (p) => { state.orders.page = p; loadOrders(); });
+  }
+
+  async function openOrderDetail(orderId) {
+    const order = state.orders.data.find(o => o.id === orderId);
+    if (!order) return;
+    state.orders.detail = order;
+
+    const body = $('#orderDetailBody');
+    body.innerHTML = '<div style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</div>';
+    $('#orderDetailModal').classList.add('show');
+    document.body.style.overflow = 'hidden';
+
+    const items = order.items || [];
+    const itemsHtml = items.map(it => {
+      const imgSrc = (typeof it.image === 'string' && it.image.startsWith('http')) ? it.image : 'https://via.placeholder.com/56x70?text=?';
+      let meta = '';
+      if (it.size) meta += 'مقاس: ' + it.size + ' ';
+      if (it.color) meta += '• لون: ' + it.color;
+      return `<div class="order-item-row">
+        <img src="${escapeHtml(imgSrc)}" onerror="this.src='https://via.placeholder.com/56x70?text=?'">
+        <div class="order-item-info">
+          <div class="order-item-name">${escapeHtml(it.name)}</div>
+          <div class="order-item-meta">${meta} • الكمية: ${it.qty}</div>
+        </div>
+        <div class="order-item-price">${fmtPrice(it.price * it.qty)}</div>
+      </div>`;
+    }).join('');
+
+    body.innerHTML = `
+      <div class="order-detail-grid">
+        <div class="order-detail-header">
+          <div>
+            <div class="order-detail-number">${escapeHtml(order.order_number)}</div>
+            <div class="order-detail-date">${fmtDate(order.created_at)}</div>
+          </div>
+          <span class="badge-pill ${getStatusBadgeClass(order.status)}">${getStatusLabel(order.status)}</span>
+        </div>
+
+        <div class="order-detail-info-grid">
+          <div class="order-info-box"><h4>الاسم</h4><p>${escapeHtml(order.customer_name)}</p></div>
+          <div class="order-info-box"><h4>الهاتف</h4><p style="direction:ltr;text-align:right">${escapeHtml(order.customer_phone)}</p></div>
+          <div class="order-info-box" style="grid-column:1/-1"><h4>العنوان</h4><p>${escapeHtml(order.customer_address || '—')}</p></div>
+          ${order.customer_notes ? `<div class="order-info-box" style="grid-column:1/-1"><h4>ملاحظات</h4><p>${escapeHtml(order.customer_notes)}</p></div>` : ''}
+        </div>
+
+        <div>
+          <div class="form-section-title">المنتجات (${items.length})</div>
+          <div class="order-items-list">${itemsHtml || '<p style="padding:12px;color:var(--muted)">لا توجد منتجات</p>'}</div>
+        </div>
+
+        <div class="order-detail-total"><span>الإجمالي</span><span>${fmtPrice(order.total)}</span></div>
+
+        <div>
+          <div class="form-section-title">تغيير الحالة</div>
+          <div class="order-status-select">
+            <select id="orderStatusSelect">
+              <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>قيد المراجعة</option>
+              <option value="confirmed" ${order.status === 'confirmed' ? 'selected' : ''}>تم التأكيد</option>
+              <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>تم الشحن</option>
+              <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>تم التسليم</option>
+              <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>ملغى</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Show action buttons
+    const saveBtn = $('#saveOrderStatusBtn');
+    const blockBtn = $('#blockOrderCustomerBtn');
+    saveBtn.style.display = 'inline-flex';
+    blockBtn.style.display = 'inline-flex';
+
+    saveBtn.onclick = async () => {
+      const newStatus = $('#orderStatusSelect').value;
+      if (newStatus === order.status) { toast('لم يتم تغيير الحالة'); return; }
+      showLoading();
+      try {
+        const { error } = await sb.from('orders').update({ status: newStatus, updated_at: new Date().toISOString() }).eq('id', order.id);
+        if (error) throw error;
+        toast('تم تحديث الحالة ✓');
+        closeOrderDetail();
+        await loadOrders();
+        await refreshNavCounts();
+        await loadDashboardStats();
+      } catch (e) {
+        console.error(e);
+        toast('تعذر التحديث', 'error');
+      } finally { hideLoading(); }
+    };
+
+    blockBtn.onclick = () => {
+      closeOrderDetail();
+      openBlockCustomerModal(order.customer_phone, null, order.customer_name);
+    };
+  }
+
+  function closeOrderDetail() {
+    $('#orderDetailModal').classList.remove('show');
+    document.body.style.overflow = '';
+    state.orders.detail = null;
+    $('#saveOrderStatusBtn').style.display = 'none';
+    $('#blockOrderCustomerBtn').style.display = 'none';
+  }
+
+  // ============ REVIEWS ============
+  async function loadReviews() {
+    const container = $('#reviewsListContainer');
+    container.innerHTML = '<div style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</div>';
+
+    try {
+      const { data, error } = await sb.from('reviews').select('*, product:products(id, name, images)').order('created_at', { ascending: false });
+      if (error) throw error;
+
+      state.reviews.all = data || [];
+      state.reviews.counts.pending = state.reviews.all.filter(r => r.status === 'pending').length;
+      state.reviews.counts.approved = state.reviews.all.filter(r => r.status === 'approved').length;
+      state.reviews.counts.rejected = state.reviews.all.filter(r => r.status === 'rejected').length;
+
+      $('#reviewsPendingCount').textContent = state.reviews.counts.pending;
+      $('#reviewsApprovedCount').textContent = state.reviews.counts.approved;
+      $('#reviewsRejectedCount').textContent = state.reviews.counts.rejected;
+
+      renderReviewsList();
+    } catch (e) {
+      console.error('Reviews error:', e);
+      container.innerHTML = '<div style="text-align:center;padding:32px;color:var(--danger)">تعذر تحميل التقييمات</div>';
+    }
+  }
+
+  function renderReviewsList() {
+    const container = $('#reviewsListContainer');
+    const filtered = state.reviews.all.filter(r => r.status === state.reviews.tab);
+
+    $$('.reviews-tab').forEach(tab => tab.classList.toggle('active', tab.dataset.tab === state.reviews.tab));
+
+    if (!filtered.length) {
+      container.innerHTML = `<div class="empty"><svg viewBox="0 0 24 24"><path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 0 0 .95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 0 0-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 0 0-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 0 0-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 0 0 .951-.69l1.519-4.674z"/></svg><p>لا توجد تقييمات ${state.reviews.tab === 'pending' ? 'معلقة' : state.reviews.tab === 'approved' ? 'مقبولة' : 'مرفوضة'}</p></div>`;
+      return;
+    }
+
+    container.innerHTML = filtered.map(r => {
+      const productName = r.product?.name || 'منتج محذوف';
+      const productImgs = normalizeImages(r.product?.images);
+      const productImg = productImgs[0] || '';
+      const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+      let actionsHtml = '';
+      if (r.status === 'pending') {
+        actionsHtml = `
+          <button class="btn btn-sm btn-success" data-approve-review="${r.id}"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> موافقة</button>
+          <button class="btn btn-sm btn-ghost" data-reject-review="${r.id}"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg> رفض</button>
+          <button class="btn btn-sm btn-danger" data-block-review="${r.id}"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg> حظر المعلق</button>
+        `;
+      } else if (r.status === 'approved') {
+        actionsHtml = `
+          <button class="btn btn-sm btn-ghost" data-reject-review="${r.id}">رفض</button>
+          <button class="btn btn-sm btn-danger" data-block-review="${r.id}">حظر المعلق</button>
+          <button class="btn btn-sm btn-danger" data-delete-review="${r.id}">حذف</button>
+        `;
+      } else {
+        actionsHtml = `
+          <button class="btn btn-sm btn-success" data-approve-review="${r.id}">موافقة</button>
+          <button class="btn btn-sm btn-danger" data-delete-review="${r.id}">حذف</button>
+        `;
+      }
+
+      return `<div class="review-card ${r.status}">
+        <div class="review-card-header">
+          <div>
+            <div class="review-card-product">على: <strong>${escapeHtml(productName)}</strong></div>
+            <div class="review-card-author">
+              ${escapeHtml(r.author)}
+              <span class="review-stars">${stars}</span>
+            </div>
+          </div>
+          <div class="review-card-date">${fmtDate(r.created_at)}</div>
+        </div>
+        <div class="review-card-comment">${escapeHtml(r.comment)}</div>
+        <div class="review-card-actions">${actionsHtml}</div>
+      </div>`;
+    }).join('');
+
+    $$('[data-approve-review]').forEach(btn => btn.addEventListener('click', () => updateReviewStatus(btn.dataset.approveReview, 'approved')));
+    $$('[data-reject-review]').forEach(btn => btn.addEventListener('click', () => updateReviewStatus(btn.dataset.rejectReview, 'rejected')));
+    $$('[data-delete-review]').forEach(btn => btn.addEventListener('click', () => deleteReview(btn.dataset.deleteReview)));
+    $$('[data-block-review]').forEach(btn => btn.addEventListener('click', () => blockReviewAuthor(btn.dataset.blockReview)));
+  }
+
+  async function updateReviewStatus(reviewId, newStatus) {
+    showLoading();
+    try {
+      const { error } = await sb.from('reviews').update({ status: newStatus }).eq('id', reviewId);
+      if (error) throw error;
+      toast(newStatus === 'approved' ? 'تم قبول التقييم ✓' : 'تم رفض التقييم');
+      await loadReviews();
+      await refreshNavCounts();
+    } catch (e) { console.error(e); toast('تعذر التحديث', 'error'); }
+    finally { hideLoading(); }
+  }
+
+  async function deleteReview(reviewId) {
+    if (!confirm('حذف هذا التقييم نهائيًا؟')) return;
+    showLoading();
+    try {
+      const { error } = await sb.from('reviews').delete().eq('id', reviewId);
+      if (error) throw error;
+      toast('تم حذف التقييم');
+      await loadReviews();
+      await refreshNavCounts();
+    } catch (e) { console.error(e); toast('تعذر الحذف', 'error'); }
+    finally { hideLoading(); }
+  }
+
+  function blockReviewAuthor(reviewId) {
+    const review = state.reviews.all.find(r => r.id === reviewId);
+    if (!review) return;
+    openBlockCustomerModal(null, review.token || null, review.author);
+  }
+
+  // ============ BLOCKED ============
+  async function loadBlocked() {
+    const container = $('#blockedListContainer');
+    container.innerHTML = '<div style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</div>';
+
+    try {
+      const { data, error } = await sb.from('blocked_customers').select('*').order('created_at', { ascending: false });
+      if (error) throw error;
+
+      state.blocked.data = data || [];
+      $('#blockedSubtitle').textContent = `${state.blocked.data.length} محظور`;
+      renderBlockedList();
+    } catch (e) {
+      console.error('Blocked error:', e);
+      container.innerHTML = '<div style="text-align:center;padding:32px;color:var(--danger)">تعذر تحميل القائمة</div>';
+    }
+  }
+
+  function renderBlockedList() {
+    const container = $('#blockedListContainer');
+    if (!state.blocked.data.length) {
+      container.innerHTML = '<div class="empty"><p>لا يوجد زبائن محظورون</p></div>';
+      return;
+    }
+
+    container.innerHTML = `<div style="padding:0 24px">` + state.blocked.data.map(b => {
+      const typeLabel = b.phone ? 'رقم هاتف' : 'Token';
+      const value = b.phone || b.client_token || '—';
+      return `<div class="blocked-card">
+        <div class="blocked-info">
+          <div class="blocked-type">${typeLabel}</div>
+          <div class="blocked-value" style="${b.phone ? 'direction:ltr;text-align:right' : 'word-break:break-all'}">${escapeHtml(value)}</div>
+          ${b.reason ? `<div class="blocked-reason">"${escapeHtml(b.reason)}"</div>` : ''}
+          <div class="blocked-date">${fmtDate(b.created_at)}</div>
+        </div>
+        <button class="btn btn-sm btn-ghost" data-unblock="${b.id}" style="color:var(--danger);border-color:var(--danger)">
+          <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg> إلغاء الحظر
+        </button>
+      </div>`;
+    }).join('') + '</div>';
+
+    $$('[data-unblock]').forEach(btn => btn.addEventListener('click', () => unblockCustomer(btn.dataset.unblock)));
+  }
+
+  async function unblockCustomer(id) {
+    if (!confirm('إزالة الحظر عن هذا الزبون؟')) return;
+    showLoading();
+    try {
+      const { error } = await sb.from('blocked_customers').delete().eq('id', id);
+      if (error) throw error;
+      toast('تم إزالة الحظر');
+      await loadBlocked();
+    } catch (e) { console.error(e); toast('تعذر الإزالة', 'error'); }
+    finally { hideLoading(); }
+  }
+
+  function openBlockCustomerModal(phone, token, name) {
+    state.blocked.targetInfo = { phone, token, name };
+    $('#blockPhoneInput').value = phone || '';
+    $('#blockTokenInput').value = token || '';
+    $('#blockReasonInput').value = '';
+    $('#blockCustomerModal').classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeBlockCustomerModal() {
+    $('#blockCustomerModal').classList.remove('show');
+    document.body.style.overflow = '';
+    state.blocked.targetInfo = null;
+  }
+
+  async function confirmBlockCustomer() {
+    const phone = $('#blockPhoneInput').value.trim() || null;
+    const token = $('#blockTokenInput').value.trim() || null;
+    const reason = $('#blockReasonInput').value.trim() || null;
+
+    if (!phone && !token) { toast('أدخل هاتف أو token', 'error'); return; }
+
+    showLoading();
+    try {
+      const { error } = await sb.from('blocked_customers').insert({ phone, client_token: token, reason });
+      if (error) throw error;
+      toast('تم الحظر ✓');
+      closeBlockCustomerModal();
+      if (state.currentPage === 'blocked') await loadBlocked();
+    } catch (e) { console.error(e); toast('تعذر الحظر: ' + (e.message || ''), 'error'); }
+    finally { hideLoading(); }
+  }
+
+  // ============ DELETE CONFIRM ============
+  function openDeleteConfirm(id, type) {
+    state.deleteTarget = id;
+    state.deleteType = type;
+
+    let title = '—', text = 'هل أنت متأكد؟', subtext = 'لا يمكن التراجع.';
+
+    if (type === 'product') {
+      const p = state.products.data.find(x => x.id === id);
+      title = p ? p.name : 'المنتج';
+      text = 'هل أنت متأكد من حذف المنتج؟';
+    } else if (type === 'order') {
+      const o = state.orders.data.find(x => x.id === id);
+      title = o ? o.order_number : 'الطلب';
+      text = 'هل أنت متأكد من حذف الطلب؟';
+      subtext = 'سيُحذف الطلب نهائيًا ولا يمكن استعادته.';
+    }
+
+    $('#confirmProductName').textContent = title;
+    $('#confirmText').textContent = text;
+    $('#confirmSubtext').textContent = subtext;
     $('#confirmModal').classList.add('show');
   }
 
   function closeDeleteConfirm() {
     $('#confirmModal').classList.remove('show');
     state.deleteTarget = null;
+    state.deleteType = null;
   }
 
   async function confirmDelete() {
     if (!state.deleteTarget) return;
     showLoading();
     try {
-      const { error } = await sb.from('products').delete().eq('id', state.deleteTarget);
-      if (error) throw error;
-      toast('تم حذف المنتج');
-      closeDeleteConfirm();
-      if (state.products.data.length === 1 && state.products.page > 0) state.products.page--;
-      await loadProducts();
-      await loadDashboardStats();
-      await loadTopProducts();
+      if (state.deleteType === 'product') {
+        const { error } = await sb.from('products').delete().eq('id', state.deleteTarget);
+        if (error) throw error;
+        toast('تم حذف المنتج');
+        closeDeleteConfirm();
+        if (state.products.data.length === 1 && state.products.page > 0) state.products.page--;
+        await loadProducts();
+        await loadDashboardStats();
+        await loadTopProducts();
+      } else if (state.deleteType === 'order') {
+        const { error } = await sb.from('orders').delete().eq('id', state.deleteTarget);
+        if (error) throw error;
+        toast('تم حذف الطلب');
+        closeDeleteConfirm();
+        if (state.orders.data.length === 1 && state.orders.page > 0) state.orders.page--;
+        await loadOrders();
+        await refreshNavCounts();
+        await loadDashboardStats();
+      }
     } catch (e) {
-      console.error('Delete error:', e);
+      console.error(e);
       toast('تعذر الحذف: ' + (e.message || ''), 'error');
-    } finally {
-      hideLoading();
-    }
-  }
-
-  // ============ TOGGLE ACTIVE ============
-  async function toggleProductActive(productId, currentActive) {
-    try {
-      const { error } = await sb.from('products').update({ is_active: !currentActive }).eq('id', productId);
-      if (error) throw error;
-      toast(currentActive ? 'تم إخفاء المنتج' : 'تم إظهار المنتج');
-      await loadProducts();
-    } catch (e) {
-      console.error('Toggle error:', e);
-      toast('تعذر التحديث: ' + (e.message || ''), 'error');
-    }
+    } finally { hideLoading(); }
   }
 
   // ============ WIRE UP ============
   $('#loginForm').addEventListener('submit', handleLogin);
   $('#logoutBtn').addEventListener('click', handleLogout);
-
   $$('.nav-item').forEach(el => {
-    if (el.dataset.page) {
-      el.addEventListener('click', (e) => { e.preventDefault(); switchPage(el.dataset.page); });
-    }
+    if (el.dataset.page) el.addEventListener('click', (e) => { e.preventDefault(); switchPage(el.dataset.page); });
   });
+  $('#mobileMenuBtn').addEventListener('click', () => $('#sidebar').classList.toggle('open'));
 
-  $('#mobileMenuBtn').addEventListener('click', () => { $('#sidebar').classList.toggle('open'); });
-
-  let searchTimer;
+  // Products filters
+  let pSearchTimer;
   $('#productsSearch').addEventListener('input', e => {
-    clearTimeout(searchTimer);
-    searchTimer = setTimeout(() => {
-      state.products.search = e.target.value.trim();
-      state.products.page = 0;
-      loadProducts();
-    }, 350);
+    clearTimeout(pSearchTimer);
+    pSearchTimer = setTimeout(() => { state.products.search = e.target.value.trim(); state.products.page = 0; loadProducts(); }, 350);
   });
+  $('#productsCategoryFilter').addEventListener('change', e => { state.products.category = e.target.value; state.products.page = 0; loadProducts(); });
+  $('#productsStatusFilter').addEventListener('change', e => { state.products.status = e.target.value; state.products.page = 0; loadProducts(); });
 
-  $('#productsCategoryFilter').addEventListener('change', e => {
-    state.products.category = e.target.value;
-    state.products.page = 0;
-    loadProducts();
+  // Orders filters
+  let oSearchTimer;
+  $('#ordersSearch').addEventListener('input', e => {
+    clearTimeout(oSearchTimer);
+    oSearchTimer = setTimeout(() => { state.orders.search = e.target.value.trim(); state.orders.page = 0; loadOrders(); }, 350);
   });
+  $('#ordersStatusFilter').addEventListener('change', e => { state.orders.status = e.target.value; state.orders.page = 0; loadOrders(); });
 
-  $('#productsStatusFilter').addEventListener('change', e => {
-    state.products.status = e.target.value;
-    state.products.page = 0;
-    loadProducts();
-  });
+  // Reviews tabs
+  $$('.reviews-tab').forEach(tab => tab.addEventListener('click', () => { state.reviews.tab = tab.dataset.tab; renderReviewsList(); }));
 
+  // Products modal
   $('#addProductBtn').addEventListener('click', () => openProductModal());
   $('#closeProductModalBtn').addEventListener('click', closeProductModal);
   $('#cancelProductBtn').addEventListener('click', closeProductModal);
   $('#saveProductBtn').addEventListener('click', saveProduct);
-
   $('#addSizeBtn').addEventListener('click', addSizeRow);
   $('#addColorBtn').addEventListener('click', addColorRow);
 
+  // Upload
   const uploadZone = $('#uploadZone');
   const imageInput = $('#imageInput');
   uploadZone.addEventListener('click', () => imageInput.click());
-  imageInput.addEventListener('change', e => {
-    handleImageUpload(e.target.files);
-    e.target.value = '';
-  });
+  imageInput.addEventListener('change', e => { handleImageUpload(e.target.files); e.target.value = ''; });
   uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('dragover'); });
   uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
-  uploadZone.addEventListener('drop', e => {
-    e.preventDefault();
-    uploadZone.classList.remove('dragover');
-    handleImageUpload(e.dataTransfer.files);
-  });
+  uploadZone.addEventListener('drop', e => { e.preventDefault(); uploadZone.classList.remove('dragover'); handleImageUpload(e.dataTransfer.files); });
 
+  // Confirm delete
   $('#cancelDeleteBtn').addEventListener('click', closeDeleteConfirm);
   $('#confirmDeleteBtn').addEventListener('click', confirmDelete);
 
-  $('#closeLightboxBtn').addEventListener('click', closeLightbox);
-  $('#imageLightbox').addEventListener('click', e => {
-    if (e.target.id === 'imageLightbox') closeLightbox();
-  });
+  // Order detail
+  $('#closeOrderDetailBtn').addEventListener('click', closeOrderDetail);
+  $('#closeOrderDetailFooterBtn').addEventListener('click', closeOrderDetail);
 
+  // Block customer modal
+  $('#closeBlockModalBtn').addEventListener('click', closeBlockCustomerModal);
+  $('#cancelBlockBtn').addEventListener('click', closeBlockCustomerModal);
+  $('#confirmBlockBtn').addEventListener('click', confirmBlockCustomer);
+  $('#addBlockedBtn').addEventListener('click', () => openBlockCustomerModal(null, null, null));
+
+  // Lightbox
+  $('#closeLightboxBtn').addEventListener('click', closeLightbox);
+  $('#imageLightbox').addEventListener('click', e => { if (e.target.id === 'imageLightbox') closeLightbox(); });
+
+  // Backdrop clicks
   $('#productModal').addEventListener('click', e => { if (e.target.id === 'productModal') closeProductModal(); });
   $('#confirmModal').addEventListener('click', e => { if (e.target.id === 'confirmModal') closeDeleteConfirm(); });
+  $('#orderDetailModal').addEventListener('click', e => { if (e.target.id === 'orderDetailModal') closeOrderDetail(); });
+  $('#blockCustomerModal').addEventListener('click', e => { if (e.target.id === 'blockCustomerModal') closeBlockCustomerModal(); });
 
+  // Escape
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       if ($('#imageLightbox').classList.contains('show')) closeLightbox();
       else if ($('#confirmModal').classList.contains('show')) closeDeleteConfirm();
+      else if ($('#blockCustomerModal').classList.contains('show')) closeBlockCustomerModal();
+      else if ($('#orderDetailModal').classList.contains('show')) closeOrderDetail();
       else if ($('#productModal').classList.contains('show')) closeProductModal();
     }
   });
