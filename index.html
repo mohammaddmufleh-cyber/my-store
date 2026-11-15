@@ -179,8 +179,11 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
 .product-gallery{background:var(--bg);aspect-ratio:4/5;overflow:hidden;position:relative;cursor:zoom-in}
 .product-gallery img{width:100%;height:100%;object-fit:cover}
 .product-gallery-thumbs{position:absolute;bottom:16px;left:16px;right:16px;display:flex;gap:8px;justify-content:center;z-index:2}
-.thumb{width:48px;height:60px;border-radius:4px;object-fit:cover;cursor:pointer;border:2px solid transparent;opacity:.6;transition:all .15s}
-.thumb:hover,.thumb.active{opacity:1;border-color:#fff}
+
+/* ✅ FIX: الصور المصغّرة واضحة دائمًا — التمييز بإطار أبيض فقط */
+.thumb{width:48px;height:60px;border-radius:4px;object-fit:cover;cursor:pointer;border:2px solid rgba(255,255,255,0.4);opacity:1;transition:border-color .15s;background:#f0f0f0}
+.thumb:hover,.thumb.active{border-color:#fff;box-shadow:0 0 0 2px rgba(0,0,0,0.15)}
+
 .product-detail-info{padding:40px;display:flex;flex-direction:column;gap:16px}
 .product-detail-title{font-size:1.75rem;font-weight:700;line-height:1.2}
 .product-detail-price{font-size:1.5rem;font-weight:700;color:var(--accent)}
@@ -765,13 +768,12 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
     if (el) el.scrollIntoView({ behavior:'smooth' });
   }
 
-  // ============ PRODUCT MODAL (UPDATED for new sizes/colors) ============
+  // ============ PRODUCT MODAL ============
   async function openProduct(id) {
     const p = state.products.find(x => x.id === id);
     if (!p) return;
     state.selectedProduct = p;
 
-    // NEW: read from sizes/colors arrays first, fallback to specs
     let sizes = [];
     if (Array.isArray(p.sizes) && p.sizes.length) {
       sizes = p.sizes.filter(s => s && s.available !== false).map(s => s.value);
