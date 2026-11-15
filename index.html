@@ -175,14 +175,40 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
 .modal-content{position:relative;background:var(--surface);border-radius:var(--r-lg);width:100%;max-width:1000px;max-height:90vh;overflow-y:auto;box-shadow:var(--sh-lg)}
 .modal-close{position:absolute;top:16px;left:16px;width:40px;height:40px;border-radius:50%;background:var(--surface);display:flex;align-items:center;justify-content:center;box-shadow:var(--sh-sm);z-index:10}
 
+/* ============================================================
+   PRODUCT GALLERY - THE CRITICAL FIX
+   الصورة الرئيسية فقط تأخذ 100% — الصور المصغّرة لها حجمها الخاص
+   ============================================================ */
 .product-detail{display:grid;grid-template-columns:1fr 1fr}
 .product-gallery{background:var(--bg);aspect-ratio:4/5;overflow:hidden;position:relative;cursor:zoom-in}
-.product-gallery img{width:100%;height:100%;object-fit:cover}
-.product-gallery-thumbs{position:absolute;bottom:16px;left:16px;right:16px;display:flex;gap:8px;justify-content:center;z-index:2}
+.product-gallery > img{width:100%;height:100%;object-fit:cover;display:block}
+.product-gallery-thumbs{position:absolute;bottom:16px;left:16px;right:16px;display:flex;gap:8px;justify-content:center;z-index:2;pointer-events:auto}
 
-/* ✅ FIX: الصور المصغّرة واضحة دائمًا — التمييز بإطار أبيض فقط */
-.thumb{width:48px;height:60px;border-radius:4px;object-fit:cover;cursor:pointer;border:2px solid rgba(255,255,255,0.4);opacity:1;transition:border-color .15s;background:#f0f0f0}
-.thumb:hover,.thumb.active{border-color:#fff;box-shadow:0 0 0 2px rgba(0,0,0,0.15)}
+/* الصور المصغّرة - حجم ثابت وصريح */
+.thumb,
+.product-gallery-thumbs .thumb{
+  width:48px !important;
+  height:60px !important;
+  border-radius:4px;
+  object-fit:cover;
+  cursor:pointer;
+  border:2px solid rgba(255,255,255,0.4);
+  opacity:1;
+  transition:border-color .15s, box-shadow .15s;
+  background:#f0f0f0;
+  flex-shrink:0;
+  display:block;
+}
+.thumb:hover,
+.product-gallery-thumbs .thumb:hover{
+  border-color:#fff;
+  box-shadow:0 0 0 2px rgba(0,0,0,0.2);
+}
+.thumb.active,
+.product-gallery-thumbs .thumb.active{
+  border-color:#fff;
+  box-shadow:0 0 0 2px rgba(26,77,58,0.8);
+}
 
 .product-detail-info{padding:40px;display:flex;flex-direction:column;gap:16px}
 .product-detail-title{font-size:1.75rem;font-weight:700;line-height:1.2}
@@ -831,7 +857,13 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
     $('#productModalContent').innerHTML = '<div class="product-detail"><div class="product-gallery" id="productGalleryTrigger"><img src="' + escapeHtml(imgs[0]) + '" id="mainProductImg">' + thumbs + '</div><div class="product-detail-info"><div class="product-category">' + escapeHtml(p.category) + '</div><h1 class="product-detail-title">' + escapeHtml(p.name) + '</h1><div class="detail-actions"><button class="detail-wish ' + wishActive + '" id="detailWishBtn"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> <span id="detailWishText">' + wishText + '</span></button><button class="detail-share" id="detailShareBtn"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg> <span>مشاركة</span></button></div><div class="product-detail-price">' + formatPrice(p.price) + '</div>' + ratingH + descH + sizesH + colorsH + specsH + actionH + '<div class="reviews-section"><div class="reviews-title">التقييمات والتعليقات</div><div class="reviews-list" id="reviewsList"><p style="color:var(--muted);font-size:.85rem;text-align:center;padding:8px">جارٍ التحميل...</p></div><div class="review-form"><h4>أضف تقييمك</h4><div class="star-picker" id="starPicker"><span data-val="1">★</span><span data-val="2">★</span><span data-val="3">★</span><span data-val="4">★</span><span data-val="5">★</span></div><input type="text" id="reviewAuthor" placeholder="اسمك" maxlength="50"><textarea id="reviewComment" rows="2" placeholder="تعليقك..." maxlength="500"></textarea><button id="submitReviewBtn">إرسال التقييم</button></div></div></div></div>';
     $('#productModal').classList.add('open');
     document.body.style.overflow = 'hidden';
-    $('#productGalleryTrigger').addEventListener('click', () => openGallery(0));
+
+    // Click على الصورة الرئيسية → lightbox
+    $('#mainProductImg').addEventListener('click', (e) => {
+      e.stopPropagation();
+      openGallery(0);
+    });
+
     const addBtn = $('#addToCartFromModal');
     if (addBtn) addBtn.addEventListener('click', () => { addToCart(state.selectedProduct, state.selectedOptions); closeProductModal(); openCart(); });
     $('#detailWishBtn').addEventListener('click', () => {
@@ -843,6 +875,8 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
     $('#detailShareBtn').addEventListener('click', () => {
       shareProduct(p.id, p.name, formatPrice(p.price));
     });
+
+    // Thumbnails click → change main image
     $$('#productModalContent .thumb').forEach(t => {
       t.addEventListener('click', e => {
         e.stopPropagation();
@@ -851,6 +885,7 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
         t.classList.add('active');
       });
     });
+
     $$('#productModalContent .pill').forEach(pill => {
       pill.addEventListener('click', () => {
         state.selectedOptions[pill.dataset.opt] = pill.dataset.val;
