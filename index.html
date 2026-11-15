@@ -485,28 +485,22 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
     return Number(n || 0).toLocaleString('ar-EG') + ' ' + (SYM[currency] || 'ل.س');
   }
 
-  // ============ SHARE (Web Share API + fallback) ============
+  // ============ SHARE ============
   async function shareProduct(productId, productName, productPrice) {
     const productUrl = getSiteUrl() + '?product=' + encodeURIComponent(productId);
     const shareTitle = productName;
     const shareText = productName + ' - ' + productPrice + '\nشاهد المنتج على متجرنا:';
 
-    // المحاولة 1: Web Share API (مثالي للهواتف)
     if (navigator.share) {
       try {
-        await navigator.share({
-          title: shareTitle,
-          text: shareText,
-          url: productUrl
-        });
+        await navigator.share({ title: shareTitle, text: shareText, url: productUrl });
         return;
       } catch (err) {
-        if (err.name === 'AbortError') return; // المستخدم أغلق القائمة
+        if (err.name === 'AbortError') return;
         console.warn('Share API failed:', err);
       }
     }
 
-    // المحاولة 2: نسخ الرابط (للحاسوب)
     try {
       if (navigator.clipboard && navigator.clipboard.writeText) {
         await navigator.clipboard.writeText(productUrl);
@@ -515,7 +509,6 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
       }
     } catch (e) {}
 
-    // المحاولة 3: نافذة منبثقة (بديل أخير)
     window.prompt('انسخ رابط المنتج وشاركه:', productUrl);
   }
 
@@ -532,14 +525,13 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
     try {
       const { data: s } = await sb.from('store_settings').select('currency').eq('id',1).maybeSingle();
       if (s && s.currency) currency = s.currency;
-    } catch(e) { console.warn('settings load failed', e); }
+    } catch(e) {}
 
     const { data, error } = await sb.rpc('get_order_by_number', { p_order_number: orderNumber });
 
     const backBtn = '<a href="' + getSiteUrl() + '" style="display:inline-block;padding:12px 24px;background:#1A4D3A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">العودة للمتجر</a>';
 
     if (error) {
-      console.error('RPC error:', error);
       main.innerHTML = '<div style="text-align:center;padding:80px 20px"><div style="max-width:500px;margin:0 auto;background:#fff;padding:40px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.06)"><h1 style="font-size:1.5rem;margin-bottom:12px">تعذر تحميل الطلب</h1><p style="color:#737373;margin-bottom:24px">' + escapeHtml(error.message || 'حدث خطأ غير متوقع') + '</p>' + backBtn + '</div></div>';
       return;
     }
@@ -587,9 +579,7 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
   };
 
   // ============ HELPERS (with state) ============
-  function formatPrice(n) {
-    return priceStr(n, state.settings.currency);
-  }
+  function formatPrice(n) { return priceStr(n, state.settings.currency); }
 
   function toast(msg, type) {
     type = type || 'success';
@@ -667,7 +657,7 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
     let q = sb.from('products').select('*', { count: 'exact' }).eq('is_active', true);
     const { category, search } = state.filters;
     if (category !== 'all') q = q.eq('category', category);
-    if (search) q = q.ilike('name', '%' + search + '%');
+    if (search) q = q.ilike('name_normalized', '%' + search.toLowerCase() + '%');
     switch (state.filters.sort) {
       case 'price-asc': q = q.order('price', { ascending: true }); break;
       case 'price-desc': q = q.order('price', { ascending: false }); break;
@@ -775,13 +765,26 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
     if (el) el.scrollIntoView({ behavior:'smooth' });
   }
 
-  // ============ PRODUCT MODAL ============
+  // ============ PRODUCT MODAL (UPDATED for new sizes/colors) ============
   async function openProduct(id) {
     const p = state.products.find(x => x.id === id);
     if (!p) return;
     state.selectedProduct = p;
-    const sizes = (p.specs && p.specs.sizes ? p.specs.sizes : '').split(/[,،]/).map(s=>s.trim()).filter(Boolean);
-    const colors = (p.specs && p.specs.colors ? p.specs.colors : '').split(/[,،]/).map(s=>s.trim()).filter(Boolean);
+
+    // NEW: read from sizes/colors arrays first, fallback to specs
+    let sizes = [];
+    if (Array.isArray(p.sizes) && p.sizes.length) {
+      sizes = p.sizes.filter(s => s && s.available !== false).map(s => s.value);
+    } else if (p.specs && p.specs.sizes) {
+      sizes = p.specs.sizes.split(/[,،]/).map(s=>s.trim()).filter(Boolean);
+    }
+    let colors = [];
+    if (Array.isArray(p.colors) && p.colors.length) {
+      colors = p.colors.filter(c => c && c.available !== false).map(c => c.value);
+    } else if (p.specs && p.specs.colors) {
+      colors = p.specs.colors.split(/[,،]/).map(c=>c.trim()).filter(Boolean);
+    }
+
     state.selectedOptions = { size: sizes[0]||'', color: colors[0]||'' };
     let imgs = normalizeImages(p.images);
     if (!imgs.length) imgs = ['https://via.placeholder.com/400x500?text=No+Image'];
@@ -885,6 +888,8 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
     const comment = $('#reviewComment').value.trim();
     if (!author || !comment) { toast('يرجى كتابة الاسم والتعليق','error'); return; }
     if (comment.length > 500) { toast('التعليق طويل جداً','error'); return; }
+    const blocked = await checkIfBlocked();
+    if (blocked) { toast('لا يمكنك إرسال تقييم — تم حظرك','error'); return; }
     const { error } = await sb.from('reviews').insert({
       product_id: productId, author: author, rating: state.currentRating,
       comment: comment, status: 'pending'
@@ -895,6 +900,14 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
     $('#reviewComment').value = '';
     state.currentRating = 5;
     updateStars();
+  }
+
+  async function checkIfBlocked() {
+    try {
+      const token = getClientToken();
+      const { data } = await sb.rpc('is_customer_blocked', { p_phone: null, p_token: token });
+      return data === true;
+    } catch(e) { return false; }
   }
 
   function closeProductModal() { $('#productModal').classList.remove('open'); document.body.style.overflow = ''; }
@@ -1005,7 +1018,7 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
   function openCart() { renderCart(); $('#cartBackdrop').classList.add('open'); $('#cartDrawer').classList.add('open'); }
   function closeCart() { $('#cartBackdrop').classList.remove('open'); $('#cartDrawer').classList.remove('open'); }
 
-  // ============ ORDERS (with product images) ============
+  // ============ ORDERS ============
   async function openOrders() {
     $('#ordersBackdrop').classList.add('open');
     $('#ordersDrawer').classList.add('open');
@@ -1062,6 +1075,8 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
     const name = $('#coName').value.trim(), phone = $('#coPhone').value.trim();
     const address = $('#coAddress').value.trim(), notes = $('#coNotes').value.trim();
     if (!name || !phone || !address) { toast('يرجى ملء الحقول المطلوبة','error'); return; }
+    const blocked = await checkIfBlocked();
+    if (blocked) { toast('تم حظرك من إتمام الطلبات','error'); return; }
     const total = state.cart.reduce((s,i)=>s+i.price*i.qty, 0);
     const orderNumber = 'ORD-' + Date.now().toString(36).toUpperCase();
     const clientToken = getClientToken();
