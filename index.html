@@ -267,8 +267,31 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
 #pickupInfo{margin-top:10px;padding:12px;background:#F0F5F1;border:1px solid #86EFAC;border-radius:var(--r);font-size:.85rem;line-height:1.85}
 #deliveryFeeRow{display:none;justify-content:space-between;padding:12px;background:#FEF3C7;border-radius:var(--r);font-size:.9rem;color:#92400E;font-weight:600}
 .co-subtotal-row{display:flex;justify-content:space-between;padding:12px;background:var(--bg);border-radius:var(--r);font-size:.95rem}
-#mapSection{display:none}
-#checkoutMap{height:220px;border-radius:var(--r);border:1px solid var(--border);overflow:hidden;background:#eee}
+#mapSection{display:block}
+
+/* ===== Country picker ===== */
+.co-phone-row{display:flex;gap:8px;align-items:stretch}
+.co-country-btn{display:flex;align-items:center;gap:6px;padding:12px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface);font-size:.9rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:border-color .15s;flex-shrink:0;min-width:110px;justify-content:space-between}
+.co-country-btn:hover{border-color:var(--accent)}
+.co-country-btn:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(26,77,58,.1)}
+#coCountryCode{direction:ltr;display:inline-block;font-family:'Cairo',monospace}
+.co-flag-img{width:22px;height:16px;object-fit:cover;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.1);flex-shrink:0;display:inline-block}
+.co-country-menu{margin-top:8px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh-md);overflow:hidden}
+.co-country-search{width:100%;padding:10px 12px;border:none;border-bottom:1px solid var(--border);background:var(--surface);font-family:inherit;font-size:.9rem;direction:rtl}
+.co-country-search:focus{outline:none;background:#FAFAF9}
+.co-country-list{max-height:280px;overflow-y:auto;overscroll-behavior:contain}
+.co-country-item{display:flex;align-items:center;gap:10px;padding:9px 12px;cursor:pointer;font-size:.88rem;transition:background .1s;border-bottom:1px solid #F5F5F4}
+.co-country-item:last-child{border-bottom:none}
+.co-country-item:hover{background:#F0F5F1}
+.co-country-item.active{background:#E8F0EC;font-weight:700}
+.co-country-item-name{flex:1;color:var(--ink)}
+.co-country-item-code{font-family:monospace;color:var(--muted);font-size:.82rem;direction:ltr}
+#coPhone{direction:ltr;text-align:left}
+#coPhone::placeholder{text-align:left}
+
+#checkoutMap{height:400px;border-radius:8px;overflow:hidden;background:#eee}
+#mapSummary{margin-top:8px;padding:10px 12px;background:#F0F5F1;border:1px solid #86EFAC;border-radius:var(--r);font-size:.85rem;color:#065F46;font-weight:600;justify-content:space-between;align-items:center}
+
 @media(max-width:480px){.co-two-col{grid-template-columns:1fr}}
 
 @media(max-width:1024px){.products-grid{grid-template-columns:repeat(3,1fr)}}
@@ -426,7 +449,7 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
   </div>
 </div>
 
-<!-- ============ CHECKOUT MODAL (NEW) ============ -->
+<!-- ============ CHECKOUT MODAL ============ -->
 <div class="modal" id="checkoutModal">
   <div class="modal-backdrop" id="checkoutModalBackdrop"></div>
   <div class="modal-content" style="max-width:560px">
@@ -441,9 +464,22 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
         </div>
         <input class="co-field" type="text" id="coLastName" placeholder="الكنية *" required>
 
-        <div style="display:flex;gap:8px">
-          <select id="coCountry" style="padding:12px 8px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface);font-family:inherit;font-size:.9rem;min-width:160px;cursor:pointer"></select>
-          <input class="co-field" type="tel" id="coPhone" placeholder="رقم الهاتف *" inputmode="tel" required style="flex:1">
+        <!-- الهاتف -->
+        <div>
+          <label style="display:block;font-size:.85rem;font-weight:600;margin-bottom:6px">رقم الهاتف <span style="color:var(--danger)">*</span></label>
+          <div class="co-phone-row">
+            <button type="button" class="co-country-btn" id="coCountryBtn">
+              <img id="coCountryFlag" class="co-flag-img" src="https://flagcdn.com/w40/sy.png" alt="">
+              <span id="coCountryCode">+963</span>
+              <svg width="10" height="10" viewBox="0 0 24 24" style="stroke:currentColor;fill:none;stroke-width:2.5"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <input class="co-field" type="tel" id="coPhone" inputmode="tel" dir="ltr" placeholder="9XX XXX XXX" style="flex:1">
+          </div>
+          <input type="hidden" id="coCountry" value="SY">
+          <div class="co-country-menu" id="coCountryMenu" style="display:none">
+            <input type="text" class="co-country-search" id="coCountrySearch" placeholder="ابحث عن دولة...">
+            <div class="co-country-list" id="coCountryList"></div>
+          </div>
         </div>
 
         <div class="co-two-col">
@@ -469,10 +505,17 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
           <div id="pickupInfo" style="display:none"></div>
         </div>
 
+        <!-- زر تحديد الموقع -->
         <div id="mapSection">
-          <div style="font-weight:600;font-size:.9rem;margin-bottom:8px">📍 حدد موقعك على الخريطة (اختياري)</div>
-          <div id="checkoutMap"></div>
-          <button type="button" id="clearMarkerBtn" style="display:none;margin-top:6px;font-size:.8rem;color:var(--danger);font-weight:600">✕ إزالة الموقع</button>
+          <div style="font-weight:600;font-size:.9rem;margin-bottom:8px">📍 الموقع على الخريطة (اختياري)</div>
+          <button type="button" id="openMapBtn" class="btn btn-secondary btn-block" style="justify-content:center">
+            <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span id="openMapBtnText">حدد موقعك على الخريطة</span>
+          </button>
+          <div id="mapSummary" style="display:none">
+            <span>✓ تم تحديد الموقع</span>
+            <button type="button" id="clearMarkerBtn" style="color:var(--danger);font-size:.8rem;font-weight:700;padding:2px 8px">✕ إزالة</button>
+          </div>
           <input type="hidden" id="coLat">
           <input type="hidden" id="coLng">
         </div>
@@ -483,6 +526,23 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
 
         <button type="submit" class="btn btn-primary btn-block" id="coSubmitBtn">تأكيد الطلب عبر واتساب</button>
       </form>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MAP MODAL ============ -->
+<div class="modal" id="mapModal">
+  <div class="modal-backdrop" id="mapModalBackdrop"></div>
+  <div class="modal-content" style="max-width:720px">
+    <button class="modal-close" id="closeMapModalBtn"><svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    <div style="padding:24px">
+      <h2 style="font-size:1.2rem;margin-bottom:8px">📍 حدد موقعك على الخريطة</h2>
+      <p style="font-size:.85rem;color:var(--muted);margin-bottom:12px">اضغط على الخريطة لتحديد موقعك، ثم اضغط "حفظ الموقع".</p>
+      <div id="checkoutMap" style="height:400px;border-radius:8px;overflow:hidden;background:#eee"></div>
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <button type="button" id="saveMapBtn" class="btn btn-primary" style="flex:1;justify-content:center">حفظ الموقع</button>
+        <button type="button" id="cancelMapBtn" class="btn btn-secondary">إلغاء</button>
+      </div>
     </div>
   </div>
 </div>
@@ -583,10 +643,8 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
     ['NR','ناورو','674'],['PW','بالاو','680'],['FM','ميكرونيزيا','691'],['MH','جزر مارشال','692']
   ];
 
-  function flagEmoji(iso){
-    try { return iso.toUpperCase().replace(/./g, ch => String.fromCodePoint(0x1F1E6 + ch.charCodeAt(0) - 65)); }
-    catch(e){ return '🏳️'; }
-  }
+  function getCountryByIso(iso) { return COUNTRIES.find(c => c[0] === iso); }
+  function flagUrl(iso) { return 'https://flagcdn.com/w40/' + iso.toLowerCase() + '.png'; }
 
   let detectedCountryIso = null;
   async function detectCountryFromIP(){
@@ -705,7 +763,6 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
     if (s.hero_image && typeof s.hero_image === 'string' && s.hero_image.startsWith('http')) {
       $('#heroImage img').src = s.hero_image;
     }
-    // رابط واتساب في الفوتر — fallback على الرقم النشط
     const wa = s.whatsapp_number ? String(s.whatsapp_number).replace(/\D/g,'') : getActiveWhatsAppNumber();
     if (wa) {
       const w = $('#footerWhatsapp');
@@ -1069,56 +1126,81 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
   function closeOrders() { $('#ordersBackdrop').classList.remove('open'); $('#ordersDrawer').classList.remove('open'); }
   async function refreshOrdersCount() { const token = getClientToken(); const { data } = await sb.rpc('get_my_orders', { p_token: token }); const cnt = (data && data.length) || 0; $('#ordersBadge').textContent = cnt; $('#ordersBadge').dataset.count = cnt; }
 
-  // ============ CHECKOUT (NEW) ============
+  // ============ CHECKOUT ============
   let checkoutMap = null, checkoutMarker = null;
+  let tempMapLat = null, tempMapLng = null;
+  let originalMapLat = null, originalMapLng = null;
+  let countryMenuOpen = false;
 
-  function populateCountrySelect(defaultIso){
-    const sel = $('#coCountry');
-    if (!sel) return;
-    if (!sel.dataset.populated) {
-      sel.innerHTML = COUNTRIES.map(c =>
-        '<option value="' + c[0] + '">' + flagEmoji(c[0]) + ' ' + escapeHtml(c[1]) + ' (+' + c[2] + ')</option>'
-      ).join('');
-      sel.dataset.populated = '1';
+  function renderCountryList(filter) {
+    const list = $('#coCountryList');
+    if (!list) return;
+    const q = (filter || '').trim().toLowerCase();
+    const items = COUNTRIES.filter(c => {
+      if (!q) return true;
+      return c[1].toLowerCase().includes(q) || ('+' + c[2]).includes(q) || c[0].toLowerCase().includes(q);
+    });
+    if (!items.length) {
+      list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:.85rem">لا توجد نتائج</div>';
+      return;
     }
-    if (defaultIso) sel.value = defaultIso;
+    const selectedIso = $('#coCountry').value;
+    list.innerHTML = items.map(c =>
+      '<div class="co-country-item ' + (c[0]===selectedIso?'active':'') + '" data-iso="' + c[0] + '">' +
+        '<img class="co-flag-img" src="' + flagUrl(c[0]) + '" alt="" loading="lazy">' +
+        '<span class="co-country-item-name">' + escapeHtml(c[1]) + '</span>' +
+        '<span class="co-country-item-code">+' + c[2] + '</span>' +
+      '</div>'
+    ).join('');
+    $$('#coCountryList .co-country-item').forEach(el => {
+      el.addEventListener('click', () => selectCountry(el.dataset.iso));
+    });
   }
 
-  function applyCheckoutSettings(){
+  function selectCountry(iso) {
+    const c = getCountryByIso(iso);
+    if (!c) return;
+    $('#coCountry').value = iso;
+    $('#coCountryFlag').src = flagUrl(iso);
+    $('#coCountryCode').textContent = '+' + c[2];
+    closeCountryMenu();
+    const phoneEl = $('#coPhone');
+    if (phoneEl) phoneEl.focus();
+  }
+
+  function openCountryMenu() {
+    if (countryMenuOpen) return;
+    countryMenuOpen = true;
+    const search = $('#coCountrySearch');
+    search.value = '';
+    renderCountryList('');
+    $('#coCountryMenu').style.display = 'block';
+    setTimeout(() => search.focus(), 50);
+  }
+
+  function closeCountryMenu() {
+    countryMenuOpen = false;
+    const menu = $('#coCountryMenu');
+    if (menu) menu.style.display = 'none';
+  }
+
+  function applyCheckoutSettings() {
     const s = state.settings || {};
 
-    // اسم الأب
     const middleMode = s.middle_name_mode || 'optional';
     const fatherField = $('#coFatherName');
-    if (fatherField) {
-      fatherField.style.display = (middleMode === 'hidden') ? 'none' : '';
-      if (middleMode === 'required') fatherField.setAttribute('required','');
-      else fatherField.removeAttribute('required');
-    }
+    if (fatherField) fatherField.style.display = (middleMode === 'hidden') ? 'none' : '';
 
-    // الكنية
-    const lastNameReq = s.last_name_required !== false;
-    const lastNameField = $('#coLastName');
-    if (lastNameField) {
-      if (lastNameReq) lastNameField.setAttribute('required','');
-      else lastNameField.removeAttribute('required');
-    }
-
-    // الهاتف
     const phoneReq = s.phone_required !== false;
-    const phoneField = $('#coPhone'), countrySel = $('#coCountry');
+    const phoneField = $('#coPhone'), countryBtn = $('#coCountryBtn');
     if (phoneReq) {
-      phoneField.setAttribute('required','');
-      phoneField.style.display = '';
-      if (countrySel) countrySel.style.display = '';
+      if (phoneField) phoneField.style.display = '';
+      if (countryBtn) countryBtn.style.display = '';
     } else {
-      phoneField.removeAttribute('required');
-      phoneField.value = '';
-      phoneField.style.display = 'none';
-      if (countrySel) countrySel.style.display = 'none';
+      if (phoneField) { phoneField.value = ''; phoneField.style.display = 'none'; }
+      if (countryBtn) countryBtn.style.display = 'none';
     }
 
-    // طرق الدفع
     const codEnabled = s.enable_cod !== false;
     const pickupEnabled = s.enable_pickup !== false;
     const codOpt = $('#codOption'), pickupOpt = $('#pickupOption');
@@ -1132,12 +1214,10 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
     else if (!codEnabled && pickupEnabled && payPickup) payPickup.checked = true;
     else if (codEnabled && pickupEnabled && payCod) payCod.checked = true;
 
-    // أجور التوصيل
     const codFee = Number(s.cod_delivery_fee || 0);
     const codFeeLabel = $('#codFeeLabel');
     if (codFeeLabel) codFeeLabel.textContent = codFee > 0 ? '+ ' + formatPrice(codFee) : '';
 
-    // الخريطة
     const mapEnabled = s.enable_map_picker !== false;
     const mapSec = $('#mapSection');
     if (mapSec) mapSec.style.display = mapEnabled ? '' : 'none';
@@ -1145,13 +1225,12 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
     updateCheckoutPaymentUI();
   }
 
-  function updateCheckoutPaymentUI(){
+  function updateCheckoutPaymentUI() {
     const s = state.settings || {};
     const isCod = $('#payCod') && $('#payCod').checked;
     const isPickup = $('#payPickup') && $('#payPickup').checked;
     const codFee = Number(s.cod_delivery_fee || 0);
 
-    // سطر أجور التوصيل
     const feeRow = $('#deliveryFeeRow');
     if (feeRow) {
       if (isCod && codFee > 0) {
@@ -1162,7 +1241,6 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
       }
     }
 
-    // تفاصيل الاستلام
     const pickupInfo = $('#pickupInfo');
     if (pickupInfo) {
       if (isPickup) {
@@ -1177,19 +1255,37 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
       }
     }
 
-    // الإجمالي
     const subtotal = state.cart.reduce((sum,i)=>sum+i.price*i.qty, 0);
     const st = $('#coSubtotal'); if (st) st.textContent = formatPrice(subtotal);
     const total = subtotal + (isCod ? codFee : 0);
     const tt = $('#coTotal'); if (tt) tt.textContent = formatPrice(total);
   }
 
-  function initCheckoutMap(){
+  // ===== MAP (MODAL) =====
+  function openMapModal() {
+    originalMapLat = $('#coLat').value;
+    originalMapLng = $('#coLng').value;
+    tempMapLat = originalMapLat ? Number(originalMapLat) : null;
+    tempMapLng = originalMapLng ? Number(originalMapLng) : null;
+    $('#mapModal').classList.add('open');
+    setTimeout(initCheckoutMap, 120);
+  }
+
+  function closeMapModal() {
+    $('#mapModal').classList.remove('open');
+  }
+
+  function initCheckoutMap() {
     const el = document.getElementById('checkoutMap');
     if (!el || typeof L === 'undefined') return;
 
     if (checkoutMap) {
-      setTimeout(()=>{ try{ checkoutMap.invalidateSize(); }catch(e){} }, 150);
+      try { checkoutMap.invalidateSize(); } catch(e){}
+      if (tempMapLat != null && tempMapLng != null) {
+        if (checkoutMarker) checkoutMarker.setLatLng([tempMapLat, tempMapLng]);
+        else checkoutMarker = L.marker([tempMapLat, tempMapLng]).addTo(checkoutMap);
+        checkoutMap.setView([tempMapLat, tempMapLng], 15);
+      }
       return;
     }
 
@@ -1198,65 +1294,99 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
       attribution: '© OpenStreetMap', maxZoom: 19
     }).addTo(checkoutMap);
 
-    checkoutMap.on('click', function(e){
+    checkoutMap.on('click', function(e) {
+      tempMapLat = e.latlng.lat;
+      tempMapLng = e.latlng.lng;
       if (checkoutMarker) checkoutMarker.setLatLng(e.latlng);
       else checkoutMarker = L.marker(e.latlng).addTo(checkoutMap);
-      $('#coLat').value = e.latlng.lat;
-      $('#coLng').value = e.latlng.lng;
-      $('#clearMarkerBtn').style.display = 'inline';
     });
 
-    $('#clearMarkerBtn').onclick = function(){
-      if (checkoutMarker) { checkoutMap.removeLayer(checkoutMarker); checkoutMarker = null; }
-      $('#coLat').value = ''; $('#coLng').value = '';
-      $('#clearMarkerBtn').style.display = 'none';
-    };
-
-    if (navigator.geolocation) {
+    if (tempMapLat != null && tempMapLng != null) {
+      checkoutMarker = L.marker([tempMapLat, tempMapLng]).addTo(checkoutMap);
+      checkoutMap.setView([tempMapLat, tempMapLng], 15);
+    } else if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        p => { try{ checkoutMap.setView([p.coords.latitude, p.coords.longitude], 14); }catch(e){} },
+        p => { try { checkoutMap.setView([p.coords.latitude, p.coords.longitude], 14); } catch(e){} },
         ()=>{}, { timeout: 5000 }
       );
     }
   }
 
-  async function openCheckout(){
+  function saveMapLocation() {
+    if (tempMapLat == null || tempMapLng == null) {
+      toast('اضغط على الخريطة أولًا لتحديد موقعك','error');
+      return;
+    }
+    $('#coLat').value = tempMapLat;
+    $('#coLng').value = tempMapLng;
+    const summary = $('#mapSummary'); if (summary) summary.style.display = 'flex';
+    const openMapText = $('#openMapBtnText'); if (openMapText) openMapText.textContent = 'تغيير الموقع المحدد';
+    closeMapModal();
+  }
+
+  function cancelMapModal() {
+    if (originalMapLat && originalMapLng) {
+      tempMapLat = Number(originalMapLat);
+      tempMapLng = Number(originalMapLng);
+    } else {
+      tempMapLat = null;
+      tempMapLng = null;
+      if (checkoutMarker && checkoutMap) { checkoutMap.removeLayer(checkoutMarker); checkoutMarker = null; }
+    }
+    closeMapModal();
+  }
+
+  function clearMapLocation() {
+    $('#coLat').value = ''; $('#coLng').value = '';
+    tempMapLat = null; tempMapLng = null;
+    if (checkoutMarker && checkoutMap) { checkoutMap.removeLayer(checkoutMarker); checkoutMarker = null; }
+    const summary = $('#mapSummary'); if (summary) summary.style.display = 'none';
+    const openMapText = $('#openMapBtnText'); if (openMapText) openMapText.textContent = 'حدد موقعك على الخريطة';
+  }
+
+  async function openCheckout() {
     if (!state.cart.length) return;
 
-    // البلد الافتراضي: settings → IP → سوريا
+    // إعادة تعيين الموقع
+    $('#coLat').value = ''; $('#coLng').value = '';
+    tempMapLat = null; tempMapLng = null;
+    if (checkoutMarker && checkoutMap) { checkoutMap.removeLayer(checkoutMarker); checkoutMarker = null; }
+    const summary = $('#mapSummary'); if (summary) summary.style.display = 'none';
+    const openMapText = $('#openMapBtnText'); if (openMapText) openMapText.textContent = 'حدد موقعك على الخريطة';
+
+    // الدولة الافتراضية: settings → IP → سوريا
     let defaultIso = null;
     const adminDefault = String(state.settings.phone_default_country || '').replace(/[^\d]/g,'');
     if (adminDefault) {
       const found = COUNTRIES.find(c => c[2] === adminDefault);
       if (found) defaultIso = found[0];
     }
-    if (!defaultIso && detectedCountryIso && COUNTRIES.find(c => c[0] === detectedCountryIso)) {
+    if (!defaultIso && detectedCountryIso && getCountryByIso(detectedCountryIso)) {
       defaultIso = detectedCountryIso;
     }
     if (!defaultIso) defaultIso = 'SY';
+    selectCountry(defaultIso);
 
-    populateCountrySelect(defaultIso);
     applyCheckoutSettings();
+    closeCountryMenu();
 
     $('#checkoutModal').classList.add('open');
     document.body.style.overflow = 'hidden';
-
-    if (state.settings.enable_map_picker !== false) {
-      setTimeout(initCheckoutMap, 120);
-    }
   }
 
-  function closeCheckout(){
+  function closeCheckout() {
+    closeCountryMenu();
+    closeMapModal();
     $('#checkoutModal').classList.remove('open');
     document.body.style.overflow = '';
   }
 
-  async function submitCheckout(e){
+  async function submitCheckout(e) {
     e.preventDefault();
 
     const s = state.settings || {};
 
-    // 1) منع الطلب بدون رقم واتساب نشط
+    // 1) منع الطلب بدون واتساب نشط
     const wa = getActiveWhatsAppNumber();
     if (!wa) {
       toast('لا يمكن إتمام الطلب حاليًا — لم يتم إعداد رقم واتساب. حاول لاحقًا.','error');
@@ -1281,9 +1411,9 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
     let countryCode = null, phoneNumber = null;
     if (phoneReq) {
       const iso = $('#coCountry').value;
-      const found = COUNTRIES.find(c => c[0] === iso);
+      const found = getCountryByIso(iso);
       countryCode = '+' + (found ? found[2] : '963');
-      phoneNumber = $('#coPhone').value.replace(/\s/g,'').trim();
+      phoneNumber = $('#coPhone').value.replace(/[\s\-]/g,'').trim();
       if (!phoneNumber) { toast('رقم الهاتف مطلوب','error'); return; }
       if (!/^\d{6,15}$/.test(phoneNumber)) { toast('رقم الهاتف غير صالح','error'); return; }
     }
@@ -1357,7 +1487,6 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
 
       try { await sb.rpc('record_rate_limit', { p_token: clientToken, p_action: 'order' }); } catch(e) {}
 
-      // بناء رسالة واتساب
       const trackingUrl = getSiteUrl() + '?order=' + encodeURIComponent(orderNumber);
       let msg = '*طلب جديد* #' + orderNumber + '\n\n';
       msg += '*الاسم:* ' + fullName + '\n';
@@ -1374,13 +1503,15 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
       msg += '\n*الإجمالي:* ' + formatPrice(total);
       msg += '\n\n🔗 *تتبع الطلب:*\n' + trackingUrl;
 
-      // تفريغ الفورم قبل الإغلاق
+      // تفريغ الفورم
       ['coFirstName','coFatherName','coLastName','coPhone','coCity','coDistrict','coAddressDetails','coNotes'].forEach(id=>{
         const el = document.getElementById(id); if (el) el.value = '';
       });
       $('#coLat').value = ''; $('#coLng').value = '';
       if (checkoutMarker && checkoutMap) { checkoutMap.removeLayer(checkoutMarker); checkoutMarker = null; }
       const cmb = $('#clearMarkerBtn'); if (cmb) cmb.style.display = 'none';
+      const mapSum = $('#mapSummary'); if (mapSum) mapSum.style.display = 'none';
+      const omt = $('#openMapBtnText'); if (omt) omt.textContent = 'حدد موقعك على الخريطة';
 
       state.cart = []; saveCart(); updateBadges(); refreshOrdersCount();
       closeCheckout(); closeCart();
@@ -1427,10 +1558,38 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
   $('#checkoutModalBackdrop').addEventListener('click', closeCheckout);
   $('#shopNowBtn').addEventListener('click', scrollToProducts);
 
-  // ربط أزرار طريقة الدفع
+  // أزرار طريقة الدفع
   ['payCod','payPickup'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.addEventListener('change', updateCheckoutPaymentUI);
+  });
+
+  // Country picker
+  $('#coCountryBtn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (countryMenuOpen) closeCountryMenu();
+    else openCountryMenu();
+  });
+  $('#coCountrySearch').addEventListener('input', (e) => renderCountryList(e.target.value));
+  document.addEventListener('click', (e) => {
+    if (countryMenuOpen && !e.target.closest('#coCountryMenu') && !e.target.closest('#coCountryBtn')) {
+      closeCountryMenu();
+    }
+  });
+
+  // Map modal
+  $('#openMapBtn').addEventListener('click', openMapModal);
+  $('#closeMapModalBtn').addEventListener('click', cancelMapModal);
+  $('#mapModalBackdrop').addEventListener('click', cancelMapModal);
+  $('#saveMapBtn').addEventListener('click', saveMapLocation);
+  $('#cancelMapBtn').addEventListener('click', cancelMapModal);
+  $('#clearMarkerBtn').addEventListener('click', clearMapLocation);
+
+  // ESC
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    if ($('#mapModal').classList.contains('open')) { cancelMapModal(); return; }
+    if (countryMenuOpen) { closeCountryMenu(); return; }
   });
 
   $$('[data-cat]').forEach(el => {
@@ -1441,7 +1600,7 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
     try {
       await loadSettings();
 
-      // كشف البلد عبر IP (اختياري، لا يعطل البدء إذا فشل)
+      // كشف البلد عبر IP (اختياري)
       try { detectedCountryIso = await detectCountryFromIP(); } catch(e) {}
 
       await loadCategoryCounts();
