@@ -8,24 +8,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#F4F5F7;--surface:#FFF;--sidebar:#0F1419;--sidebar-hover:#1A2028;
-  --sidebar-active:#1A4D3A;--ink:#0F0F0F;--muted:#6B7280;--border:#E5E7EB;
-  --accent:#1A4D3A;--accent-h:#133A2C;--gold:#B8894A;--danger:#DC2626;
-  --success:#16A34A;--warning:#D97706;--info:#2563EB;
-  --r:8px;--r-sm:6px;--r-lg:12px;
-  --sh-sm:0 1px 2px rgba(0,0,0,.04);
-  --sh-md:0 4px 12px rgba(0,0,0,.06);
-  --sh-lg:0 12px 32px rgba(0,0,0,.15);
-}
+:root{--bg:#F4F5F7;--surface:#FFF;--sidebar:#0F1419;--sidebar-hover:#1A2028;--sidebar-active:#1A4D3A;--ink:#0F0F0F;--muted:#6B7280;--border:#E5E7EB;--accent:#1A4D3A;--accent-h:#133A2C;--gold:#B8894A;--danger:#DC2626;--success:#16A34A;--warning:#D97706;--info:#2563EB;--r:8px;--r-sm:6px;--r-lg:12px;--sh-sm:0 1px 2px rgba(0,0,0,.04);--sh-md:0 4px 12px rgba(0,0,0,.06);--sh-lg:0 12px 32px rgba(0,0,0,.15)}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{font-family:'Cairo',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased}
 img{display:block;max-width:100%}
 button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
 input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
-
-/* LOGIN */
 #loginScreen{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}
 .login-card{background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--sh-lg);width:100%;max-width:420px;padding:40px;border:1px solid var(--border)}
 .login-logo{width:56px;height:56px;background:var(--accent);border-radius:var(--r);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.5rem;font-weight:700;margin-bottom:20px}
@@ -39,8 +28,6 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
 .btn-login:hover{background:var(--accent-h);transform:translateY(-1px)}
 .btn-login:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .login-error{background:#FEE2E2;color:#991B1B;padding:10px 14px;border-radius:var(--r);font-size:.85rem;margin-bottom:16px;display:none}
-
-/* LAYOUT */
 #dashboard{display:none;min-height:100vh;flex-direction:row}
 #dashboard.show{display:flex}
 .sidebar{width:260px;background:var(--sidebar);color:#fff;display:flex;flex-direction:column;flex-shrink:0;position:fixed;top:0;bottom:0;right:0;z-index:50;transition:transform .25s ease}
@@ -59,15 +46,12 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
 .user-info{font-size:.8rem;color:rgba(255,255,255,.5);margin-bottom:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .btn-logout{width:100%;padding:8px 12px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.8);border-radius:var(--r-sm);font-size:.85rem;font-weight:500;transition:background .15s}
 .btn-logout:hover{background:rgba(220,38,38,.2);color:#FCA5A5}
-
 .main-content{flex:1;margin-right:260px;padding:32px;max-width:calc(100% - 260px)}
 .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:16px}
 .topbar h1{font-size:1.75rem;font-weight:700;letter-spacing:-.02em}
 .topbar-sub{color:var(--muted);font-size:.9rem;margin-top:2px}
 .mobile-menu-btn{display:none;width:40px;height:40px;border-radius:var(--r);background:var(--surface);border:1px solid var(--border);align-items:center;justify-content:center}
 .mobile-menu-btn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2}
-
-/* STATS */
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:32px}
 .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;transition:box-shadow .15s,transform .15s}
 .stat-card:hover{box-shadow:var(--sh-md);transform:translateY(-1px)}
@@ -80,18 +64,12 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
 .stat-icon.purple{background:#F3E8FF;color:#7C3AED}
 .stat-label{font-size:.85rem;color:var(--muted);font-weight:500}
 .stat-value{font-size:2rem;font-weight:700;letter-spacing:-.03em;line-height:1.2}
-
-/* PAGE */
 .page{display:none}
 .page.active{display:block}
-
-/* CARD */
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin-bottom:24px}
 .card-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
 .card-title{font-size:1.15rem;font-weight:700}
 .card-title-sub{font-size:.85rem;color:var(--muted);margin-top:2px}
-
-/* TABLE */
 .table-wrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:.9rem}
 thead{background:#F9FAFB}
@@ -102,8 +80,6 @@ tr:hover td{background:#FAFBFC}
 .table-img{width:48px;height:60px;object-fit:cover;border-radius:var(--r-sm);background:var(--bg)}
 .cell-name{font-weight:600;color:var(--ink)}
 .cell-muted{color:var(--muted);font-size:.85rem}
-
-/* TOP PRODUCTS */
 .top-prod-cell{display:flex;align-items:center;gap:12px}
 .top-prod-img{width:44px;height:54px;object-fit:cover;border-radius:var(--r-sm);background:var(--bg);flex-shrink:0;border:1px solid var(--border)}
 .top-prod-info{display:flex;flex-direction:column;gap:4px;min-width:0}
@@ -111,8 +87,6 @@ tr:hover td{background:#FAFBFC}
 .top-prod-link-btn{background:none;border:none;padding:0;cursor:pointer;font-size:.75rem;color:var(--accent);font-weight:600;display:inline-flex;align-items:center;gap:3px;font-family:inherit;transition:color .15s;text-decoration:underline}
 .top-prod-link-btn:hover{color:var(--accent-h)}
 .top-prod-link-btn svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2.5}
-
-/* BADGES */
 .badge-pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:.75rem;font-weight:600;white-space:nowrap}
 .badge-success{background:#D1FAE5;color:#065F46}
 .badge-warning{background:#FEF3C7;color:#92400E}
@@ -120,41 +94,31 @@ tr:hover td{background:#FAFBFC}
 .badge-info{background:#DBEAFE;color:#1E40AF}
 .badge-gray{background:#F3F4F6;color:#4B5563}
 .badge-purple{background:#F3E8FF;color:#7C3AED}
-
-/* FILTERS */
+.badge-owner{background:#FEF3C7;color:#92400E;border:1px solid #FCD34D}
+.badge-admin{background:#DBEAFE;color:#1E40AF;border:1px solid #93C5FD}
 .filters-row{display:flex;gap:12px;padding:16px 24px;border-bottom:1px solid var(--border);flex-wrap:wrap}
 .search-input-wrap{flex:1;min-width:200px;position:relative}
 .search-input-wrap svg{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--muted);pointer-events:none;stroke:currentColor;fill:none;stroke-width:2}
 .filters-row input[type="text"],.filters-row select{padding:9px 14px;border:1px solid var(--border);border-radius:var(--r);font-size:.9rem;background:var(--surface)}
 .search-input-wrap input{width:100%;padding:9px 38px 9px 14px}
 .filters-row input:focus,.filters-row select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(26,77,58,.08)}
-
-/* PAGINATION */
 .pagination{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-top:1px solid var(--border);flex-wrap:wrap;gap:12px;font-size:.85rem;color:var(--muted)}
 .pagination-btns{display:flex;gap:6px}
 .pagination-btn{min-width:36px;height:36px;padding:0 12px;border:1px solid var(--border);background:var(--surface);border-radius:var(--r-sm);font-weight:600;font-size:.85rem;transition:all .15s}
 .pagination-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
 .pagination-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 .pagination-btn:disabled{opacity:.4;cursor:not-allowed}
-
-/* EMPTY */
 .empty{text-align:center;padding:60px 20px;color:var(--muted)}
 .empty p{font-size:.9rem}
-
-/* LOADING */
 .loading-overlay{position:fixed;inset:0;z-index:200;background:rgba(255,255,255,.85);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center}
 .loading-overlay.show{display:flex}
 .spinner{width:44px;height:44px;border:4px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-
-/* TOAST */
 .toast-container{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:300;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
 .toast{background:#1F2937;color:#fff;padding:12px 20px;border-radius:var(--r);font-size:.9rem;font-weight:500;box-shadow:var(--sh-lg);animation:slideUp .3s ease-out;max-width:90vw}
 .toast.success{background:var(--success)}
 .toast.error{background:var(--danger)}
 @keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
-
-/* BUTTONS */
 .btn{padding:9px 18px;border-radius:var(--r);font-size:.9rem;font-weight:600;display:inline-flex;align-items:center;gap:8px;transition:all .15s;border:1px solid transparent;white-space:nowrap}
 .btn-primary{background:var(--accent);color:#fff}
 .btn-primary:hover{background:var(--accent-h)}
@@ -167,8 +131,6 @@ tr:hover td{background:#FAFBFC}
 .btn-sm{padding:6px 12px;font-size:.8rem}
 .btn:disabled{opacity:.6;cursor:not-allowed}
 .btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2}
-
-/* ACTIONS */
 .actions-cell{display:flex;gap:6px;justify-content:flex-end}
 .action-btn{width:32px;height:32px;border-radius:var(--r-sm);display:inline-flex;align-items:center;justify-content:center;transition:all .15s;border:1px solid transparent}
 .action-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2}
@@ -180,8 +142,6 @@ tr:hover td{background:#FAFBFC}
 .action-btn.toggle:hover{background:#FDE68A}
 .action-btn.view{color:var(--accent);background:#F0F5F1}
 .action-btn.view:hover{background:#E8F0EC}
-
-/* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:none;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto}
 .modal-overlay.show{display:flex}
 .modal-box{background:var(--surface);border-radius:var(--r-lg);width:100%;max-width:900px;box-shadow:var(--sh-lg);margin:auto;position:relative}
@@ -194,8 +154,6 @@ tr:hover td{background:#FAFBFC}
 .modal-close svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2}
 .modal-body{padding:24px 28px;max-height:calc(100vh - 220px);overflow-y:auto}
 .modal-footer{padding:16px 28px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;position:sticky;bottom:0;background:var(--surface);border-radius:0 0 var(--r-lg) var(--r-lg);z-index:2;flex-wrap:wrap}
-
-/* FORM */
 .form-section{margin-bottom:24px}
 .form-section-title{font-size:.85rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--border)}
 .form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
@@ -211,8 +169,6 @@ tr:hover td{background:#FAFBFC}
 .checkbox-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface);cursor:pointer}
 .checkbox-row input[type="checkbox"]{width:18px;height:18px;cursor:pointer;accent-color:var(--accent)}
 .checkbox-row label{font-size:.9rem;font-weight:500;cursor:pointer;flex:1}
-
-/* TOGGLE SWITCH */
 .switch-row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);margin-bottom:12px}
 .switch-info{flex:1}
 .switch-title{font-size:.95rem;font-weight:600;color:var(--ink);margin-bottom:2px}
@@ -223,8 +179,6 @@ tr:hover td{background:#FAFBFC}
 .switch-slider:before{position:absolute;content:"";height:20px;width:20px;left:3px;bottom:3px;background-color:white;transition:.3s;border-radius:50%}
 .switch input:checked + .switch-slider{background-color:var(--success)}
 .switch input:checked + .switch-slider:before{transform:translateX(22px)}
-
-/* DYNAMIC LIST */
 .dynamic-list{display:flex;flex-direction:column;gap:8px}
 .dynamic-item{display:flex;gap:8px;align-items:center;padding:8px;background:var(--bg);border-radius:var(--r-sm);border:1px solid var(--border)}
 .dynamic-item .form-input{flex:1;background:var(--surface)}
@@ -239,8 +193,6 @@ tr:hover td{background:#FAFBFC}
 .add-dyn-btn{padding:10px 18px;border:2px solid var(--accent);border-radius:var(--r-sm);font-size:.9rem;font-weight:700;color:var(--accent);background:#F0F5F1;transition:all .15s;display:inline-flex;align-items:center;gap:8px;cursor:pointer}
 .add-dyn-btn:hover{background:var(--accent);color:#fff}
 .add-dyn-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.5}
-
-/* UPLOAD */
 .upload-zone{border:2px dashed var(--border);border-radius:var(--r);padding:24px;text-align:center;background:var(--bg);transition:all .15s;cursor:pointer}
 .upload-zone:hover{border-color:var(--accent);background:#F0F5F1}
 .upload-zone.dragover{border-color:var(--accent);background:#E8F0EC}
@@ -249,22 +201,16 @@ tr:hover td{background:#FAFBFC}
 .upload-zone small{font-size:.75rem;color:var(--muted)}
 .upload-zone input[type="file"]{display:none}
 #imageGrid{display:block;width:100%;margin-top:16px;font-size:0;line-height:0}
-
-/* CONFIRM */
 .confirm-icon{width:56px;height:56px;border-radius:50%;background:#FEE2E2;color:var(--danger);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
 .confirm-icon svg{width:28px;height:28px;stroke:currentColor;fill:none;stroke-width:2}
 .confirm-text{text-align:center;font-size:.95rem;color:var(--muted);margin-bottom:8px}
 .confirm-bold{text-align:center;font-size:1.05rem;font-weight:700;color:var(--ink);margin-bottom:24px}
-
-/* IMAGE LIGHTBOX */
 #imageLightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:600;display:none;align-items:center;justify-content:center;padding:20px;cursor:zoom-out}
 #imageLightbox.show{display:flex}
 #imageLightbox img{max-width:92vw;max-height:88vh;object-fit:contain;border-radius:8px;box-shadow:0 12px 32px rgba(0,0,0,.5)}
 #imageLightbox .lightbox-close{position:absolute;top:20px;right:20px;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.15);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;transition:background .15s}
 #imageLightbox .lightbox-close:hover{background:rgba(255,255,255,.3)}
 #imageLightbox .lightbox-close svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2.5}
-
-/* ORDER DETAIL */
 .order-detail-grid{display:flex;flex-direction:column;gap:20px}
 .order-detail-header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;padding-bottom:16px;border-bottom:1px solid var(--border)}
 .order-detail-number{font-size:1.3rem;font-weight:700;color:var(--accent)}
@@ -287,8 +233,6 @@ tr:hover td{background:#FAFBFC}
 .order-detail-total{display:flex;justify-content:space-between;padding:16px;background:var(--bg);border-radius:var(--r);border:1px solid var(--border);font-size:1.1rem;font-weight:700}
 .order-status-select{display:flex;gap:8px;flex-wrap:wrap}
 .order-status-select select{padding:9px 14px;border:1px solid var(--border);border-radius:var(--r);font-size:.9rem;background:var(--surface);flex:1;min-width:180px}
-
-/* REVIEWS */
 .reviews-tabs{display:flex;gap:4px;padding:16px 24px;border-bottom:1px solid var(--border);background:#F9FAFB;overflow-x:auto}
 .reviews-tab{padding:8px 16px;border-radius:var(--r-sm);font-size:.85rem;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s;border:1px solid transparent;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
 .reviews-tab:hover{color:var(--ink)}
@@ -308,40 +252,19 @@ tr:hover td{background:#FAFBFC}
 .review-card-date{font-size:.75rem;color:var(--muted)}
 .review-card-comment{font-size:.9rem;color:var(--ink);line-height:1.6;background:var(--bg);padding:10px 14px;border-radius:var(--r-sm);margin-bottom:12px}
 .review-card-actions{display:flex;gap:8px;flex-wrap:wrap}
-
-/* BLOCKED */
 .blocked-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
 .blocked-info{flex:1;min-width:200px}
 .blocked-type{font-size:.75rem;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
 .blocked-value{font-size:.95rem;font-weight:600;color:var(--ink);word-break:break-all}
 .blocked-reason{font-size:.8rem;color:var(--muted);margin-top:4px;font-style:italic}
 .blocked-date{font-size:.75rem;color:var(--muted);margin-top:6px}
-
 @media(max-width:1200px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:900px){
-  .sidebar{transform:translateX(100%)}
-  .sidebar.open{transform:translateX(0)}
-  .main-content{margin-right:0;max-width:100%;padding:20px}
-  .mobile-menu-btn{display:flex}
-  .stats-grid{grid-template-columns:1fr}
-  .top-prod-name{max-width:140px}
-  .order-detail-info-grid{grid-template-columns:1fr}
-}
-@media(max-width:768px){
-  .form-grid,.form-grid.three{grid-template-columns:1fr}
-  .modal-overlay{padding:0}
-  .modal-box{border-radius:0;min-height:100vh}
-  .modal-header,.modal-footer{border-radius:0}
-  .modal-body{max-height:none}
-  .topbar h1{font-size:1.4rem}
-  .dynamic-item{flex-wrap:wrap}
-  .review-card{margin:12px 16px}
-}
+@media(max-width:900px){.sidebar{transform:translateX(100%)}.sidebar.open{transform:translateX(0)}.main-content{margin-right:0;max-width:100%;padding:20px}.mobile-menu-btn{display:flex}.stats-grid{grid-template-columns:1fr}.top-prod-name{max-width:140px}.order-detail-info-grid{grid-template-columns:1fr}}
+@media(max-width:768px){.form-grid,.form-grid.three{grid-template-columns:1fr}.modal-overlay{padding:0}.modal-box{border-radius:0;min-height:100vh}.modal-header,.modal-footer{border-radius:0}.modal-body{max-height:none}.topbar h1{font-size:1.4rem}.dynamic-item{flex-wrap:wrap}.review-card{margin:12px 16px}}
 </style>
 </head>
 <body>
 
-<!-- LOGIN SCREEN -->
 <div id="loginScreen">
   <div class="login-card">
     <div class="login-logo">م</div>
@@ -362,7 +285,6 @@ tr:hover td{background:#FAFBFC}
   </div>
 </div>
 
-<!-- DASHBOARD -->
 <div id="dashboard">
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
@@ -370,30 +292,13 @@ tr:hover td{background:#FAFBFC}
       <div><div class="sidebar-brand">المتجر</div><div class="sidebar-sub">لوحة التحكم</div></div>
     </div>
     <nav class="sidebar-nav">
-      <a class="nav-item active" data-page="dashboard">
-        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        لوحة القيادة
-      </a>
-      <a class="nav-item" data-page="products">
-        <svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-        المنتجات
-      </a>
-      <a class="nav-item" data-page="orders">
-        <svg viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>
-        الطلبات <span class="nav-count" id="navOrdersCount">0</span>
-      </a>
-      <a class="nav-item" data-page="reviews">
-        <svg viewBox="0 0 24 24"><path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 0 0 .95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 0 0-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 0 0-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 0 0-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 0 0 .951-.69l1.519-4.674z"/></svg>
-        التقييمات <span class="nav-count" id="navReviewsCount">0</span>
-      </a>
-      <a class="nav-item" data-page="blocked">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
-        المحظورون
-      </a>
-      <a class="nav-item" data-page="settings">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        الإعدادات
-      </a>
+      <a class="nav-item active" data-page="dashboard"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>لوحة القيادة</a>
+      <a class="nav-item" data-page="products"><svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>المنتجات</a>
+      <a class="nav-item" data-page="orders"><svg viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>الطلبات <span class="nav-count" id="navOrdersCount">0</span></a>
+      <a class="nav-item" data-page="reviews"><svg viewBox="0 0 24 24"><path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 0 0 .95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 0 0-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 0 0-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 0 0-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 0 0 .951-.69l1.519-4.674z"/></svg>التقييمات <span class="nav-count" id="navReviewsCount">0</span></a>
+      <a class="nav-item" data-page="blocked"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>المحظورون</a>
+      <a class="nav-item" data-page="admins" id="navAdmins" style="display:none"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>المدراء</a>
+      <a class="nav-item" data-page="settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>الإعدادات</a>
     </nav>
     <div class="sidebar-footer">
       <div class="user-info" id="userEmail">—</div>
@@ -404,48 +309,21 @@ tr:hover td{background:#FAFBFC}
   <main class="main-content">
     <div class="topbar">
       <div style="display:flex;align-items:center;gap:12px">
-        <button class="mobile-menu-btn" id="mobileMenuBtn">
-          <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-        </button>
-        <div>
-          <h1 id="pageTitle">لوحة القيادة</h1>
-          <p class="topbar-sub" id="pageSubtitle">نظرة عامة على أداء متجرك</p>
-        </div>
+        <button class="mobile-menu-btn" id="mobileMenuBtn"><svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+        <div><h1 id="pageTitle">لوحة القيادة</h1><p class="topbar-sub" id="pageSubtitle">نظرة عامة على أداء متجرك</p></div>
       </div>
     </div>
 
     <div class="page active" id="page-dashboard">
       <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-card-header"><div class="stat-icon green"><svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div></div>
-          <div class="stat-label">إجمالي المنتجات</div>
-          <div class="stat-value" id="statProducts">—</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-card-header"><div class="stat-icon blue"><svg viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg></div></div>
-          <div class="stat-label">إجمالي الطلبات</div>
-          <div class="stat-value" id="statOrders">—</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-card-header"><div class="stat-icon gold"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div></div>
-          <div class="stat-label">الإيرادات</div>
-          <div class="stat-value" id="statRevenue">—</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-card-header"><div class="stat-icon purple"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div></div>
-          <div class="stat-label">إجمالي المشاهدات</div>
-          <div class="stat-value" id="statViews">—</div>
-        </div>
+        <div class="stat-card"><div class="stat-card-header"><div class="stat-icon green"><svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div></div><div class="stat-label">إجمالي المنتجات</div><div class="stat-value" id="statProducts">—</div></div>
+        <div class="stat-card"><div class="stat-card-header"><div class="stat-icon blue"><svg viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg></div></div><div class="stat-label">إجمالي الطلبات</div><div class="stat-value" id="statOrders">—</div></div>
+        <div class="stat-card"><div class="stat-card-header"><div class="stat-icon gold"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div></div><div class="stat-label">الإيرادات</div><div class="stat-value" id="statRevenue">—</div></div>
+        <div class="stat-card"><div class="stat-card-header"><div class="stat-icon purple"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div></div><div class="stat-label">إجمالي المشاهدات</div><div class="stat-value" id="statViews">—</div></div>
       </div>
-
       <div class="card">
         <div class="card-header"><div><div class="card-title">أعلى المنتجات مشاهدةً</div><div class="card-title-sub">المنتجات الأكثر تفاعلًا</div></div></div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>#</th><th>المنتج</th><th>المشاهدات</th><th>الطلبات</th><th>الإيرادات</th><th>التقييم</th></tr></thead>
-            <tbody id="topProductsBody"><tr><td colspan="6" style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</td></tr></tbody>
-          </table>
-        </div>
+        <div class="table-wrap"><table><thead><tr><th>#</th><th>المنتج</th><th>المشاهدات</th><th>الطلبات</th><th>الإيرادات</th><th>التقييم</th></tr></thead><tbody id="topProductsBody"><tr><td colspan="6" style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</td></tr></tbody></table></div>
       </div>
     </div>
 
@@ -456,33 +334,12 @@ tr:hover td{background:#FAFBFC}
           <button class="btn btn-primary" id="addProductBtn"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> إضافة منتج</button>
         </div>
         <div class="filters-row">
-          <div class="search-input-wrap">
-            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            <input type="text" id="productsSearch" placeholder="ابحث بالاسم...">
-          </div>
-          <select id="productsCategoryFilter">
-            <option value="">كل الفئات</option>
-            <option value="ملابس">ملابس</option>
-            <option value="أحذية وحقائب">أحذية وحقائب</option>
-            <option value="إكسسوارات">إكسسوارات</option>
-          </select>
-          <select id="productsStatusFilter">
-            <option value="">كل الحالات</option>
-            <option value="active">نشط</option>
-            <option value="inactive">مخفي</option>
-            <option value="outstock">غير متوفر</option>
-          </select>
+          <div class="search-input-wrap"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input type="text" id="productsSearch" placeholder="ابحث بالاسم..."></div>
+          <select id="productsCategoryFilter"><option value="">كل الفئات</option><option value="ملابس">ملابس</option><option value="أحذية وحقائب">أحذية وحقائب</option><option value="إكسسوارات">إكسسوارات</option></select>
+          <select id="productsStatusFilter"><option value="">كل الحالات</option><option value="active">نشط</option><option value="inactive">مخفي</option><option value="outstock">غير متوفر</option></select>
         </div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th style="width:60px">صورة</th><th>الاسم</th><th>الفئة</th><th>السعر</th><th>المخزون</th><th>المشاهدات</th><th>الحالة</th><th style="width:120px;text-align:left">الإجراءات</th></tr></thead>
-            <tbody id="productsTableBody"><tr><td colspan="8" style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</td></tr></tbody>
-          </table>
-        </div>
-        <div class="pagination" id="productsPagination" style="display:none">
-          <div id="paginationInfo">—</div>
-          <div class="pagination-btns" id="paginationBtns"></div>
-        </div>
+        <div class="table-wrap"><table><thead><tr><th style="width:60px">صورة</th><th>الاسم</th><th>الفئة</th><th>السعر</th><th>المخزون</th><th>المشاهدات</th><th>الحالة</th><th style="width:120px;text-align:left">الإجراءات</th></tr></thead><tbody id="productsTableBody"><tr><td colspan="8" style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</td></tr></tbody></table></div>
+        <div class="pagination" id="productsPagination" style="display:none"><div id="paginationInfo">—</div><div class="pagination-btns" id="paginationBtns"></div></div>
       </div>
     </div>
 
@@ -490,29 +347,11 @@ tr:hover td{background:#FAFBFC}
       <div class="card">
         <div class="card-header"><div><div class="card-title">الطلبات</div><div class="card-title-sub" id="ordersSubtitle">—</div></div></div>
         <div class="filters-row">
-          <div class="search-input-wrap">
-            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            <input type="text" id="ordersSearch" placeholder="ابحث برقم الطلب، الاسم، الهاتف...">
-          </div>
-          <select id="ordersStatusFilter">
-            <option value="">كل الحالات</option>
-            <option value="pending">قيد المراجعة</option>
-            <option value="confirmed">تم التأكيد</option>
-            <option value="shipped">تم الشحن</option>
-            <option value="delivered">تم التسليم</option>
-            <option value="cancelled">ملغى</option>
-          </select>
+          <div class="search-input-wrap"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input type="text" id="ordersSearch" placeholder="ابحث برقم الطلب، الاسم، الهاتف..."></div>
+          <select id="ordersStatusFilter"><option value="">كل الحالات</option><option value="pending">قيد المراجعة</option><option value="confirmed">تم التأكيد</option><option value="shipped">تم الشحن</option><option value="delivered">تم التسليم</option><option value="cancelled">ملغى</option></select>
         </div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>رقم الطلب</th><th>التاريخ</th><th>الاسم</th><th>الهاتف</th><th>الإجمالي</th><th>الحالة</th><th style="width:130px;text-align:left">الإجراءات</th></tr></thead>
-            <tbody id="ordersTableBody"><tr><td colspan="7" style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</td></tr></tbody>
-          </table>
-        </div>
-        <div class="pagination" id="ordersPagination" style="display:none">
-          <div id="ordersPaginationInfo">—</div>
-          <div class="pagination-btns" id="ordersPaginationBtns"></div>
-        </div>
+        <div class="table-wrap"><table><thead><tr><th>رقم الطلب</th><th>التاريخ</th><th>الاسم</th><th>الهاتف</th><th>الإجمالي</th><th>الحالة</th><th style="width:130px;text-align:left">الإجراءات</th></tr></thead><tbody id="ordersTableBody"><tr><td colspan="7" style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</td></tr></tbody></table></div>
+        <div class="pagination" id="ordersPagination" style="display:none"><div id="ordersPaginationInfo">—</div><div class="pagination-btns" id="ordersPaginationBtns"></div></div>
       </div>
     </div>
 
@@ -524,9 +363,7 @@ tr:hover td{background:#FAFBFC}
           <button class="reviews-tab" data-tab="approved">مقبولة <span class="tab-count" id="reviewsApprovedCount">0</span></button>
           <button class="reviews-tab" data-tab="rejected">مرفوضة <span class="tab-count" id="reviewsRejectedCount">0</span></button>
         </div>
-        <div id="reviewsListContainer" style="padding:0 0 24px">
-          <div style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</div>
-        </div>
+        <div id="reviewsListContainer" style="padding:0 0 24px"><div style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</div></div>
       </div>
     </div>
 
@@ -536,127 +373,68 @@ tr:hover td{background:#FAFBFC}
           <div><div class="card-title">الزبائن المحظورون</div><div class="card-title-sub" id="blockedSubtitle">—</div></div>
           <button class="btn btn-danger" id="addBlockedBtn"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg> حظر يدوي</button>
         </div>
-        <div id="blockedListContainer" style="padding:16px 0">
-          <div style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</div>
-        </div>
+        <div id="blockedListContainer" style="padding:16px 0"><div style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</div></div>
       </div>
     </div>
 
-    <!-- PAGE: Settings -->
-    <div class="page" id="page-settings">
+    <div class="page" id="page-admins">
       <div class="card">
         <div class="card-header">
-          <div><div class="card-title">إعدادات المتجر</div><div class="card-title-sub">اسم المتجر، العملة، الواتساب، الهاتف، والمحتوى</div></div>
+          <div><div class="card-title">المدراء</div><div class="card-title-sub">إدارة المدراء والمالك</div></div>
+          <button class="btn btn-primary" id="addAdminBtn"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> إضافة مدير</button>
         </div>
+        <div class="table-wrap"><table><thead><tr><th>البريد الإلكتروني</th><th>الدور</th><th>تاريخ الإضافة</th><th style="width:100px;text-align:left">الإجراءات</th></tr></thead><tbody id="adminsTableBody"><tr><td colspan="4" style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</td></tr></tbody></table></div>
+      </div>
+    </div>
+
+    <div class="page" id="page-settings">
+      <div class="card">
+        <div class="card-header"><div><div class="card-title">إعدادات المتجر</div><div class="card-title-sub">اسم المتجر، العملة، الواتساب، الهاتف، والمحتوى</div></div></div>
         <div class="modal-body" style="padding:24px 28px;max-height:none">
           <div class="form-section">
             <div class="form-section-title">معلومات المتجر</div>
             <div class="form-grid">
-              <div class="form-field full">
-                <label class="form-label">اسم المتجر</label>
-                <input type="text" class="form-input" id="setStoreName" maxlength="100" placeholder="متجري">
-                <p class="form-hint">يظهر في الترويسة والفوتر وعنوان الصفحة</p>
-              </div>
-              <div class="form-field">
-                <label class="form-label">رقم واتساب</label>
-                <input type="text" class="form-input" id="setWhatsapp" placeholder="963912345678" maxlength="20" style="direction:ltr;text-align:right">
-                <p class="form-hint">بدون + أو مسافات</p>
-              </div>
-              <div class="form-field">
-                <label class="form-label">العملة</label>
-                <select class="form-select" id="setCurrency">
-                  <option value="SYP">ليرة سورية (ل.س)</option>
-                  <option value="USD">دولار أمريكي ($)</option>
-                  <option value="EUR">يورو (€)</option>
-                  <option value="SAR">ريال سعودي (ر.س)</option>
-                  <option value="AED">درهم إماراتي (د.إ)</option>
-                </select>
-              </div>
-              <div class="form-field full">
-                <label class="form-label">شريط الإعلان (اختياري)</label>
-                <input type="text" class="form-input" id="setAnnouncement" maxlength="200" placeholder="شحن لجميع المناطق...">
-                <p class="form-hint">اتركه فارغًا لإخفاء الشريط</p>
-              </div>
+              <div class="form-field full"><label class="form-label">اسم المتجر</label><input type="text" class="form-input" id="setStoreName" maxlength="100" placeholder="متجري"><p class="form-hint">يظهر في الترويسة والفوتر وعنوان الصفحة</p></div>
+              <div class="form-field"><label class="form-label">رقم واتساب</label><input type="text" class="form-input" id="setWhatsapp" placeholder="963912345678" maxlength="20" style="direction:ltr;text-align:right"><p class="form-hint">بدون + أو مسافات</p></div>
+              <div class="form-field"><label class="form-label">العملة</label><select class="form-select" id="setCurrency"><option value="SYP">ليرة سورية (ل.س)</option><option value="USD">دولار أمريكي ($)</option><option value="EUR">يورو (€)</option><option value="SAR">ريال سعودي (ر.س)</option><option value="AED">درهم إماراتي (د.إ)</option></select></div>
+              <div class="form-field full"><label class="form-label">شريط الإعلان (اختياري)</label><input type="text" class="form-input" id="setAnnouncement" maxlength="200" placeholder="شحن لجميع المناطق..."><p class="form-hint">اتركه فارغًا لإخفاء الشريط</p></div>
             </div>
           </div>
-
           <div class="form-section">
             <div class="form-section-title">محتوى الصفحة الرئيسية</div>
             <div class="form-grid">
-              <div class="form-field full">
-                <label class="form-label">عنوان Hero</label>
-                <input type="text" class="form-input" id="setHeroTitle" maxlength="100" placeholder="تسوق بذكاء...">
-              </div>
-              <div class="form-field full">
-                <label class="form-label">وصف Hero</label>
-                <textarea class="form-textarea" id="setHeroSubtitle" rows="2" maxlength="300" placeholder="مجموعة مختارة..."></textarea>
-              </div>
-              <div class="form-field full">
-                <label class="form-label">رابط صورة Hero</label>
-                <input type="url" class="form-input" id="setHeroImage" placeholder="https://..." style="direction:ltr;text-align:right">
-                <p class="form-hint">رابط صورة كامل (Unsplash أو Supabase Storage)</p>
-              </div>
+              <div class="form-field full"><label class="form-label">عنوان Hero</label><input type="text" class="form-input" id="setHeroTitle" maxlength="100" placeholder="تسوق بذكاء..."></div>
+              <div class="form-field full"><label class="form-label">وصف Hero</label><textarea class="form-textarea" id="setHeroSubtitle" rows="2" maxlength="300" placeholder="مجموعة مختارة..."></textarea></div>
+              <div class="form-field full"><label class="form-label">رابط صورة Hero</label><input type="url" class="form-input" id="setHeroImage" placeholder="https://..." style="direction:ltr;text-align:right"><p class="form-hint">رابط صورة كامل (Unsplash أو Supabase Storage)</p></div>
             </div>
           </div>
-
           <div class="form-section">
             <div class="form-section-title">إعدادات الهاتف (الأمان)</div>
             <div class="switch-row">
-              <div class="switch-info">
-                <div class="switch-title">طلب رقم الهاتف إلزاميًا</div>
-                <div class="switch-desc">عند التعطيل، يمكن للزبون إتمام الطلب بدون رقم هاتف</div>
-              </div>
-              <label class="switch">
-                <input type="checkbox" id="setPhoneRequired">
-                <span class="switch-slider"></span>
-              </label>
+              <div class="switch-info"><div class="switch-title">طلب رقم الهاتف إلزاميًا</div><div class="switch-desc">عند التعطيل، يمكن للزبون إتمام الطلب بدون رقم هاتف</div></div>
+              <label class="switch"><input type="checkbox" id="setPhoneRequired"><span class="switch-slider"></span></label>
             </div>
             <div class="form-grid">
-              <div class="form-field">
-                <label class="form-label">الحد الأدنى للأرقام</label>
-                <input type="number" class="form-input" id="setPhoneMin" min="4" max="20" step="1">
-                <p class="form-hint">الافتراضي: 9</p>
-              </div>
-              <div class="form-field">
-                <label class="form-label">الحد الأقصى للأرقام</label>
-                <input type="number" class="form-input" id="setPhoneMax" min="4" max="20" step="1">
-                <p class="form-hint">الافتراضي: 15</p>
-              </div>
-              <div class="form-field full">
-                <label class="form-label">Regex مخصص (اختياري)</label>
-                <input type="text" class="form-input" id="setPhoneRegex" placeholder="^963[0-9]{9}$" style="direction:ltr;text-align:right;font-family:monospace">
-                <p class="form-hint">اتركه فارغًا لاستخدام الفحص الافتراضي (يمنع الأرقام المتسلسلة والمكررة)</p>
-              </div>
+              <div class="form-field"><label class="form-label">الحد الأدنى للأرقام</label><input type="number" class="form-input" id="setPhoneMin" min="4" max="20" step="1"><p class="form-hint">الافتراضي: 9</p></div>
+              <div class="form-field"><label class="form-label">الحد الأقصى للأرقام</label><input type="number" class="form-input" id="setPhoneMax" min="4" max="20" step="1"><p class="form-hint">الافتراضي: 15</p></div>
+              <div class="form-field full"><label class="form-label">Regex مخصص (اختياري)</label><input type="text" class="form-input" id="setPhoneRegex" placeholder="^963[0-9]{9}$" style="direction:ltr;text-align:right;font-family:monospace"><p class="form-hint">اتركه فارغًا لاستخدام الفحص الافتراضي</p></div>
             </div>
           </div>
-
           <div class="form-section">
             <div class="form-section-title">إعدادات إضافية</div>
             <div class="switch-row">
-              <div class="switch-info">
-                <div class="switch-title">تفعيل الدفع عبر PayPal</div>
-                <div class="switch-desc">عند التفعيل، يظهر زر PayPal في صفحة المنتج</div>
-              </div>
-              <label class="switch">
-                <input type="checkbox" id="setEnablePayPal">
-                <span class="switch-slider"></span>
-              </label>
+              <div class="switch-info"><div class="switch-title">تفعيل الدفع عبر PayPal</div><div class="switch-desc">عند التفعيل، يظهر زر PayPal في صفحة المنتج</div></div>
+              <label class="switch"><input type="checkbox" id="setEnablePayPal"><span class="switch-slider"></span></label>
             </div>
-            <div class="form-field full" style="margin-top:8px">
-              <label class="form-label">حساب PayPal.me</label>
-              <input type="text" class="form-input" id="setPaypalEmail" placeholder="myusername" style="direction:ltr;text-align:right">
-            </div>
+            <div class="form-field full" style="margin-top:8px"><label class="form-label">حساب PayPal.me</label><input type="text" class="form-input" id="setPaypalEmail" placeholder="myusername" style="direction:ltr;text-align:right"></div>
           </div>
         </div>
-        <div class="modal-footer">
-          <button class="btn btn-primary" id="saveSettingsBtn" style="padding:12px 32px">حفظ الإعدادات</button>
-        </div>
+        <div class="modal-footer"><button class="btn btn-primary" id="saveSettingsBtn" style="padding:12px 32px">حفظ الإعدادات</button></div>
       </div>
     </div>
   </main>
 </div>
 
-<!-- PRODUCT MODAL -->
 <div class="modal-overlay" id="productModal">
   <div class="modal-box">
     <div class="modal-header">
@@ -716,7 +494,6 @@ tr:hover td{background:#FAFBFC}
   </div>
 </div>
 
-<!-- CONFIRM DELETE MODAL -->
 <div class="modal-overlay" id="confirmModal">
   <div class="modal-box narrow">
     <div class="modal-body" style="padding:32px 28px">
@@ -732,16 +509,13 @@ tr:hover td{background:#FAFBFC}
   </div>
 </div>
 
-<!-- ORDER DETAIL MODAL -->
 <div class="modal-overlay" id="orderDetailModal">
   <div class="modal-box wide">
     <div class="modal-header">
       <h2 class="modal-title">تفاصيل الطلب</h2>
       <button class="modal-close" id="closeOrderDetailBtn"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
     </div>
-    <div class="modal-body" id="orderDetailBody">
-      <div style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</div>
-    </div>
+    <div class="modal-body" id="orderDetailBody"><div style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</div></div>
     <div class="modal-footer">
       <button class="btn btn-ghost" id="closeOrderDetailFooterBtn">إغلاق</button>
       <button class="btn btn-danger" id="blockOrderCustomerBtn" style="display:none">حظر الزبون</button>
@@ -750,7 +524,6 @@ tr:hover td{background:#FAFBFC}
   </div>
 </div>
 
-<!-- BLOCK CUSTOMER MODAL -->
 <div class="modal-overlay" id="blockCustomerModal">
   <div class="modal-box narrow">
     <div class="modal-header">
@@ -759,19 +532,9 @@ tr:hover td{background:#FAFBFC}
     </div>
     <div class="modal-body">
       <div class="form-section">
-        <div class="form-field full" style="margin-bottom:12px">
-          <label class="form-label">رقم الهاتف (اختياري)</label>
-          <input type="text" class="form-input" id="blockPhoneInput" placeholder="963912345678" maxlength="30" style="direction:ltr;text-align:right">
-        </div>
-        <div class="form-field full" style="margin-bottom:12px">
-          <label class="form-label">Client Token (اختياري)</label>
-          <input type="text" class="form-input" id="blockTokenInput" placeholder="c_xxxxxxxxxx" maxlength="100" style="direction:ltr;text-align:right;font-family:monospace;font-size:.8rem">
-          <p class="form-hint">يُحظر الجهاز/المتصفح حتى لو غيّر الزبون رقمه</p>
-        </div>
-        <div class="form-field full">
-          <label class="form-label">سبب الحظر (اختياري)</label>
-          <textarea class="form-textarea" id="blockReasonInput" rows="2" maxlength="200" placeholder="مثال: طلبات وهمية متكررة"></textarea>
-        </div>
+        <div class="form-field full" style="margin-bottom:12px"><label class="form-label">رقم الهاتف (اختياري)</label><input type="text" class="form-input" id="blockPhoneInput" placeholder="963912345678" maxlength="30" style="direction:ltr;text-align:right"></div>
+        <div class="form-field full" style="margin-bottom:12px"><label class="form-label">Client Token (اختياري)</label><input type="text" class="form-input" id="blockTokenInput" placeholder="c_xxxxxxxxxx" maxlength="100" style="direction:ltr;text-align:right;font-family:monospace;font-size:.8rem"><p class="form-hint">يُحظر الجهاز/المتصفح حتى لو غيّر الزبون رقمه</p></div>
+        <div class="form-field full"><label class="form-label">سبب الحظر (اختياري)</label><textarea class="form-textarea" id="blockReasonInput" rows="2" maxlength="200" placeholder="مثال: طلبات وهمية متكررة"></textarea></div>
         <p style="font-size:.8rem;color:var(--muted);margin-top:8px">أدخل هاتفًا أو token واحدًا على الأقل.</p>
       </div>
     </div>
@@ -782,7 +545,25 @@ tr:hover td{background:#FAFBFC}
   </div>
 </div>
 
-<!-- IMAGE LIGHTBOX -->
+<div class="modal-overlay" id="addAdminModal">
+  <div class="modal-box narrow">
+    <div class="modal-header">
+      <h2 class="modal-title">إضافة مدير جديد</h2>
+      <button class="modal-close" id="closeAddAdminBtn"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:.85rem;color:var(--muted);margin-bottom:16px;line-height:1.6">سيُنشأ حساب جديد بهذا البريد وكلمة المرور تلقائيًا. أبلغ المدير بكلمة المرور عبر قناة آمنة (واتساب شخصي، لا بريد عام).</p>
+      <div class="form-field full" style="margin-bottom:12px"><label class="form-label">البريد الإلكتروني</label><input type="email" class="form-input" id="newAdminEmail" placeholder="admin@example.com" autocomplete="off"></div>
+      <div class="form-field full" style="margin-bottom:12px"><label class="form-label">كلمة المرور</label><input type="password" class="form-input" id="newAdminPassword" placeholder="8 أحرف على الأقل" autocomplete="new-password"></div>
+      <div class="form-field full"><label class="form-label">تأكيد كلمة المرور</label><input type="password" class="form-input" id="newAdminPasswordConfirm" placeholder="أعد كتابة كلمة المرور" autocomplete="new-password"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="cancelAddAdminBtn">إلغاء</button>
+      <button class="btn btn-primary" id="confirmAddAdminBtn">إنشاء المدير</button>
+    </div>
+  </div>
+</div>
+
 <div id="imageLightbox">
   <button class="lightbox-close" id="closeLightboxBtn"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
   <img id="lightboxImg" src="" alt="">
@@ -795,12 +576,12 @@ tr:hover td{background:#FAFBFC}
 <script>
 (function() {
   'use strict';
-
-  const ADMIN_VERSION = 'v5-settings-security';
+  const ADMIN_VERSION = 'v6-admins';
   console.log('[ADMIN] Version:', ADMIN_VERSION);
 
   const SUPABASE_URL = 'https://smjrowqoxoxsvikjdpay.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_UEDOsxue9Y_mDYLJ0uvk2Q_lJdGH5Un';
+  const EDGE_FUNCTION_URL = SUPABASE_URL + '/functions/v1/create-admin';
   const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   const PAGE_SIZE = 25;
@@ -811,50 +592,27 @@ tr:hover td{background:#FAFBFC}
   const $$ = (s, r=document) => [...r.querySelectorAll(s)];
 
   const state = {
-    user: null,
-    currentPage: 'dashboard',
-    settings: {},
-    products: {
-      page: 0, pageSize: PAGE_SIZE, total: 0,
-      search: '', category: '', status: '', data: []
-    },
-    orders: {
-      page: 0, pageSize: PAGE_SIZE, total: 0,
-      search: '', status: '', data: [],
-      detail: null
-    },
-    reviews: {
-      tab: 'pending',
-      all: [],
-      counts: { pending: 0, approved: 0, rejected: 0 }
-    },
-    blocked: {
-      data: [],
-      targetInfo: null
-    },
-    form: {
-      editingId: null, images: [], sizes: [], colors: [],
-      uploadingCount: 0
-    },
-    deleteTarget: null,
-    deleteType: null
+    user: null, isOwner: false, currentPage: 'dashboard',
+    products: { page: 0, pageSize: PAGE_SIZE, total: 0, search: '', category: '', status: '', data: [] },
+    orders: { page: 0, pageSize: PAGE_SIZE, total: 0, search: '', status: '', data: [], detail: null },
+    reviews: { tab: 'pending', all: [], counts: { pending: 0, approved: 0, rejected: 0 } },
+    blocked: { data: [], targetInfo: null },
+    admins: { data: [] },
+    form: { editingId: null, images: [], sizes: [], colors: [], uploadingCount: 0 },
+    deleteTarget: null, deleteType: null
   };
 
-  // ============ HELPERS ============
   function escapeHtml(s) {
     if (s == null) return '';
     return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
-
   function toast(msg, type) {
     type = type || 'success';
     const el = document.createElement('div');
-    el.className = 'toast ' + type;
-    el.textContent = msg;
+    el.className = 'toast ' + type; el.textContent = msg;
     $('#toastContainer').appendChild(el);
-    setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, 3500);
+    setTimeout(() => { el.style.opacity='0'; setTimeout(()=>el.remove(),300); }, 3500);
   }
-
   function fmtPrice(n) { return Number(n || 0).toLocaleString('ar-EG') + ' ل.س'; }
   function fmtNum(n) { return Number(n || 0).toLocaleString('ar-EG'); }
   function fmtDate(d) {
@@ -862,72 +620,47 @@ tr:hover td{background:#FAFBFC}
     try { return new Date(d).toLocaleString('ar-EG', { year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' }); }
     catch(e) { return '—'; }
   }
-
   function normalizeImages(images) {
     if (!images) return [];
     if (Array.isArray(images)) return images.filter(u => typeof u === 'string' && u.startsWith('http'));
     if (typeof images === 'string') {
-      try {
-        const p = JSON.parse(images);
-        if (Array.isArray(p)) return p.filter(u => typeof u === 'string' && u.startsWith('http'));
-      } catch(e) {}
+      try { const p = JSON.parse(images); if (Array.isArray(p)) return p.filter(u => typeof u === 'string' && u.startsWith('http')); } catch(e) {}
       if (images.startsWith('http')) return [images];
     }
     return [];
   }
-
   function normalizeArabicClient(s) {
     if (!s) return '';
-    return s.toLowerCase()
-      .replace(/[أإآٱ]/g, 'ا')
-      .replace(/ى/g, 'ي')
-      .replace(/ة/g, 'ه')
-      .replace(/\s+/g, ' ')
-      .trim();
+    return s.toLowerCase().replace(/[أإآٱ]/g, 'ا').replace(/ى/g, 'ي').replace(/ة/g, 'ه').replace(/\s+/g, ' ').trim();
   }
-
   function showLoading() { $('#loadingOverlay').classList.add('show'); }
   function hideLoading() { $('#loadingOverlay').classList.remove('show'); }
-
   function generateFileName(file) {
     const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
     return `products/${Date.now()}-${Math.random().toString(36).substring(2, 10)}.${ext}`;
   }
-
   function getProductUrl(productId) {
     const url = new URL(window.location.origin + '/');
     url.searchParams.set('product', productId);
     return url.toString();
   }
-
   function openProductInStore(productId) {
     const url = getProductUrl(productId);
     const w = window.open(url, '_blank', 'noopener,noreferrer');
     if (!w) window.location.href = url;
   }
-
-  function getStatusLabel(status) {
-    const map = { pending: 'قيد المراجعة', confirmed: 'تم التأكيد', shipped: 'تم الشحن', delivered: 'تم التسليم', cancelled: 'ملغى' };
-    return map[status] || status;
+  function getStatusLabel(s) {
+    const m = { pending:'قيد المراجعة', confirmed:'تم التأكيد', shipped:'تم الشحن', delivered:'تم التسليم', cancelled:'ملغى' };
+    return m[s] || s;
+  }
+  function getStatusBadgeClass(s) {
+    const m = { pending:'badge-warning', confirmed:'badge-info', shipped:'badge-purple', delivered:'badge-success', cancelled:'badge-danger' };
+    return m[s] || 'badge-gray';
   }
 
-  function getStatusBadgeClass(status) {
-    const map = { pending: 'badge-warning', confirmed: 'badge-info', shipped: 'badge-purple', delivered: 'badge-success', cancelled: 'badge-danger' };
-    return map[status] || 'badge-gray';
-  }
-
-  // ============ IMAGE LIGHTBOX ============
-  function openLightbox(url) {
-    if (!url) return;
-    $('#lightboxImg').src = url;
-    $('#imageLightbox').classList.add('show');
-    document.body.style.overflow = 'hidden';
-  }
-  function closeLightbox() {
-    $('#imageLightbox').classList.remove('show');
-    $('#lightboxImg').src = '';
-    document.body.style.overflow = '';
-  }
+  // ============ LIGHTBOX ============
+  function openLightbox(url) { if (!url) return; $('#lightboxImg').src = url; $('#imageLightbox').classList.add('show'); document.body.style.overflow = 'hidden'; }
+  function closeLightbox() { $('#imageLightbox').classList.remove('show'); $('#lightboxImg').src = ''; document.body.style.overflow = ''; }
 
   // ============ AUTH ============
   async function checkSession() {
@@ -942,32 +675,27 @@ tr:hover td{background:#FAFBFC}
         return;
       }
       state.user = session.user;
+      // Check owner status
+      try {
+        const { data: ownerData } = await sb.rpc('is_owner');
+        state.isOwner = ownerData === true;
+      } catch(e) { state.isOwner = false; }
       showDashboard();
       await refreshNavCounts();
       await Promise.all([loadDashboardStats(), loadTopProducts()]);
-    } catch (e) {
-      console.error(e);
-      showLoginScreen();
-    }
+    } catch (e) { console.error(e); showLoginScreen(); }
   }
-
-  function showLoginScreen() {
-    $('#loginScreen').style.display = 'flex';
-    $('#dashboard').classList.remove('show');
-  }
-
+  function showLoginScreen() { $('#loginScreen').style.display = 'flex'; $('#dashboard').classList.remove('show'); }
   function showDashboard() {
     $('#loginScreen').style.display = 'none';
     $('#dashboard').classList.add('show');
     $('#userEmail').textContent = state.user?.email || '—';
+    // Show/hide admins nav based on ownership
+    if (state.isOwner) { $('#navAdmins').style.display = 'flex'; }
+    else { $('#navAdmins').style.display = 'none'; }
     switchPage('dashboard');
   }
-
-  function showLoginError(msg) {
-    const el = $('#loginError');
-    el.textContent = msg;
-    el.style.display = 'block';
-  }
+  function showLoginError(msg) { const el = $('#loginError'); el.textContent = msg; el.style.display = 'block'; }
   function hideLoginError() { $('#loginError').style.display = 'none'; }
 
   async function handleLogin(e) {
@@ -976,320 +704,206 @@ tr:hover td{background:#FAFBFC}
     const email = $('#loginEmail').value.trim();
     const password = $('#loginPassword').value;
     if (!email || !password) return;
-
     const btn = $('#loginBtn');
-    btn.disabled = true;
-    btn.textContent = 'جارٍ الدخول...';
-
+    btn.disabled = true; btn.textContent = 'جارٍ الدخول...';
     try {
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
       if (error) {
-        showLoginError(error.message === 'Invalid login credentials'
-          ? 'البريد أو كلمة المرور غير صحيحة'
-          : error.message);
+        showLoginError(error.message === 'Invalid login credentials' ? 'البريد أو كلمة المرور غير صحيحة' : error.message);
         return;
       }
       const { data: isAdmin } = await sb.rpc('is_admin');
-      if (!isAdmin) {
-        await sb.auth.signOut();
-        showLoginError('هذا الحساب ليس لديه صلاحيات الإدارة');
-        return;
-      }
+      if (!isAdmin) { await sb.auth.signOut(); showLoginError('هذا الحساب ليس لديه صلاحيات الإدارة'); return; }
       state.user = data.user;
+      try { const { data: ownerData } = await sb.rpc('is_owner'); state.isOwner = ownerData === true; } catch(e) { state.isOwner = false; }
       showDashboard();
       await refreshNavCounts();
       await Promise.all([loadDashboardStats(), loadTopProducts()]);
-    } catch (e) {
-      console.error(e);
-      showLoginError('حدث خطأ، حاول مجدداً');
-    } finally {
-      btn.disabled = false;
-      btn.textContent = 'دخول';
-    }
+    } catch (e) { console.error(e); showLoginError('حدث خطأ، حاول مجدداً'); }
+    finally { btn.disabled = false; btn.textContent = 'دخول'; }
   }
-
-  async function handleLogout() {
-    await sb.auth.signOut();
-    state.user = null;
-    showLoginScreen();
-  }
+  async function handleLogout() { await sb.auth.signOut(); state.user = null; showLoginScreen(); }
 
   // ============ NAV ============
   async function refreshNavCounts() {
     try {
-      const { count: pendingOrders } = await sb.from('orders')
-        .select('*', { count: 'exact', head: true }).eq('status', 'pending');
-      const { count: pendingReviews } = await sb.from('reviews')
-        .select('*', { count: 'exact', head: true }).eq('status', 'pending');
-
-      const ocEl = $('#navOrdersCount');
-      const rcEl = $('#navReviewsCount');
-
-      if (pendingOrders > 0) { ocEl.textContent = pendingOrders; ocEl.classList.add('show'); }
-      else ocEl.classList.remove('show');
-
-      if (pendingReviews > 0) { rcEl.textContent = pendingReviews; rcEl.classList.add('show'); }
-      else rcEl.classList.remove('show');
-    } catch(e) { console.warn('refreshNavCounts:', e); }
+      const { count: po } = await sb.from('orders').select('*', { count: 'exact', head: true }).eq('status', 'pending');
+      const { count: pr } = await sb.from('reviews').select('*', { count: 'exact', head: true }).eq('status', 'pending');
+      const ocEl = $('#navOrdersCount'), rcEl = $('#navReviewsCount');
+      if (po > 0) { ocEl.textContent = po; ocEl.classList.add('show'); } else ocEl.classList.remove('show');
+      if (pr > 0) { rcEl.textContent = pr; rcEl.classList.add('show'); } else rcEl.classList.remove('show');
+    } catch(e) {}
   }
-
   function switchPage(page) {
+    // Guard: admins page only for owner
+    if (page === 'admins' && !state.isOwner) { toast('غير مصرح', 'error'); return; }
     state.currentPage = page;
     $$('.nav-item').forEach(el => el.classList.toggle('active', el.dataset.page === page));
     $$('.page').forEach(el => el.classList.remove('active'));
     const pageEl = $('#page-' + page);
     if (pageEl) pageEl.classList.add('active');
-
     const titles = {
       dashboard: { title: 'لوحة القيادة', sub: 'نظرة عامة على أداء متجرك' },
       products: { title: 'المنتجات', sub: 'إدارة منتجات المتجر' },
       orders: { title: 'الطلبات', sub: 'إدارة طلبات الزبائن' },
       reviews: { title: 'التقييمات', sub: 'مراجعة تقييمات الزبائن' },
       blocked: { title: 'المحظورون', sub: 'الزبائن المحظورون من المتجر' },
+      admins: { title: 'المدراء', sub: 'إدارة المدراء والمالك' },
       settings: { title: 'الإعدادات', sub: 'ضبط اسم المتجر، العملة، الهاتف، والمحتوى' }
     };
     const t = titles[page] || titles.dashboard;
     $('#pageTitle').textContent = t.title;
     $('#pageSubtitle').textContent = t.sub;
-
     if (page === 'products') loadProducts();
     else if (page === 'orders') loadOrders();
     else if (page === 'reviews') loadReviews();
     else if (page === 'blocked') loadBlocked();
+    else if (page === 'admins') loadAdmins();
     else if (page === 'settings') loadSettings();
-    else if (page === 'dashboard') {
-      loadDashboardStats();
-      loadTopProducts();
-    }
+    else if (page === 'dashboard') { loadDashboardStats(); loadTopProducts(); }
     $('#sidebar').classList.remove('open');
   }
 
   // ============ DASHBOARD ============
   async function loadDashboardStats() {
     try {
-      const { count: productsCount } = await sb.from('products').select('*', { count: 'exact', head: true }).eq('is_active', true);
-      const { count: ordersCount } = await sb.from('orders').select('*', { count: 'exact', head: true });
-      const { data: orders } = await sb.from('orders').select('total, status').neq('status', 'cancelled');
-      const revenue = (orders || []).reduce((s, o) => s + Number(o.total || 0), 0);
-      const { data: products } = await sb.from('products').select('views');
-      const totalViews = (products || []).reduce((s, p) => s + Number(p.views || 0), 0);
-
-      $('#statProducts').textContent = fmtNum(productsCount || 0);
-      $('#statOrders').textContent = fmtNum(ordersCount || 0);
-      $('#statRevenue').textContent = fmtPrice(revenue);
-      $('#statViews').textContent = fmtNum(totalViews);
-    } catch (e) { console.error('Stats error:', e); }
+      const { count: pc } = await sb.from('products').select('*', { count: 'exact', head: true }).eq('is_active', true);
+      const { count: oc } = await sb.from('orders').select('*', { count: 'exact', head: true });
+      const { data: od } = await sb.from('orders').select('total, status').neq('status', 'cancelled');
+      const rev = (od || []).reduce((s, o) => s + Number(o.total || 0), 0);
+      const { data: pr } = await sb.from('products').select('views');
+      const tv = (pr || []).reduce((s, p) => s + Number(p.views || 0), 0);
+      $('#statProducts').textContent = fmtNum(pc || 0);
+      $('#statOrders').textContent = fmtNum(oc || 0);
+      $('#statRevenue').textContent = fmtPrice(rev);
+      $('#statViews').textContent = fmtNum(tv);
+    } catch (e) { console.error(e); }
   }
-
   async function loadTopProducts() {
     const tbody = $('#topProductsBody');
     tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</td></tr>';
-
     try {
       const { data, error } = await sb.rpc('get_product_stats');
       if (error) throw error;
-
-      if (!data || !data.length) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--muted)">لا توجد منتجات بعد</td></tr>';
-        return;
-      }
-
+      if (!data || !data.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--muted)">لا توجد منتجات</td></tr>'; return; }
       const top = data.slice(0, 10);
       const ids = top.map(p => p.product_id);
-      const { data: productsData } = await sb.from('products').select('id, images').in('id', ids);
+      const { data: pd } = await sb.from('products').select('id, images').in('id', ids);
       const imgMap = {};
-      (productsData || []).forEach(p => {
-        const imgs = normalizeImages(p.images);
-        imgMap[p.id] = imgs[0] || '';
-      });
-
+      (pd || []).forEach(p => { const imgs = normalizeImages(p.images); imgMap[p.id] = imgs[0] || ''; });
       tbody.innerHTML = top.map((p, i) => {
         const rating = p.rating_count > 0 ? `${Number(p.rating_avg).toFixed(1)} (${p.rating_count})` : '—';
         const img = imgMap[p.product_id] || 'https://via.placeholder.com/44x54?text=?';
-        return `<tr>
-          <td style="color:var(--muted);font-weight:600">${i + 1}</td>
-          <td>
-            <div class="top-prod-cell">
-              <img src="${escapeHtml(img)}" class="top-prod-img" onerror="this.src='https://via.placeholder.com/44x54?text=?'">
-              <div class="top-prod-info">
-                <span class="top-prod-name" title="${escapeHtml(p.product_name)}">${escapeHtml(p.product_name)}</span>
-                <button type="button" class="top-prod-link-btn" data-open-product="${p.product_id}">
-                  فتح في المتجر <svg viewBox="0 0 24 24"><path d="M7 17L17 7M7 7h10v10"/></svg>
-                </button>
-              </div>
-            </div>
-          </td>
-          <td>${fmtNum(p.views)}</td>
-          <td>${fmtNum(p.orders_count)}</td>
-          <td>${fmtPrice(p.revenue)}</td>
-          <td>${rating}</td>
-        </tr>`;
+        return `<tr><td style="color:var(--muted);font-weight:600">${i + 1}</td><td><div class="top-prod-cell"><img src="${escapeHtml(img)}" class="top-prod-img" onerror="this.src='https://via.placeholder.com/44x54?text=?'"><div class="top-prod-info"><span class="top-prod-name" title="${escapeHtml(p.product_name)}">${escapeHtml(p.product_name)}</span><button type="button" class="top-prod-link-btn" data-open-product="${p.product_id}">فتح في المتجر <svg viewBox="0 0 24 24"><path d="M7 17L17 7M7 7h10v10"/></svg></button></div></div></td><td>${fmtNum(p.views)}</td><td>${fmtNum(p.orders_count)}</td><td>${fmtPrice(p.revenue)}</td><td>${rating}</td></tr>`;
       }).join('');
-
-      $$('[data-open-product]').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.preventDefault();
-          openProductInStore(btn.dataset.openProduct);
-        });
-      });
-    } catch (e) {
-      console.error('Top products error:', e);
-      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--danger)">تعذر تحميل البيانات</td></tr>';
-    }
+      $$('[data-open-product]').forEach(btn => btn.addEventListener('click', (e) => { e.preventDefault(); openProductInStore(btn.dataset.openProduct); }));
+    } catch (e) { console.error(e); tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--danger)">تعذر تحميل البيانات</td></tr>'; }
   }
 
   // ============ PRODUCTS ============
   async function loadProducts() {
     const tbody = $('#productsTableBody');
     tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</td></tr>';
-
     try {
-      let query = sb.from('products').select('*', { count: 'exact' });
-      if (state.products.search) {
-        query = query.ilike('name_normalized', '%' + normalizeArabicClient(state.products.search) + '%');
-      }
-      if (state.products.category) query = query.eq('category', state.products.category);
-      if (state.products.status === 'active') query = query.eq('is_active', true).eq('in_stock', true);
-      else if (state.products.status === 'inactive') query = query.eq('is_active', false);
-      else if (state.products.status === 'outstock') query = query.eq('in_stock', false);
-
+      let q = sb.from('products').select('*', { count: 'exact' });
+      if (state.products.search) q = q.ilike('name_normalized', '%' + normalizeArabicClient(state.products.search) + '%');
+      if (state.products.category) q = q.eq('category', state.products.category);
+      if (state.products.status === 'active') q = q.eq('is_active', true).eq('in_stock', true);
+      else if (state.products.status === 'inactive') q = q.eq('is_active', false);
+      else if (state.products.status === 'outstock') q = q.eq('in_stock', false);
       const from = state.products.page * state.products.pageSize;
       const to = from + state.products.pageSize - 1;
-      const { data, count, error } = await query.order('created_at', { ascending: false }).range(from, to);
+      const { data, count, error } = await q.order('created_at', { ascending: false }).range(from, to);
       if (error) throw error;
-
       state.products.data = data || [];
       state.products.total = count || 0;
-      renderProductsTable();
-      renderProductsPagination();
+      renderProductsTable(); renderProductsPagination();
       $('#productsSubtitle').textContent = `${fmtNum(state.products.total)} منتج`;
-    } catch (e) {
-      console.error('Products error:', e);
-      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--danger)">تعذر تحميل المنتجات</td></tr>';
-    }
+    } catch (e) { console.error(e); tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--danger)">تعذر التحميل</td></tr>'; }
   }
-
   function renderProductsTable() {
     const tbody = $('#productsTableBody');
-    if (!state.products.data.length) {
-      tbody.innerHTML = '<tr><td colspan="8"><div class="empty"><p>لا توجد منتجات مطابقة</p></div></td></tr>';
-      return;
-    }
+    if (!state.products.data.length) { tbody.innerHTML = '<tr><td colspan="8"><div class="empty"><p>لا توجد منتجات</p></div></td></tr>'; return; }
     tbody.innerHTML = state.products.data.map(p => {
       const imgs = normalizeImages(p.images);
       const img = imgs[0] || 'https://via.placeholder.com/48x60?text=?';
       const stock = p.in_stock !== false ? '<span class="badge-pill badge-success">متوفر</span>' : '<span class="badge-pill badge-danger">نفد</span>';
       const status = p.is_active !== false ? '<span class="badge-pill badge-info">نشط</span>' : '<span class="badge-pill badge-gray">مخفي</span>';
-      return `<tr>
-        <td><img src="${escapeHtml(img)}" class="table-img" onerror="this.src='https://via.placeholder.com/48x60?text=?'"></td>
-        <td><span class="cell-name">${escapeHtml(p.name)}</span>${p.badge ? ` <span class="badge-pill badge-warning" style="font-size:.65rem">${escapeHtml(p.badge)}</span>` : ''}</td>
-        <td class="cell-muted">${escapeHtml(p.category)}</td>
-        <td><strong>${fmtPrice(p.price)}</strong></td>
-        <td>${stock}</td>
-        <td>${fmtNum(p.views)}</td>
-        <td>${status}</td>
-        <td>
-          <div class="actions-cell">
-            <button class="action-btn toggle" data-toggle-id="${p.id}" data-toggle-active="${p.is_active !== false}" title="إخفاء/إظهار"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-            <button class="action-btn edit" data-edit-id="${p.id}" title="تعديل"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-            <button class="action-btn delete" data-delete-id="${p.id}" title="حذف"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
-          </div>
-        </td>
-      </tr>`;
+      return `<tr><td><img src="${escapeHtml(img)}" class="table-img" onerror="this.src='https://via.placeholder.com/48x60?text=?'"></td><td><span class="cell-name">${escapeHtml(p.name)}</span>${p.badge?` <span class="badge-pill badge-warning" style="font-size:.65rem">${escapeHtml(p.badge)}</span>`:''}</td><td class="cell-muted">${escapeHtml(p.category)}</td><td><strong>${fmtPrice(p.price)}</strong></td><td>${stock}</td><td>${fmtNum(p.views)}</td><td>${status}</td><td><div class="actions-cell"><button class="action-btn toggle" data-toggle-id="${p.id}" data-toggle-active="${p.is_active !== false}" title="إخفاء/إظهار"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button><button class="action-btn edit" data-edit-id="${p.id}" title="تعديل"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="action-btn delete" data-delete-id="${p.id}" title="حذف"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div></td></tr>`;
     }).join('');
-
     $$('[data-edit-id]').forEach(btn => btn.addEventListener('click', () => openProductModal(btn.dataset.editId)));
     $$('[data-delete-id]').forEach(btn => btn.addEventListener('click', () => openDeleteConfirm(btn.dataset.deleteId, 'product')));
     $$('[data-toggle-id]').forEach(btn => btn.addEventListener('click', () => toggleProductActive(btn.dataset.toggleId, btn.dataset.toggleActive === 'true')));
   }
-
   function renderProductsPagination() {
-    const totalPages = Math.ceil(state.products.total / state.products.pageSize);
+    const tp = Math.ceil(state.products.total / state.products.pageSize);
     const wrap = $('#productsPagination');
-    if (totalPages <= 1) { wrap.style.display = 'none'; return; }
+    if (tp <= 1) { wrap.style.display = 'none'; return; }
     wrap.style.display = 'flex';
-    const current = state.products.page;
-    $('#paginationInfo').textContent = `${current * state.products.pageSize + 1}–${Math.min((current+1)*state.products.pageSize, state.products.total)} من ${state.products.total}`;
-    renderPaginationButtons('paginationBtns', current, totalPages, (p) => { state.products.page = p; loadProducts(); });
+    const cur = state.products.page;
+    $('#paginationInfo').textContent = `${cur * state.products.pageSize + 1}–${Math.min((cur+1)*state.products.pageSize, state.products.total)} من ${state.products.total}`;
+    renderPaginationButtons('paginationBtns', cur, tp, (p) => { state.products.page = p; loadProducts(); });
   }
-
-  function renderPaginationButtons(containerId, current, totalPages, onPage) {
-    let html = `<button class="pagination-btn" ${current === 0 ? 'disabled' : ''} data-page="${current - 1}">السابق</button>`;
-    const start = Math.max(0, current - 2);
-    const end = Math.min(totalPages - 1, current + 2);
-    if (start > 0) { html += `<button class="pagination-btn" data-page="0">1</button>`; if (start > 1) html += `<span style="padding:0 8px;color:var(--muted)">...</span>`; }
-    for (let i = start; i <= end; i++) html += `<button class="pagination-btn ${i === current ? 'active' : ''}" data-page="${i}">${i + 1}</button>`;
-    if (end < totalPages - 1) { if (end < totalPages - 2) html += `<span style="padding:0 8px;color:var(--muted)">...</span>`; html += `<button class="pagination-btn" data-page="${totalPages - 1}">${totalPages}</button>`; }
-    html += `<button class="pagination-btn" ${current === totalPages - 1 ? 'disabled' : ''} data-page="${current + 1}">التالي</button>`;
-    $('#' + containerId).innerHTML = html;
-    $$('#' + containerId + ' .pagination-btn').forEach(btn => {
-      btn.addEventListener('click', () => { const p = Number(btn.dataset.page); if (!isNaN(p) && !btn.disabled) onPage(p); });
-    });
+  function renderPaginationButtons(cid, cur, tp, onPage) {
+    let h = `<button class="pagination-btn" ${cur===0?'disabled':''} data-page="${cur-1}">السابق</button>`;
+    const st = Math.max(0, cur-2), en = Math.min(tp-1, cur+2);
+    if (st > 0) { h += `<button class="pagination-btn" data-page="0">1</button>`; if (st > 1) h += `<span style="padding:0 8px;color:var(--muted)">...</span>`; }
+    for (let i = st; i <= en; i++) h += `<button class="pagination-btn ${i===cur?'active':''}" data-page="${i}">${i+1}</button>`;
+    if (en < tp-1) { if (en < tp-2) h += `<span style="padding:0 8px;color:var(--muted)">...</span>`; h += `<button class="pagination-btn" data-page="${tp-1}">${tp}</button>`; }
+    h += `<button class="pagination-btn" ${cur===tp-1?'disabled':''} data-page="${cur+1}">التالي</button>`;
+    $('#' + cid).innerHTML = h;
+    $$('#' + cid + ' .pagination-btn').forEach(btn => btn.addEventListener('click', () => { const p = Number(btn.dataset.page); if (!isNaN(p) && !btn.disabled) onPage(p); }));
   }
 
   // ============ PRODUCT MODAL ============
-  function openProductModal(productId) {
+  function openProductModal(id) {
     resetForm();
-    if (productId) {
-      const p = state.products.data.find(x => x.id === productId);
+    if (id) {
+      const p = state.products.data.find(x => x.id === id);
       if (!p) return;
       fillForm(p);
       $('#productModalTitle').textContent = 'تعديل المنتج';
     } else {
       state.form.sizes = [{ value: '', available: true }];
       state.form.colors = [{ value: '', hex: '#000000', available: true }];
-      renderDynamicSizes();
-      renderDynamicColors();
+      renderDynamicSizes(); renderDynamicColors();
       $('#productModalTitle').textContent = 'إضافة منتج جديد';
     }
     $('#productModal').classList.add('show');
     document.body.style.overflow = 'hidden';
   }
   function closeProductModal() { $('#productModal').classList.remove('show'); document.body.style.overflow = ''; resetForm(); }
-
   function resetForm() {
-    state.form.editingId = null; state.form.images = []; state.form.sizes = []; state.form.colors = []; state.form.uploadingCount = 0;
+    state.form = { editingId: null, images: [], sizes: [], colors: [], uploadingCount: 0 };
     $('#pfId').value = ''; $('#pfName').value = ''; $('#pfCategory').value = 'ملابس'; $('#pfBadge').value = '';
     $('#pfPrice').value = ''; $('#pfComparePrice').value = ''; $('#pfDescription').value = '';
     $('#pfInStock').checked = true; $('#pfIsActive').checked = true;
     $('#pfMaterial').value = ''; $('#pfOrigin').value = ''; $('#pfCare').value = '';
     renderDynamicSizes(); renderDynamicColors(); renderImageGrid();
   }
-
   function fillForm(p) {
     state.form.editingId = p.id;
-    $('#pfId').value = p.id;
-    $('#pfName').value = p.name || '';
-    $('#pfCategory').value = p.category || 'ملابس';
-    $('#pfBadge').value = p.badge || '';
-    $('#pfPrice').value = p.price || '';
-    $('#pfComparePrice').value = p.compare_at_price || '';
+    $('#pfId').value = p.id; $('#pfName').value = p.name || ''; $('#pfCategory').value = p.category || 'ملابس';
+    $('#pfBadge').value = p.badge || ''; $('#pfPrice').value = p.price || ''; $('#pfComparePrice').value = p.compare_at_price || '';
     $('#pfDescription').value = p.description || '';
-    $('#pfInStock').checked = p.in_stock !== false;
-    $('#pfIsActive').checked = p.is_active !== false;
+    $('#pfInStock').checked = p.in_stock !== false; $('#pfIsActive').checked = p.is_active !== false;
     const sp = p.specs || {};
-    $('#pfMaterial').value = sp.material || '';
-    $('#pfOrigin').value = sp.origin || '';
-    $('#pfCare').value = sp.care || '';
-
+    $('#pfMaterial').value = sp.material || ''; $('#pfOrigin').value = sp.origin || ''; $('#pfCare').value = sp.care || '';
     if (Array.isArray(p.sizes) && p.sizes.length) state.form.sizes = p.sizes.map(s => ({ value: s.value || '', available: s.available !== false }));
     else if (sp.sizes) state.form.sizes = sp.sizes.split(/[,،]/).map(s => ({ value: s.trim(), available: true })).filter(s => s.value);
     else state.form.sizes = [{ value: '', available: true }];
-
     if (Array.isArray(p.colors) && p.colors.length) state.form.colors = p.colors.map(c => ({ value: c.value || '', hex: c.hex || '#000000', available: c.available !== false }));
     else if (sp.colors) state.form.colors = sp.colors.split(/[,،]/).map(c => ({ value: c.trim(), hex: '#000000', available: true })).filter(c => c.value);
     else state.form.colors = [{ value: '', hex: '#000000', available: true }];
-
     state.form.images = normalizeImages(p.images);
     renderDynamicSizes(); renderDynamicColors(); renderImageGrid();
   }
-
   function renderDynamicSizes() {
     const list = $('#sizesList'); list.innerHTML = '';
     state.form.sizes.forEach((s, idx) => {
       const div = document.createElement('div');
       div.className = 'dynamic-item';
-      div.innerHTML = `<input type="text" class="form-input" placeholder="S, M, L..." value="${escapeHtml(s.value)}" data-size-idx="${idx}" maxlength="30"><label class="available-toggle ${s.available ? 'on' : 'off'}"><input type="checkbox" ${s.available ? 'checked' : ''} data-size-available="${idx}"> ${s.available ? '✓ متوفر' : '✗ نفد'}</label><button type="button" class="remove-dyn-btn" data-size-remove="${idx}"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>`;
+      div.innerHTML = `<input type="text" class="form-input" placeholder="S, M, L..." value="${escapeHtml(s.value)}" data-size-idx="${idx}" maxlength="30"><label class="available-toggle ${s.available?'on':'off'}"><input type="checkbox" ${s.available?'checked':''} data-size-available="${idx}"> ${s.available?'✓ متوفر':'✗ نفد'}</label><button type="button" class="remove-dyn-btn" data-size-remove="${idx}"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>`;
       list.appendChild(div);
     });
     $$('[data-size-idx]').forEach(inp => inp.addEventListener('input', e => { state.form.sizes[+e.target.dataset.sizeIdx].value = e.target.value; }));
@@ -1297,13 +911,12 @@ tr:hover td{background:#FAFBFC}
     $$('[data-size-remove]').forEach(btn => btn.addEventListener('click', () => { state.form.sizes.splice(+btn.dataset.sizeRemove, 1); renderDynamicSizes(); }));
   }
   function addSizeRow() { state.form.sizes.push({ value: '', available: true }); renderDynamicSizes(); }
-
   function renderDynamicColors() {
     const list = $('#colorsList'); list.innerHTML = '';
     state.form.colors.forEach((c, idx) => {
       const div = document.createElement('div');
       div.className = 'dynamic-item';
-      div.innerHTML = `<input type="color" class="color-picker" value="${c.hex || '#000000'}" data-color-hex="${idx}"><input type="text" class="form-input" placeholder="أحمر، أسود..." value="${escapeHtml(c.value)}" data-color-idx="${idx}" maxlength="30"><label class="available-toggle ${c.available ? 'on' : 'off'}"><input type="checkbox" ${c.available ? 'checked' : ''} data-color-available="${idx}"> ${c.available ? '✓ متوفر' : '✗ نفد'}</label><button type="button" class="remove-dyn-btn" data-color-remove="${idx}"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>`;
+      div.innerHTML = `<input type="color" class="color-picker" value="${c.hex || '#000000'}" data-color-hex="${idx}"><input type="text" class="form-input" placeholder="أحمر، أسود..." value="${escapeHtml(c.value)}" data-color-idx="${idx}" maxlength="30"><label class="available-toggle ${c.available?'on':'off'}"><input type="checkbox" ${c.available?'checked':''} data-color-available="${idx}"> ${c.available?'✓ متوفر':'✗ نفد'}</label><button type="button" class="remove-dyn-btn" data-color-remove="${idx}"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>`;
       list.appendChild(div);
     });
     $$('[data-color-idx]').forEach(inp => inp.addEventListener('input', e => { state.form.colors[+e.target.dataset.colorIdx].value = e.target.value; }));
@@ -1312,118 +925,82 @@ tr:hover td{background:#FAFBFC}
     $$('[data-color-remove]').forEach(btn => btn.addEventListener('click', () => { state.form.colors.splice(+btn.dataset.colorRemove, 1); renderDynamicColors(); }));
   }
   function addColorRow() { state.form.colors.push({ value: '', hex: '#000000', available: true }); renderDynamicColors(); }
-
   function renderImageGrid() {
-    const grid = document.getElementById('imageGrid');
+    const grid = $('#imageGrid');
     if (!grid) return;
     grid.innerHTML = '';
     grid.style.cssText = 'display:block;width:100%;margin-top:16px;font-size:0;line-height:0;';
-
     if (!state.form.images.length) {
       const empty = document.createElement('p');
       empty.textContent = 'لم يتم رفع صور بعد.';
       empty.style.cssText = 'color:#6B7280;font-size:14px;margin:8px 0;font-family:Cairo,sans-serif;';
-      grid.appendChild(empty);
-      return;
+      grid.appendChild(empty); return;
     }
-
     state.form.images.forEach((url, idx) => {
       const card = document.createElement('div');
       card.style.cssText = 'display:inline-block;width:160px;height:200px;margin:0 12px 12px 0;position:relative;overflow:hidden;border-radius:8px;background-color:#F4F5F7;border:1px solid #E5E7EB;cursor:pointer;vertical-align:top;';
-
       const img = document.createElement('img');
       img.src = url;
       img.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;user-select:none;opacity:1;';
       img.onerror = function() { this.src = 'https://via.placeholder.com/160x200?text=?'; };
       card.appendChild(img);
-
       if (idx === 0) {
         const badge = document.createElement('span');
         badge.textContent = 'رئيسية';
         badge.style.cssText = 'position:absolute;bottom:8px;right:8px;background-color:#B8894A;color:#fff;font-size:11px;padding:4px 10px;border-radius:4px;font-weight:700;z-index:2;';
         card.appendChild(badge);
       }
-
       const removeBtn = document.createElement('button');
       removeBtn.type = 'button';
       removeBtn.innerHTML = '<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>';
       removeBtn.style.cssText = 'position:absolute;top:8px;left:8px;width:30px;height:30px;border-radius:50%;background-color:rgba(220,38,38,0.95);color:#fff;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;z-index:3;padding:0;opacity:0;transition:opacity 0.15s;';
       removeBtn.addEventListener('click', (e) => { e.stopPropagation(); state.form.images.splice(idx, 1); renderImageGrid(); });
       card.appendChild(removeBtn);
-
       card.addEventListener('mouseenter', () => { removeBtn.style.opacity = '1'; card.style.transform = 'scale(1.02)'; card.style.boxShadow = '0 6px 16px rgba(0,0,0,0.15)'; });
       card.addEventListener('mouseleave', () => { removeBtn.style.opacity = '0'; card.style.transform = 'scale(1)'; card.style.boxShadow = 'none'; });
       card.addEventListener('click', () => openLightbox(url));
-
       grid.appendChild(card);
     });
   }
-
   async function handleImageUpload(files) {
     if (!files || !files.length) return;
-    const validFiles = [];
+    const vf = [];
     for (const f of files) {
       if (!f.type.startsWith('image/')) { toast('ملف غير صورة: ' + f.name, 'error'); continue; }
-      if (f.size > MAX_IMAGE_SIZE) { toast('حجم كبير (حد أقصى 2MB): ' + f.name, 'error'); continue; }
-      validFiles.push(f);
+      if (f.size > MAX_IMAGE_SIZE) { toast('حجم كبير: ' + f.name, 'error'); continue; }
+      vf.push(f);
     }
-    if (!validFiles.length) return;
-
-    state.form.uploadingCount += validFiles.length;
-    const saveBtn = $('#saveProductBtn');
-    saveBtn.disabled = true;
-    saveBtn.textContent = `جارٍ رفع ${state.form.uploadingCount} صورة...`;
-
-    for (const file of validFiles) {
+    if (!vf.length) return;
+    state.form.uploadingCount += vf.length;
+    const sb2 = $('#saveProductBtn');
+    sb2.disabled = true; sb2.textContent = `جارٍ رفع ${state.form.uploadingCount} صورة...`;
+    for (const file of vf) {
       try {
-        const fileName = generateFileName(file);
-        const { error } = await sb.storage.from(STORAGE_BUCKET).upload(fileName, file, { cacheControl: '3600', upsert: false, contentType: file.type });
+        const fn = generateFileName(file);
+        const { error } = await sb.storage.from(STORAGE_BUCKET).upload(fn, file, { cacheControl: '3600', upsert: false, contentType: file.type });
         if (error) throw error;
-        const { data: urlData } = sb.storage.from(STORAGE_BUCKET).getPublicUrl(fileName);
-        if (urlData && urlData.publicUrl) { state.form.images.push(urlData.publicUrl); renderImageGrid(); }
-      } catch (e) {
-        console.error('Upload error:', e);
-        toast('فشل رفع: ' + file.name, 'error');
-      } finally {
+        const { data: ud } = sb.storage.from(STORAGE_BUCKET).getPublicUrl(fn);
+        if (ud && ud.publicUrl) { state.form.images.push(ud.publicUrl); renderImageGrid(); }
+      } catch (e) { console.error(e); toast('فشل رفع: ' + file.name, 'error'); }
+      finally {
         state.form.uploadingCount--;
-        if (state.form.uploadingCount > 0) saveBtn.textContent = `جارٍ رفع ${state.form.uploadingCount} صورة...`;
-        else { saveBtn.disabled = false; saveBtn.textContent = 'حفظ المنتج'; }
+        if (state.form.uploadingCount > 0) sb2.textContent = `جارٍ رفع ${state.form.uploadingCount} صورة...`;
+        else { sb2.disabled = false; sb2.textContent = 'حفظ المنتج'; }
       }
     }
   }
-
   async function saveProduct() {
     const name = $('#pfName').value.trim();
     const price = parseFloat($('#pfPrice').value);
     const category = $('#pfCategory').value;
-
     if (!name) { toast('اسم المنتج مطلوب', 'error'); return; }
     if (!price || price <= 0) { toast('السعر يجب أن يكون أكبر من صفر', 'error'); return; }
-    if (state.form.uploadingCount > 0) { toast('انتظر انتهاء رفع الصور', 'error'); return; }
-
-    const cleanSizes = state.form.sizes.filter(s => s.value.trim()).map(s => ({ value: s.value.trim(), available: s.available !== false }));
-    const cleanColors = state.form.colors.filter(c => c.value.trim()).map(c => ({ value: c.value.trim(), hex: c.hex || '', available: c.available !== false }));
-
-    const specs = {
-      sizes: cleanSizes.map(s => s.value).join(','),
-      colors: cleanColors.map(c => c.value).join(','),
-      material: $('#pfMaterial').value.trim(),
-      origin: $('#pfOrigin').value.trim(),
-      care: $('#pfCare').value.trim()
-    };
-
-    const comparePriceVal = $('#pfComparePrice').value.trim();
-    const payload = {
-      name, name_normalized: normalizeArabicClient(name),
-      price, compare_at_price: comparePriceVal ? parseFloat(comparePriceVal) : null, category,
-      description: $('#pfDescription').value.trim() || null,
-      badge: $('#pfBadge').value.trim() || null,
-      in_stock: $('#pfInStock').checked,
-      is_active: $('#pfIsActive').checked,
-      images: state.form.images,
-      sizes: cleanSizes, colors: cleanColors, specs
-    };
-
+    if (state.form.uploadingCount > 0) { toast('انتظر انتهاء الرفع', 'error'); return; }
+    const cs = state.form.sizes.filter(s => s.value.trim()).map(s => ({ value: s.value.trim(), available: s.available !== false }));
+    const cc = state.form.colors.filter(c => c.value.trim()).map(c => ({ value: c.value.trim(), hex: c.hex || '', available: c.available !== false }));
+    const specs = { sizes: cs.map(s => s.value).join(','), colors: cc.map(c => c.value).join(','), material: $('#pfMaterial').value.trim(), origin: $('#pfOrigin').value.trim(), care: $('#pfCare').value.trim() };
+    const cpv = $('#pfComparePrice').value.trim();
+    const payload = { name, name_normalized: normalizeArabicClient(name), price, compare_at_price: cpv ? parseFloat(cpv) : null, category, description: $('#pfDescription').value.trim() || null, badge: $('#pfBadge').value.trim() || null, in_stock: $('#pfInStock').checked, is_active: $('#pfIsActive').checked, images: state.form.images, sizes: cs, colors: cc, specs };
     showLoading();
     try {
       if (state.form.editingId) {
@@ -1439,198 +1016,99 @@ tr:hover td{background:#FAFBFC}
       await loadProducts();
       await loadDashboardStats();
       await loadTopProducts();
-    } catch (e) {
-      console.error(e);
-      toast('حدث خطأ: ' + (e.message || ''), 'error');
-    } finally { hideLoading(); }
+    } catch (e) { console.error(e); toast('خطأ: ' + (e.message||''), 'error'); }
+    finally { hideLoading(); }
   }
-
-  async function toggleProductActive(id, current) {
-    try {
-      const { error } = await sb.from('products').update({ is_active: !current }).eq('id', id);
-      if (error) throw error;
-      toast(current ? 'تم إخفاء المنتج' : 'تم إظهار المنتج');
-      await loadProducts();
-    } catch (e) { toast('تعذر التحديث', 'error'); }
+  async function toggleProductActive(id, cur) {
+    try { const { error } = await sb.from('products').update({ is_active: !cur }).eq('id', id); if (error) throw error; toast(cur ? 'تم إخفاء المنتج' : 'تم إظهار المنتج'); await loadProducts(); }
+    catch (e) { toast('تعذر التحديث', 'error'); }
   }
 
   // ============ ORDERS ============
   async function loadOrders() {
     const tbody = $('#ordersTableBody');
     tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</td></tr>';
-
     try {
-      let query = sb.from('orders').select('*', { count: 'exact' });
-      if (state.orders.status) query = query.eq('status', state.orders.status);
+      let q = sb.from('orders').select('*', { count: 'exact' });
+      if (state.orders.status) q = q.eq('status', state.orders.status);
       if (state.orders.search) {
         const s = state.orders.search;
-        query = query.or(`order_number.ilike.%${s}%,customer_name.ilike.%${s}%,customer_phone.ilike.%${s}%`);
+        q = q.or(`order_number.ilike.%${s}%,customer_name.ilike.%${s}%,customer_phone.ilike.%${s}%`);
       }
-
       const from = state.orders.page * state.orders.pageSize;
       const to = from + state.orders.pageSize - 1;
-      const { data, count, error } = await query.order('created_at', { ascending: false }).range(from, to);
+      const { data, count, error } = await q.order('created_at', { ascending: false }).range(from, to);
       if (error) throw error;
-
       state.orders.data = data || [];
       state.orders.total = count || 0;
-      renderOrdersTable();
-      renderOrdersPagination();
+      renderOrdersTable(); renderOrdersPagination();
       $('#ordersSubtitle').textContent = `${fmtNum(state.orders.total)} طلب`;
-    } catch (e) {
-      console.error('Orders error:', e);
-      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--danger)">تعذر تحميل الطلبات</td></tr>';
-    }
+    } catch (e) { console.error(e); tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--danger)">تعذر التحميل</td></tr>'; }
   }
-
   function renderOrdersTable() {
     const tbody = $('#ordersTableBody');
-    if (!state.orders.data.length) {
-      tbody.innerHTML = '<tr><td colspan="7"><div class="empty"><p>لا توجد طلبات</p></div></td></tr>';
-      return;
-    }
+    if (!state.orders.data.length) { tbody.innerHTML = '<tr><td colspan="7"><div class="empty"><p>لا توجد طلبات</p></div></td></tr>'; return; }
     tbody.innerHTML = state.orders.data.map(o => {
-      const badgeClass = getStatusBadgeClass(o.status);
-      return `<tr>
-        <td><span class="cell-name" style="color:var(--accent)">${escapeHtml(o.order_number)}</span></td>
-        <td class="cell-muted" style="font-size:.8rem">${fmtDate(o.created_at)}</td>
-        <td>${escapeHtml(o.customer_name)}</td>
-        <td class="cell-muted" style="direction:ltr;text-align:right">${escapeHtml(o.customer_phone)}</td>
-        <td><strong>${fmtPrice(o.total)}</strong></td>
-        <td><span class="badge-pill ${badgeClass}">${getStatusLabel(o.status)}</span></td>
-        <td>
-          <div class="actions-cell">
-            <button class="action-btn view" data-view-order="${o.id}" title="عرض"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-            <button class="action-btn delete" data-delete-order="${o.id}" title="حذف"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
-          </div>
-        </td>
-      </tr>`;
+      const bc = getStatusBadgeClass(o.status);
+      return `<tr><td><span class="cell-name" style="color:var(--accent)">${escapeHtml(o.order_number)}</span></td><td class="cell-muted" style="font-size:.8rem">${fmtDate(o.created_at)}</td><td>${escapeHtml(o.customer_name)}</td><td class="cell-muted" style="direction:ltr;text-align:right">${o.customer_phone ? escapeHtml(o.customer_phone) : '<em style="color:#9CA3AF">بدون رقم</em>'}</td><td><strong>${fmtPrice(o.total)}</strong></td><td><span class="badge-pill ${bc}">${getStatusLabel(o.status)}</span></td><td><div class="actions-cell"><button class="action-btn view" data-view-order="${o.id}" title="عرض"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button><button class="action-btn delete" data-delete-order="${o.id}" title="حذف"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div></td></tr>`;
     }).join('');
-
     $$('[data-view-order]').forEach(btn => btn.addEventListener('click', () => openOrderDetail(btn.dataset.viewOrder)));
     $$('[data-delete-order]').forEach(btn => btn.addEventListener('click', () => openDeleteConfirm(btn.dataset.deleteOrder, 'order')));
   }
-
   function renderOrdersPagination() {
-    const totalPages = Math.ceil(state.orders.total / state.orders.pageSize);
+    const tp = Math.ceil(state.orders.total / state.orders.pageSize);
     const wrap = $('#ordersPagination');
-    if (totalPages <= 1) { wrap.style.display = 'none'; return; }
+    if (tp <= 1) { wrap.style.display = 'none'; return; }
     wrap.style.display = 'flex';
-    const current = state.orders.page;
-    $('#ordersPaginationInfo').textContent = `${current * state.orders.pageSize + 1}–${Math.min((current+1)*state.orders.pageSize, state.orders.total)} من ${state.orders.total}`;
-    renderPaginationButtons('ordersPaginationBtns', current, totalPages, (p) => { state.orders.page = p; loadOrders(); });
+    const cur = state.orders.page;
+    $('#ordersPaginationInfo').textContent = `${cur * state.orders.pageSize + 1}–${Math.min((cur+1)*state.orders.pageSize, state.orders.total)} من ${state.orders.total}`;
+    renderPaginationButtons('ordersPaginationBtns', cur, tp, (p) => { state.orders.page = p; loadOrders(); });
   }
-
-  // ✅ Order detail with Token display + product links
   async function openOrderDetail(orderId) {
     const order = state.orders.data.find(o => o.id === orderId);
     if (!order) return;
     state.orders.detail = order;
-
     const body = $('#orderDetailBody');
     body.innerHTML = '<div style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</div>';
     $('#orderDetailModal').classList.add('show');
     document.body.style.overflow = 'hidden';
-
     const items = order.items || [];
     const itemsHtml = items.map(it => {
       const imgSrc = (typeof it.image === 'string' && it.image.startsWith('http')) ? it.image : 'https://via.placeholder.com/56x70?text=?';
       let meta = '';
       if (it.size) meta += 'مقاس: ' + it.size + ' ';
       if (it.color) meta += '• لون: ' + it.color;
-
       const productUrl = it.id ? getProductUrl(it.id) : '#';
-
-      return `<a href="${productUrl}" target="_blank" rel="noopener noreferrer" class="order-item-row">
-        <img src="${escapeHtml(imgSrc)}" onerror="this.src='https://via.placeholder.com/56x70?text=?'">
-        <div class="order-item-info">
-          <div class="order-item-name">${escapeHtml(it.name)} <span style="font-size:.75rem;color:var(--accent);font-weight:600">↗ فتح في المتجر</span></div>
-          <div class="order-item-meta">${meta} • الكمية: ${it.qty}</div>
-        </div>
-        <div class="order-item-price">${fmtPrice(it.price * it.qty)}</div>
-      </a>`;
+      return `<a href="${productUrl}" target="_blank" rel="noopener noreferrer" class="order-item-row"><img src="${escapeHtml(imgSrc)}" onerror="this.src='https://via.placeholder.com/56x70?text=?'"><div class="order-item-info"><div class="order-item-name">${escapeHtml(it.name)} <span style="font-size:.75rem;color:var(--accent);font-weight:600">↗ فتح في المتجر</span></div><div class="order-item-meta">${meta} • الكمية: ${it.qty}</div></div><div class="order-item-price">${fmtPrice(it.price * it.qty)}</div></a>`;
     }).join('');
-
     const tokenHtml = order.client_token
-      ? `<div class="order-info-box token-box" style="grid-column:1/-1">
-           <h4>Client Token (لهذا الطلب)</h4>
-           <p style="font-family:monospace;font-size:.85rem;direction:ltr;text-align:right">${escapeHtml(order.client_token)}</p>
-         </div>`
-      : `<div class="order-info-box" style="grid-column:1/-1;background:#FEF3C7;border-color:#FCD34D">
-           <h4>Client Token</h4>
-           <p style="font-size:.85rem;color:#92400E">⚠️ هذا الطلب قديم ولا يحتوي على Token. يمكنك الحظر بالهاتف فقط.</p>
-         </div>`;
-
-    body.innerHTML = `
-      <div class="order-detail-grid">
-        <div class="order-detail-header">
-          <div>
-            <div class="order-detail-number">${escapeHtml(order.order_number)}</div>
-            <div class="order-detail-date">${fmtDate(order.created_at)}</div>
-          </div>
-          <span class="badge-pill ${getStatusBadgeClass(order.status)}">${getStatusLabel(order.status)}</span>
-        </div>
-
-        <div class="order-detail-info-grid">
-          <div class="order-info-box"><h4>الاسم</h4><p>${escapeHtml(order.customer_name)}</p></div>
-          <div class="order-info-box"><h4>الهاتف</h4><p style="direction:ltr;text-align:right">${escapeHtml(order.customer_phone)}</p></div>
-          <div class="order-info-box" style="grid-column:1/-1"><h4>العنوان</h4><p>${escapeHtml(order.customer_address || '—')}</p></div>
-          ${order.customer_notes ? `<div class="order-info-box" style="grid-column:1/-1"><h4>ملاحظات</h4><p>${escapeHtml(order.customer_notes)}</p></div>` : ''}
-          ${tokenHtml}
-        </div>
-
-        <div>
-          <div class="form-section-title">المنتجات (${items.length})</div>
-          <div class="order-items-list">${itemsHtml || '<p style="padding:12px;color:var(--muted)">لا توجد منتجات</p>'}</div>
-        </div>
-
-        <div class="order-detail-total"><span>الإجمالي</span><span>${fmtPrice(order.total)}</span></div>
-
-        <div>
-          <div class="form-section-title">تغيير الحالة</div>
-          <div class="order-status-select">
-            <select id="orderStatusSelect">
-              <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>قيد المراجعة</option>
-              <option value="confirmed" ${order.status === 'confirmed' ? 'selected' : ''}>تم التأكيد</option>
-              <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>تم الشحن</option>
-              <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>تم التسليم</option>
-              <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>ملغى</option>
-            </select>
-          </div>
-        </div>
-      </div>
-    `;
-
+      ? `<div class="order-info-box token-box" style="grid-column:1/-1"><h4>Client Token (لهذا الطلب)</h4><p style="font-family:monospace;font-size:.85rem;direction:ltr;text-align:right">${escapeHtml(order.client_token)}</p></div>`
+      : `<div class="order-info-box" style="grid-column:1/-1;background:#FEF3C7;border-color:#FCD34D"><h4>Client Token</h4><p style="font-size:.85rem;color:#92400E">⚠️ هذا الطلب قديم ولا يحتوي على Token.</p></div>`;
+    const phoneHtml = order.customer_phone
+      ? `<div class="order-info-box"><h4>الهاتف</h4><p style="direction:ltr;text-align:right">${escapeHtml(order.customer_phone)}</p></div>`
+      : `<div class="order-info-box"><h4>الهاتف</h4><p style="color:var(--muted)">—</p></div>`;
+    body.innerHTML = `<div class="order-detail-grid"><div class="order-detail-header"><div><div class="order-detail-number">${escapeHtml(order.order_number)}</div><div class="order-detail-date">${fmtDate(order.created_at)}</div></div><span class="badge-pill ${getStatusBadgeClass(order.status)}">${getStatusLabel(order.status)}</span></div><div class="order-detail-info-grid"><div class="order-info-box"><h4>الاسم</h4><p>${escapeHtml(order.customer_name)}</p></div>${phoneHtml}<div class="order-info-box" style="grid-column:1/-1"><h4>العنوان</h4><p>${escapeHtml(order.customer_address || '—')}</p></div>${order.customer_notes ? `<div class="order-info-box" style="grid-column:1/-1"><h4>ملاحظات</h4><p>${escapeHtml(order.customer_notes)}</p></div>` : ''}${tokenHtml}</div><div><div class="form-section-title">المنتجات (${items.length})</div><div class="order-items-list">${itemsHtml || '<p style="padding:12px;color:var(--muted)">لا توجد منتجات</p>'}</div></div><div class="order-detail-total"><span>الإجمالي</span><span>${fmtPrice(order.total)}</span></div><div><div class="form-section-title">تغيير الحالة</div><div class="order-status-select"><select id="orderStatusSelect"><option value="pending" ${order.status==='pending'?'selected':''}>قيد المراجعة</option><option value="confirmed" ${order.status==='confirmed'?'selected':''}>تم التأكيد</option><option value="shipped" ${order.status==='shipped'?'selected':''}>تم الشحن</option><option value="delivered" ${order.status==='delivered'?'selected':''}>تم التسليم</option><option value="cancelled" ${order.status==='cancelled'?'selected':''}>ملغى</option></select></div></div></div>`;
     const saveBtn = $('#saveOrderStatusBtn');
     const blockBtn = $('#blockOrderCustomerBtn');
     saveBtn.style.display = 'inline-flex';
-    blockBtn.style.display = 'inline-flex';
-
+    blockBtn.style.display = order.customer_phone ? 'inline-flex' : 'none';
     saveBtn.onclick = async () => {
-      const newStatus = $('#orderStatusSelect').value;
-      if (newStatus === order.status) { toast('لم يتم تغيير الحالة'); return; }
+      const ns = $('#orderStatusSelect').value;
+      if (ns === order.status) { toast('لم يتم تغيير الحالة'); return; }
       showLoading();
       try {
-        const { error } = await sb.from('orders').update({ status: newStatus, updated_at: new Date().toISOString() }).eq('id', order.id);
+        const { error } = await sb.from('orders').update({ status: ns, updated_at: new Date().toISOString() }).eq('id', order.id);
         if (error) throw error;
         toast('تم تحديث الحالة ✓');
         closeOrderDetail();
         await loadOrders();
         await refreshNavCounts();
         await loadDashboardStats();
-      } catch (e) {
-        console.error(e);
-        toast('تعذر التحديث', 'error');
-      } finally { hideLoading(); }
+      } catch (e) { console.error(e); toast('تعذر التحديث', 'error'); }
+      finally { hideLoading(); }
     };
-
-    // ✅ FIXED: block from order fills BOTH phone AND token
-    blockBtn.onclick = () => {
-      closeOrderDetail();
-      openBlockCustomerModal(order.customer_phone, order.client_token, order.customer_name);
-    };
+    blockBtn.onclick = () => { closeOrderDetail(); openBlockCustomerModal(order.customer_phone, order.client_token, order.customer_name); };
   }
-
   function closeOrderDetail() {
     $('#orderDetailModal').classList.remove('show');
     document.body.style.overflow = '';
@@ -1641,174 +1119,93 @@ tr:hover td{background:#FAFBFC}
 
   // ============ REVIEWS ============
   async function loadReviews() {
-    const container = $('#reviewsListContainer');
-    container.innerHTML = '<div style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</div>';
-
+    const c = $('#reviewsListContainer');
+    c.innerHTML = '<div style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</div>';
     try {
       const { data, error } = await sb.from('reviews').select('*, product:products(id, name, images)').order('created_at', { ascending: false });
       if (error) throw error;
-
       state.reviews.all = data || [];
       state.reviews.counts.pending = state.reviews.all.filter(r => r.status === 'pending').length;
       state.reviews.counts.approved = state.reviews.all.filter(r => r.status === 'approved').length;
       state.reviews.counts.rejected = state.reviews.all.filter(r => r.status === 'rejected').length;
-
       $('#reviewsPendingCount').textContent = state.reviews.counts.pending;
       $('#reviewsApprovedCount').textContent = state.reviews.counts.approved;
       $('#reviewsRejectedCount').textContent = state.reviews.counts.rejected;
-
       renderReviewsList();
-    } catch (e) {
-      console.error('Reviews error:', e);
-      container.innerHTML = '<div style="text-align:center;padding:32px;color:var(--danger)">تعذر تحميل التقييمات</div>';
-    }
+    } catch (e) { console.error(e); c.innerHTML = '<div style="text-align:center;padding:32px;color:var(--danger)">تعذر التحميل</div>'; }
   }
-
   function renderReviewsList() {
-    const container = $('#reviewsListContainer');
-    const filtered = state.reviews.all.filter(r => r.status === state.reviews.tab);
-
+    const c = $('#reviewsListContainer');
+    const filt = state.reviews.all.filter(r => r.status === state.reviews.tab);
     $$('.reviews-tab').forEach(tab => tab.classList.toggle('active', tab.dataset.tab === state.reviews.tab));
-
-    if (!filtered.length) {
-      container.innerHTML = `<div class="empty"><p>لا توجد تقييمات</p></div>`;
-      return;
-    }
-
-    container.innerHTML = filtered.map(r => {
-      const productName = r.product?.name || 'منتج محذوف';
+    if (!filt.length) { c.innerHTML = '<div class="empty"><p>لا توجد تقييمات</p></div>'; return; }
+    c.innerHTML = filt.map(r => {
+      const pn = r.product?.name || 'منتج محذوف';
       const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
-      let actionsHtml = '';
-      if (r.status === 'pending') {
-        actionsHtml = `
-          <button class="btn btn-sm btn-success" data-approve-review="${r.id}">موافقة</button>
-          <button class="btn btn-sm btn-ghost" data-reject-review="${r.id}">رفض</button>
-          <button class="btn btn-sm btn-danger" data-block-review="${r.id}">حظر المعلق</button>
-        `;
-      } else if (r.status === 'approved') {
-        actionsHtml = `
-          <button class="btn btn-sm btn-ghost" data-reject-review="${r.id}">رفض</button>
-          <button class="btn btn-sm btn-danger" data-block-review="${r.id}">حظر المعلق</button>
-          <button class="btn btn-sm btn-danger" data-delete-review="${r.id}">حذف</button>
-        `;
-      } else {
-        actionsHtml = `
-          <button class="btn btn-sm btn-success" data-approve-review="${r.id}">موافقة</button>
-          <button class="btn btn-sm btn-danger" data-delete-review="${r.id}">حذف</button>
-        `;
-      }
-
-      return `<div class="review-card ${r.status}">
-        <div class="review-card-header">
-          <div>
-            <div class="review-card-product">على: <strong>${escapeHtml(productName)}</strong></div>
-            <div class="review-card-author">${escapeHtml(r.author)} <span class="review-stars">${stars}</span></div>
-          </div>
-          <div class="review-card-date">${fmtDate(r.created_at)}</div>
-        </div>
-        <div class="review-card-comment">${escapeHtml(r.comment)}</div>
-        <div class="review-card-actions">${actionsHtml}</div>
-      </div>`;
+      let ah = '';
+      if (r.status === 'pending') ah = `<button class="btn btn-sm btn-success" data-approve-review="${r.id}">موافقة</button><button class="btn btn-sm btn-ghost" data-reject-review="${r.id}">رفض</button><button class="btn btn-sm btn-danger" data-block-review="${r.id}">حظر المعلق</button>`;
+      else if (r.status === 'approved') ah = `<button class="btn btn-sm btn-ghost" data-reject-review="${r.id}">رفض</button><button class="btn btn-sm btn-danger" data-block-review="${r.id}">حظر المعلق</button><button class="btn btn-sm btn-danger" data-delete-review="${r.id}">حذف</button>`;
+      else ah = `<button class="btn btn-sm btn-success" data-approve-review="${r.id}">موافقة</button><button class="btn btn-sm btn-danger" data-delete-review="${r.id}">حذف</button>`;
+      return `<div class="review-card ${r.status}"><div class="review-card-header"><div><div class="review-card-product">على: <strong>${escapeHtml(pn)}</strong></div><div class="review-card-author">${escapeHtml(r.author)} <span class="review-stars">${stars}</span></div></div><div class="review-card-date">${fmtDate(r.created_at)}</div></div><div class="review-card-comment">${escapeHtml(r.comment)}</div><div class="review-card-actions">${ah}</div></div>`;
     }).join('');
-
-    $$('[data-approve-review]').forEach(btn => btn.addEventListener('click', () => updateReviewStatus(btn.dataset.approveReview, 'approved')));
-    $$('[data-reject-review]').forEach(btn => btn.addEventListener('click', () => updateReviewStatus(btn.dataset.rejectReview, 'rejected')));
-    $$('[data-delete-review]').forEach(btn => btn.addEventListener('click', () => deleteReview(btn.dataset.deleteReview)));
-    $$('[data-block-review]').forEach(btn => btn.addEventListener('click', () => blockReviewAuthor(btn.dataset.blockReview)));
+    $$('[data-approve-review]').forEach(b => b.addEventListener('click', () => updateReviewStatus(b.dataset.approveReview, 'approved')));
+    $$('[data-reject-review]').forEach(b => b.addEventListener('click', () => updateReviewStatus(b.dataset.rejectReview, 'rejected')));
+    $$('[data-delete-review]').forEach(b => b.addEventListener('click', () => deleteReview(b.dataset.deleteReview)));
+    $$('[data-block-review]').forEach(b => b.addEventListener('click', () => blockReviewAuthor(b.dataset.blockReview)));
   }
-
-  async function updateReviewStatus(reviewId, newStatus) {
+  async function updateReviewStatus(rid, ns) {
     showLoading();
-    try {
-      const { error } = await sb.from('reviews').update({ status: newStatus }).eq('id', reviewId);
-      if (error) throw error;
-      toast(newStatus === 'approved' ? 'تم قبول التقييم ✓' : 'تم رفض التقييم');
-      await loadReviews();
-      await refreshNavCounts();
-    } catch (e) { console.error(e); toast('تعذر التحديث', 'error'); }
+    try { const { error } = await sb.from('reviews').update({ status: ns }).eq('id', rid); if (error) throw error; toast(ns === 'approved' ? 'تم قبول التقييم ✓' : 'تم رفض التقييم'); await loadReviews(); await refreshNavCounts(); }
+    catch (e) { console.error(e); toast('تعذر', 'error'); }
     finally { hideLoading(); }
   }
-
-  async function deleteReview(reviewId) {
-    if (!confirm('حذف هذا التقييم نهائيًا؟')) return;
+  async function deleteReview(rid) {
+    if (!confirm('حذف نهائي؟')) return;
     showLoading();
-    try {
-      const { error } = await sb.from('reviews').delete().eq('id', reviewId);
-      if (error) throw error;
-      toast('تم حذف التقييم');
-      await loadReviews();
-      await refreshNavCounts();
-    } catch (e) { console.error(e); toast('تعذر الحذف', 'error'); }
+    try { const { error } = await sb.from('reviews').delete().eq('id', rid); if (error) throw error; toast('تم الحذف'); await loadReviews(); await refreshNavCounts(); }
+    catch (e) { console.error(e); toast('تعذر', 'error'); }
     finally { hideLoading(); }
   }
-
-  function blockReviewAuthor(reviewId) {
-    const review = state.reviews.all.find(r => r.id === reviewId);
-    if (!review) return;
-    openBlockCustomerModal(null, review.token || null, review.author);
+  function blockReviewAuthor(rid) {
+    const r = state.reviews.all.find(x => x.id === rid);
+    if (!r) return;
+    openBlockCustomerModal(null, r.token || null, r.author);
   }
 
   // ============ BLOCKED ============
   async function loadBlocked() {
-    const container = $('#blockedListContainer');
-    container.innerHTML = '<div style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</div>';
-
+    const c = $('#blockedListContainer');
+    c.innerHTML = '<div style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</div>';
     try {
       const { data, error } = await sb.from('blocked_customers').select('*').order('created_at', { ascending: false });
       if (error) throw error;
-
       state.blocked.data = data || [];
       $('#blockedSubtitle').textContent = `${state.blocked.data.length} محظور`;
       renderBlockedList();
-    } catch (e) {
-      console.error('Blocked error:', e);
-      container.innerHTML = '<div style="text-align:center;padding:32px;color:var(--danger)">تعذر تحميل القائمة</div>';
-    }
+    } catch (e) { console.error(e); c.innerHTML = '<div style="text-align:center;padding:32px;color:var(--danger)">تعذر التحميل</div>'; }
   }
-
   function renderBlockedList() {
-    const container = $('#blockedListContainer');
-    if (!state.blocked.data.length) {
-      container.innerHTML = '<div class="empty"><p>لا يوجد زبائن محظورون</p></div>';
-      return;
-    }
-
-    container.innerHTML = `<div style="padding:0 24px">` + state.blocked.data.map(b => {
+    const c = $('#blockedListContainer');
+    if (!state.blocked.data.length) { c.innerHTML = '<div class="empty"><p>لا يوجد محظورون</p></div>'; return; }
+    c.innerHTML = `<div style="padding:0 24px">` + state.blocked.data.map(b => {
       const types = [];
       if (b.phone) types.push('📱 رقم هاتف');
       if (b.client_token) types.push('🖥️ Token');
-      const typeLabel = types.join(' + ') || '—';
-
-      let value = '';
-      if (b.phone) value += `<div class="blocked-value" style="direction:ltr;text-align:right">${escapeHtml(b.phone)}</div>`;
-      if (b.client_token) value += `<div class="blocked-value" style="font-family:monospace;font-size:.8rem;direction:ltr;text-align:right;color:var(--accent);margin-top:4px">${escapeHtml(b.client_token)}</div>`;
-
-      return `<div class="blocked-card">
-        <div class="blocked-info">
-          <div class="blocked-type">${typeLabel}</div>
-          ${value}
-          ${b.reason ? `<div class="blocked-reason">"${escapeHtml(b.reason)}"</div>` : ''}
-          <div class="blocked-date">${fmtDate(b.created_at)}</div>
-        </div>
-        <button class="btn btn-sm btn-ghost" data-unblock="${b.id}" style="color:var(--danger);border-color:var(--danger)">إلغاء الحظر</button>
-      </div>`;
+      const tl = types.join(' + ') || '—';
+      let v = '';
+      if (b.phone) v += `<div class="blocked-value" style="direction:ltr;text-align:right">${escapeHtml(b.phone)}</div>`;
+      if (b.client_token) v += `<div class="blocked-value" style="font-family:monospace;font-size:.8rem;direction:ltr;text-align:right;color:var(--accent);margin-top:4px">${escapeHtml(b.client_token)}</div>`;
+      return `<div class="blocked-card"><div class="blocked-info"><div class="blocked-type">${tl}</div>${v}${b.reason?`<div class="blocked-reason">"${escapeHtml(b.reason)}"</div>`:''}<div class="blocked-date">${fmtDate(b.created_at)}</div></div><button class="btn btn-sm btn-ghost" data-unblock="${b.id}" style="color:var(--danger);border-color:var(--danger)">إلغاء الحظر</button></div>`;
     }).join('') + '</div>';
-
-    $$('[data-unblock]').forEach(btn => btn.addEventListener('click', () => unblockCustomer(btn.dataset.unblock)));
+    $$('[data-unblock]').forEach(b => b.addEventListener('click', () => unblockCustomer(b.dataset.unblock)));
   }
-
   async function unblockCustomer(id) {
-    if (!confirm('إزالة الحظر عن هذا الزبون؟')) return;
+    if (!confirm('إزالة الحظر؟')) return;
     showLoading();
-    try {
-      const { error } = await sb.from('blocked_customers').delete().eq('id', id);
-      if (error) throw error;
-      toast('تم إزالة الحظر');
-      await loadBlocked();
-    } catch (e) { console.error(e); toast('تعذر الإزالة', 'error'); }
+    try { const { error } = await sb.from('blocked_customers').delete().eq('id', id); if (error) throw error; toast('تم الإزالة'); await loadBlocked(); }
+    catch (e) { console.error(e); toast('تعذر', 'error'); }
     finally { hideLoading(); }
   }
-
   function openBlockCustomerModal(phone, token, name) {
     state.blocked.targetInfo = { phone, token, name };
     $('#blockPhoneInput').value = phone || '';
@@ -1817,28 +1214,104 @@ tr:hover td{background:#FAFBFC}
     $('#blockCustomerModal').classList.add('show');
     document.body.style.overflow = 'hidden';
   }
-
   function closeBlockCustomerModal() {
     $('#blockCustomerModal').classList.remove('show');
     document.body.style.overflow = '';
     state.blocked.targetInfo = null;
   }
-
   async function confirmBlockCustomer() {
     const phone = $('#blockPhoneInput').value.trim() || null;
     const token = $('#blockTokenInput').value.trim() || null;
     const reason = $('#blockReasonInput').value.trim() || null;
-
     if (!phone && !token) { toast('أدخل هاتف أو token', 'error'); return; }
+    showLoading();
+    try { const { error } = await sb.from('blocked_customers').insert({ phone, client_token: token, reason }); if (error) throw error; toast('تم الحظر ✓'); closeBlockCustomerModal(); if (state.currentPage === 'blocked') await loadBlocked(); }
+    catch (e) { console.error(e); toast('تعذر: ' + (e.message||''), 'error'); }
+    finally { hideLoading(); }
+  }
 
+  // ============ ADMINS ============
+  async function loadAdmins() {
+    const tbody = $('#adminsTableBody');
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</td></tr>';
+    try {
+      const { data, error } = await sb.from('admin_users').select('*').order('role', { ascending: true }).order('created_at', { ascending: true });
+      if (error) throw error;
+      state.admins.data = data || [];
+      renderAdminsTable();
+    } catch (e) { console.error(e); tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--danger)">تعذر التحميل</td></tr>'; }
+  }
+  function renderAdminsTable() {
+    const tbody = $('#adminsTableBody');
+    if (!state.admins.data.length) { tbody.innerHTML = '<tr><td colspan="4"><div class="empty"><p>لا يوجد مدراء</p></div></td></tr>'; return; }
+    tbody.innerHTML = state.admins.data.map(a => {
+      const isMe = a.user_id === state.user?.id;
+      const isOwnerRow = a.role === 'owner';
+      const roleBadge = isOwnerRow ? '<span class="badge-pill badge-owner">👑 المالك</span>' : '<span class="badge-pill badge-admin">مدير</span>';
+      let actionCell = '';
+      if (isMe) {
+        actionCell = '<span style="font-size:.75rem;color:var(--muted);font-weight:600">أنت</span>';
+      } else if (isOwnerRow) {
+        actionCell = '<span style="font-size:.75rem;color:var(--muted);font-weight:600">—</span>';
+      } else {
+        actionCell = `<button class="action-btn delete" data-delete-admin="${a.user_id}" data-admin-email="${escapeHtml(a.email)}" title="حذف"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>`;
+      }
+      return `<tr><td><span class="cell-name">${escapeHtml(a.email)}</span></td><td>${roleBadge}</td><td class="cell-muted" style="font-size:.8rem">${fmtDate(a.created_at)}</td><td><div class="actions-cell">${actionCell}</div></td></tr>`;
+    }).join('');
+    $$('[data-delete-admin]').forEach(btn => btn.addEventListener('click', () => deleteAdmin(btn.dataset.deleteAdmin, btn.dataset.adminEmail)));
+  }
+  async function deleteAdmin(userId, email) {
+    if (!confirm(`حذف المدير "${email}"؟\nسيُزال وصوله إلى لوحة التحكم فورًا.`)) return;
     showLoading();
     try {
-      const { error } = await sb.from('blocked_customers').insert({ phone, client_token: token, reason });
+      const { data, error } = await sb.rpc('remove_admin', { p_user_id: userId });
       if (error) throw error;
-      toast('تم الحظر ✓');
-      closeBlockCustomerModal();
-      if (state.currentPage === 'blocked') await loadBlocked();
-    } catch (e) { console.error(e); toast('تعذر الحظر: ' + (e.message || ''), 'error'); }
+      if (!data.success) { toast(data.error || 'تعذر الحذف', 'error'); return; }
+      toast('تم حذف المدير ✓');
+      await loadAdmins();
+    } catch (e) { console.error(e); toast('تعذر الحذف: ' + (e.message||''), 'error'); }
+    finally { hideLoading(); }
+  }
+
+  // Add admin modal
+  function openAddAdminModal() {
+    $('#newAdminEmail').value = '';
+    $('#newAdminPassword').value = '';
+    $('#newAdminPasswordConfirm').value = '';
+    $('#addAdminModal').classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeAddAdminModal() {
+    $('#addAdminModal').classList.remove('show');
+    document.body.style.overflow = '';
+  }
+  async function confirmAddAdmin() {
+    const email = $('#newAdminEmail').value.trim().toLowerCase();
+    const password = $('#newAdminPassword').value;
+    const confirm = $('#newAdminPasswordConfirm').value;
+    if (!email || !password || !confirm) { toast('ملء جميع الحقول', 'error'); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { toast('البريد غير صحيح', 'error'); return; }
+    if (password.length < 8) { toast('كلمة المرور قصيرة (8 أحرف على الأقل)', 'error'); return; }
+    if (password !== confirm) { toast('كلمتا المرور غير متطابقتين', 'error'); return; }
+    showLoading();
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      if (!session) { toast('انتهت الجلسة، أعد تسجيل الدخول', 'error'); return; }
+      const response = await fetch(EDGE_FUNCTION_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + session.access_token,
+          'apikey': SUPABASE_ANON_KEY
+        },
+        body: JSON.stringify({ email, password })
+      });
+      const result = await response.json();
+      if (!result.success) { toast(result.error || 'فشل إنشاء المدير', 'error'); return; }
+      toast('تم إنشاء المدير ✓');
+      closeAddAdminModal();
+      await loadAdmins();
+    } catch (e) { console.error(e); toast('خطأ في الاتصال بالدالة', 'error'); }
     finally { hideLoading(); }
   }
 
@@ -1847,9 +1320,8 @@ tr:hover td{background:#FAFBFC}
     try {
       const { data, error } = await sb.from('store_settings').select('*').eq('id', 1).maybeSingle();
       if (error) throw error;
-      if (!data) { toast('لم يتم العثور على سجل الإعدادات', 'error'); return; }
+      if (!data) { toast('لم يتم العثور على الإعدادات', 'error'); return; }
       state.settings = data;
-
       $('#setStoreName').value = data.store_name || '';
       $('#setWhatsapp').value = data.whatsapp_number || '';
       $('#setCurrency').value = data.currency || 'SYP';
@@ -1863,25 +1335,16 @@ tr:hover td{background:#FAFBFC}
       $('#setPhoneRegex').value = data.phone_custom_regex || '';
       $('#setEnablePayPal').checked = data.enable_paypal === true;
       $('#setPaypalEmail').value = data.paypal_email || '';
-    } catch (e) {
-      console.error('Settings load error:', e);
-      toast('تعذر تحميل الإعدادات', 'error');
-    }
+    } catch (e) { console.error(e); toast('تعذر التحميل', 'error'); }
   }
-
   async function saveSettings() {
     const minDigits = parseInt($('#setPhoneMin').value) || 9;
     const maxDigits = parseInt($('#setPhoneMax').value) || 15;
     const regex = $('#setPhoneRegex').value.trim();
-
-    if (minDigits < 4 || minDigits > 20) { toast('الحد الأدنى يجب أن يكون بين 4 و 20', 'error'); return; }
-    if (maxDigits < 4 || maxDigits > 20) { toast('الحد الأقصى يجب أن يكون بين 4 و 20', 'error'); return; }
-    if (minDigits > maxDigits) { toast('الحد الأدنى يجب أن يكون أقل من الأقصى', 'error'); return; }
-
-    if (regex) {
-      try { new RegExp(regex); } catch(e) { toast('Regex غير صحيح: ' + e.message, 'error'); return; }
-    }
-
+    if (minDigits < 4 || minDigits > 20) { toast('الحد الأدنى بين 4 و 20', 'error'); return; }
+    if (maxDigits < 4 || maxDigits > 20) { toast('الحد الأقصى بين 4 و 20', 'error'); return; }
+    if (minDigits > maxDigits) { toast('الحد الأدنى يجب أن يكون أصغر', 'error'); return; }
+    if (regex) { try { new RegExp(regex); } catch(e) { toast('Regex غير صحيح', 'error'); return; } }
     const payload = {
       store_name: $('#setStoreName').value.trim() || 'متجري',
       whatsapp_number: $('#setWhatsapp').value.trim() || null,
@@ -1898,49 +1361,33 @@ tr:hover td{background:#FAFBFC}
       paypal_email: $('#setPaypalEmail').value.trim() || null,
       updated_at: new Date().toISOString()
     };
-
     showLoading();
     try {
       const { error } = await sb.from('store_settings').update(payload).eq('id', 1);
       if (error) throw error;
       state.settings = { ...state.settings, ...payload };
       toast('تم حفظ الإعدادات ✓');
-    } catch (e) {
-      console.error('Save settings error:', e);
-      toast('تعذر الحفظ: ' + (e.message || ''), 'error');
-    } finally { hideLoading(); }
+    } catch (e) { console.error(e); toast('تعذر الحفظ: ' + (e.message||''), 'error'); }
+    finally { hideLoading(); }
   }
 
-  // ============ DELETE CONFIRM ============
+  // ============ DELETE ============
   function openDeleteConfirm(id, type) {
     state.deleteTarget = id;
     state.deleteType = type;
-
     let title = '—', text = 'هل أنت متأكد؟', subtext = 'لا يمكن التراجع.';
-
-    if (type === 'product') {
-      const p = state.products.data.find(x => x.id === id);
-      title = p ? p.name : 'المنتج';
-      text = 'هل أنت متأكد من حذف المنتج؟';
-    } else if (type === 'order') {
-      const o = state.orders.data.find(x => x.id === id);
-      title = o ? o.order_number : 'الطلب';
-      text = 'هل أنت متأكد من حذف الطلب؟';
-      subtext = 'سيُحذف الطلب نهائيًا ولا يمكن استعادته.';
-    }
-
+    if (type === 'product') { const p = state.products.data.find(x => x.id === id); title = p?.name || 'المنتج'; text = 'حذف المنتج؟'; }
+    else if (type === 'order') { const o = state.orders.data.find(x => x.id === id); title = o?.order_number || 'الطلب'; text = 'حذف الطلب نهائيًا؟'; }
     $('#confirmProductName').textContent = title;
     $('#confirmText').textContent = text;
     $('#confirmSubtext').textContent = subtext;
     $('#confirmModal').classList.add('show');
   }
-
   function closeDeleteConfirm() {
     $('#confirmModal').classList.remove('show');
     state.deleteTarget = null;
     state.deleteType = null;
   }
-
   async function confirmDelete() {
     if (!state.deleteTarget) return;
     showLoading();
@@ -1951,23 +1398,17 @@ tr:hover td{background:#FAFBFC}
         toast('تم حذف المنتج');
         closeDeleteConfirm();
         if (state.products.data.length === 1 && state.products.page > 0) state.products.page--;
-        await loadProducts();
-        await loadDashboardStats();
-        await loadTopProducts();
+        await loadProducts(); await loadDashboardStats(); await loadTopProducts();
       } else if (state.deleteType === 'order') {
         const { error } = await sb.from('orders').delete().eq('id', state.deleteTarget);
         if (error) throw error;
         toast('تم حذف الطلب');
         closeDeleteConfirm();
         if (state.orders.data.length === 1 && state.orders.page > 0) state.orders.page--;
-        await loadOrders();
-        await refreshNavCounts();
-        await loadDashboardStats();
+        await loadOrders(); await refreshNavCounts(); await loadDashboardStats();
       }
-    } catch (e) {
-      console.error(e);
-      toast('تعذر الحذف: ' + (e.message || ''), 'error');
-    } finally { hideLoading(); }
+    } catch (e) { console.error(e); toast('تعذر: ' + (e.message||''), 'error'); }
+    finally { hideLoading(); }
   }
 
   // ============ WIRE UP ============
@@ -1978,21 +1419,11 @@ tr:hover td{background:#FAFBFC}
   });
   $('#mobileMenuBtn').addEventListener('click', () => $('#sidebar').classList.toggle('open'));
 
-  let pSearchTimer;
-  $('#productsSearch').addEventListener('input', e => {
-    clearTimeout(pSearchTimer);
-    pSearchTimer = setTimeout(() => { state.products.search = e.target.value.trim(); state.products.page = 0; loadProducts(); }, 350);
-  });
+  let psTimer; $('#productsSearch').addEventListener('input', e => { clearTimeout(psTimer); psTimer = setTimeout(() => { state.products.search = e.target.value.trim(); state.products.page = 0; loadProducts(); }, 350); });
   $('#productsCategoryFilter').addEventListener('change', e => { state.products.category = e.target.value; state.products.page = 0; loadProducts(); });
   $('#productsStatusFilter').addEventListener('change', e => { state.products.status = e.target.value; state.products.page = 0; loadProducts(); });
-
-  let oSearchTimer;
-  $('#ordersSearch').addEventListener('input', e => {
-    clearTimeout(oSearchTimer);
-    oSearchTimer = setTimeout(() => { state.orders.search = e.target.value.trim(); state.orders.page = 0; loadOrders(); }, 350);
-  });
+  let osTimer; $('#ordersSearch').addEventListener('input', e => { clearTimeout(osTimer); osTimer = setTimeout(() => { state.orders.search = e.target.value.trim(); state.orders.page = 0; loadOrders(); }, 350); });
   $('#ordersStatusFilter').addEventListener('change', e => { state.orders.status = e.target.value; state.orders.page = 0; loadOrders(); });
-
   $$('.reviews-tab').forEach(tab => tab.addEventListener('click', () => { state.reviews.tab = tab.dataset.tab; renderReviewsList(); }));
 
   $('#addProductBtn').addEventListener('click', () => openProductModal());
@@ -2002,26 +1433,27 @@ tr:hover td{background:#FAFBFC}
   $('#addSizeBtn').addEventListener('click', addSizeRow);
   $('#addColorBtn').addEventListener('click', addColorRow);
 
-  const uploadZone = $('#uploadZone');
-  const imageInput = $('#imageInput');
-  uploadZone.addEventListener('click', () => imageInput.click());
-  imageInput.addEventListener('change', e => { handleImageUpload(e.target.files); e.target.value = ''; });
-  uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('dragover'); });
-  uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
-  uploadZone.addEventListener('drop', e => { e.preventDefault(); uploadZone.classList.remove('dragover'); handleImageUpload(e.dataTransfer.files); });
+  const uz = $('#uploadZone'), ii = $('#imageInput');
+  uz.addEventListener('click', () => ii.click());
+  ii.addEventListener('change', e => { handleImageUpload(e.target.files); e.target.value = ''; });
+  uz.addEventListener('dragover', e => { e.preventDefault(); uz.classList.add('dragover'); });
+  uz.addEventListener('dragleave', () => uz.classList.remove('dragover'));
+  uz.addEventListener('drop', e => { e.preventDefault(); uz.classList.remove('dragover'); handleImageUpload(e.dataTransfer.files); });
 
   $('#cancelDeleteBtn').addEventListener('click', closeDeleteConfirm);
   $('#confirmDeleteBtn').addEventListener('click', confirmDelete);
-
   $('#closeOrderDetailBtn').addEventListener('click', closeOrderDetail);
   $('#closeOrderDetailFooterBtn').addEventListener('click', closeOrderDetail);
-
   $('#closeBlockModalBtn').addEventListener('click', closeBlockCustomerModal);
   $('#cancelBlockBtn').addEventListener('click', closeBlockCustomerModal);
   $('#confirmBlockBtn').addEventListener('click', confirmBlockCustomer);
   $('#addBlockedBtn').addEventListener('click', () => openBlockCustomerModal(null, null, null));
-
   $('#saveSettingsBtn').addEventListener('click', saveSettings);
+
+  $('#addAdminBtn').addEventListener('click', openAddAdminModal);
+  $('#closeAddAdminBtn').addEventListener('click', closeAddAdminModal);
+  $('#cancelAddAdminBtn').addEventListener('click', closeAddAdminModal);
+  $('#confirmAddAdminBtn').addEventListener('click', confirmAddAdmin);
 
   $('#closeLightboxBtn').addEventListener('click', closeLightbox);
   $('#imageLightbox').addEventListener('click', e => { if (e.target.id === 'imageLightbox') closeLightbox(); });
@@ -2030,22 +1462,21 @@ tr:hover td{background:#FAFBFC}
   $('#confirmModal').addEventListener('click', e => { if (e.target.id === 'confirmModal') closeDeleteConfirm(); });
   $('#orderDetailModal').addEventListener('click', e => { if (e.target.id === 'orderDetailModal') closeOrderDetail(); });
   $('#blockCustomerModal').addEventListener('click', e => { if (e.target.id === 'blockCustomerModal') closeBlockCustomerModal(); });
+  $('#addAdminModal').addEventListener('click', e => { if (e.target.id === 'addAdminModal') closeAddAdminModal(); });
 
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       if ($('#imageLightbox').classList.contains('show')) closeLightbox();
       else if ($('#confirmModal').classList.contains('show')) closeDeleteConfirm();
       else if ($('#blockCustomerModal').classList.contains('show')) closeBlockCustomerModal();
+      else if ($('#addAdminModal').classList.contains('show')) closeAddAdminModal();
       else if ($('#orderDetailModal').classList.contains('show')) closeOrderDetail();
       else if ($('#productModal').classList.contains('show')) closeProductModal();
     }
   });
 
-  sb.auth.onAuthStateChange((event) => {
-    if (event === 'SIGNED_OUT') { state.user = null; showLoginScreen(); }
-  });
+  sb.auth.onAuthStateChange((event) => { if (event === 'SIGNED_OUT') { state.user = null; showLoginScreen(); } });
 
-  // ============ INIT ============
   checkSession();
 })();
 </script>
