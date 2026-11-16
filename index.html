@@ -257,8 +257,9 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
 /* ===== Checkout additions ===== */
 .leaflet-container{direction:ltr;font-family:'Cairo',sans-serif}
 .co-two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.co-field{padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r)}
-.co-field:focus{outline:none;border-color:var(--accent)}
+.co-field{padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);width:100%}
+.co-field:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(26,77,58,.08)}
+select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23737373' stroke-width='2.5'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e");background-repeat:no-repeat;background-position:left 14px center;background-size:14px;padding-left:38px;cursor:pointer}
 .co-radio{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--border);border-radius:var(--r);cursor:pointer;background:var(--surface);transition:border-color .15s,background .15s}
 .co-radio:hover{border-color:var(--accent)}
 .co-radio input{width:18px;height:18px;cursor:pointer;accent-color:var(--accent)}
@@ -269,25 +270,12 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
 .co-subtotal-row{display:flex;justify-content:space-between;padding:12px;background:var(--bg);border-radius:var(--r);font-size:.95rem}
 #mapSection{display:block}
 
-/* ===== Country picker ===== */
-.co-phone-row{display:flex;gap:8px;align-items:stretch}
-.co-country-btn{display:flex;align-items:center;gap:6px;padding:12px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface);font-size:.9rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:border-color .15s;flex-shrink:0;min-width:110px;justify-content:space-between}
-.co-country-btn:hover{border-color:var(--accent)}
-.co-country-btn:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(26,77,58,.1)}
-#coCountryCode{direction:ltr;display:inline-block;font-family:'Cairo',monospace}
-.co-flag-img{width:22px;height:16px;object-fit:cover;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.1);flex-shrink:0;display:inline-block}
-.co-country-menu{margin-top:8px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh-md);overflow:hidden}
-.co-country-search{width:100%;padding:10px 12px;border:none;border-bottom:1px solid var(--border);background:var(--surface);font-family:inherit;font-size:.9rem;direction:rtl}
-.co-country-search:focus{outline:none;background:#FAFAF9}
-.co-country-list{max-height:280px;overflow-y:auto;overscroll-behavior:contain}
-.co-country-item{display:flex;align-items:center;gap:10px;padding:9px 12px;cursor:pointer;font-size:.88rem;transition:background .1s;border-bottom:1px solid #F5F5F4}
-.co-country-item:last-child{border-bottom:none}
-.co-country-item:hover{background:#F0F5F1}
-.co-country-item.active{background:#E8F0EC;font-weight:700}
-.co-country-item-name{flex:1;color:var(--ink)}
-.co-country-item-code{font-family:monospace;color:var(--muted);font-size:.82rem;direction:ltr}
-#coPhone{direction:ltr;text-align:left}
-#coPhone::placeholder{text-align:left}
+/* ===== Phone with fixed prefix ===== */
+.co-phone-wrap{display:flex;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;background:var(--surface);transition:border-color .15s, box-shadow .15s}
+.co-phone-wrap:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(26,77,58,.08)}
+.co-phone-prefix{padding:12px 14px;background:#FAFAF9;font-weight:700;direction:ltr;border-left:1px solid var(--border);flex-shrink:0;font-family:monospace;font-size:.95rem;display:flex;align-items:center;color:var(--ink)}
+.co-phone-wrap input{flex:1;padding:12px 16px;border:none;background:transparent;direction:ltr;text-align:left;font-size:.95rem;outline:none;color:var(--ink);font-family:inherit}
+.co-phone-wrap input::placeholder{text-align:left}
 
 #checkoutMap{height:400px;border-radius:8px;overflow:hidden;background:#eee}
 #mapSummary{margin-top:8px;padding:10px 12px;background:#F0F5F1;border:1px solid #86EFAC;border-radius:var(--r);font-size:.85rem;color:#065F46;font-weight:600;justify-content:space-between;align-items:center}
@@ -467,26 +455,22 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
         <!-- الهاتف -->
         <div>
           <label style="display:block;font-size:.85rem;font-weight:600;margin-bottom:6px">رقم الهاتف <span style="color:var(--danger)">*</span></label>
-          <div class="co-phone-row">
-            <button type="button" class="co-country-btn" id="coCountryBtn">
-              <img id="coCountryFlag" class="co-flag-img" src="https://flagcdn.com/w40/sy.png" alt="">
-              <span id="coCountryCode">+963</span>
-              <svg width="10" height="10" viewBox="0 0 24 24" style="stroke:currentColor;fill:none;stroke-width:2.5"><path d="M6 9l6 6 6-6"/></svg>
-            </button>
-            <input class="co-field" type="tel" id="coPhone" inputmode="tel" dir="ltr" placeholder="9XX XXX XXX" style="flex:1">
-          </div>
-          <input type="hidden" id="coCountry" value="SY">
-          <div class="co-country-menu" id="coCountryMenu" style="display:none">
-            <input type="text" class="co-country-search" id="coCountrySearch" placeholder="ابحث عن دولة...">
-            <div class="co-country-list" id="coCountryList"></div>
+          <div class="co-phone-wrap">
+            <span class="co-phone-prefix">+963</span>
+            <input type="tel" id="coPhone" inputmode="tel" dir="ltr" placeholder="9XX XXX XXX">
           </div>
         </div>
 
+        <!-- المحافظة والحي -->
         <div class="co-two-col">
-          <input class="co-field" type="text" id="coCity" placeholder="المدينة *" required>
-          <input class="co-field" type="text" id="coDistrict" placeholder="الحي *" required>
+          <select class="co-field" id="coGovernorate" required>
+            <option value="">اختر المحافظة *</option>
+          </select>
+          <select class="co-field" id="coDistrict" required>
+            <option value="">اختر الحي/المدينة *</option>
+          </select>
         </div>
-        <textarea class="co-field" id="coAddressDetails" placeholder="تفاصيل العنوان (الشارع، البناء، الطابق...)" rows="2" style="resize:vertical"></textarea>
+        <textarea class="co-field" id="coAddressDetails" placeholder="تفاصيل العنوان (الشارع، البناء، الطابق...) — اختياري" rows="2" style="resize:vertical"></textarea>
         <textarea class="co-field" id="coNotes" placeholder="ملاحظات (اختياري)" rows="2" style="resize:vertical"></textarea>
 
         <div style="padding-top:2px">
@@ -505,7 +489,7 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
           <div id="pickupInfo" style="display:none"></div>
         </div>
 
-        <!-- زر تحديد الموقع -->
+        <!-- الموقع -->
         <div id="mapSection">
           <div style="font-weight:600;font-size:.9rem;margin-bottom:8px">📍 الموقع على الخريطة (اختياري)</div>
           <button type="button" id="openMapBtn" class="btn btn-secondary btn-block" style="justify-content:center">
@@ -599,70 +583,103 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
   const SYM = { SYP:'ل.س', USD:'$', EUR:'€', SAR:'ر.س', AED:'د.إ' };
   function priceStr(n, currency) { return Number(n || 0).toLocaleString('ar-EG') + ' ' + (SYM[currency] || 'ل.س'); }
 
-  // ============ COUNTRIES ============
-  const COUNTRIES = [
-    ['SY','سوريا','963'],['LB','لبنان','961'],['JO','الأردن','962'],['PS','فلسطين','970'],['IQ','العراق','964'],
-    ['SA','السعودية','966'],['YE','اليمن','967'],['EG','مصر','20'],['SD','السودان','249'],['LY','ليبيا','218'],
-    ['TN','تونس','216'],['DZ','الجزائر','213'],['MA','المغرب','212'],['MR','موريتانيا','222'],['KW','الكويت','965'],
-    ['BH','البحرين','973'],['QA','قطر','974'],['AE','الإمارات','971'],['OM','عمان','968'],['KM','جزر القمر','269'],
-    ['DJ','جيبوتي','253'],['SO','الصومال','252'],
-    ['TR','تركيا','90'],['IR','إيران','98'],
-    ['GB','بريطانيا','44'],['FR','فرنسا','33'],['DE','ألمانيا','49'],['IT','إيطاليا','39'],['ES','إسبانيا','34'],
-    ['PT','البرتغال','351'],['NL','هولندا','31'],['BE','بلجيكا','32'],['LU','لوكسمبورغ','352'],['CH','سويسرا','41'],
-    ['AT','النمسا','43'],['IE','إيرلندا','353'],['DK','الدنمارك','45'],['SE','السويد','46'],['NO','النرويج','47'],
-    ['FI','فنلندا','358'],['IS','آيسلندا','354'],['PL','بولندا','48'],['CZ','التشيك','420'],['SK','سلوفاكيا','421'],
-    ['HU','المجر','36'],['RO','رومانيا','40'],['BG','بلغاريا','359'],['GR','اليونان','30'],['HR','كرواتيا','385'],
-    ['SI','سلوفينيا','386'],['RS','صربيا','381'],['BA','البوسنة','387'],['ME','الجبل الأسود','382'],['MK','مقدونيا','389'],
-    ['AL','ألبانيا','355'],['EE','إستونيا','372'],['LV','لاتفيا','371'],['LT','ليتوانيا','370'],['UA','أوكرانيا','380'],
-    ['BY','روسيا البيضاء','375'],['MD','مولدوفا','373'],['RU','روسيا','7'],['MT','مالطا','356'],['CY','قبرص','357'],
-    ['AD','أندورا','376'],['MC','موناكو','377'],['SM','سان مارينو','378'],['VA','الفاتيكان','379'],['LI','ليختنشتاين','423'],
-    ['US','الولايات المتحدة','1'],['CA','كندا','1'],['MX','المكسيك','52'],['GT','غواتيمالا','502'],['BZ','بليز','501'],
-    ['SV','السلفادور','503'],['HN','هندوراس','504'],['NI','نيكاراغوا','505'],['CR','كوستاريكا','506'],['PA','بنما','507'],
-    ['CU','كوبا','53'],['DO','الدومينيكان','1'],['HT','هايتي','509'],['JM','جامايكا','1'],['TT','ترينيداد','1'],
-    ['BB','بربادوس','1'],['BS','الباهاما','1'],['PR','بورتوريكو','1'],['CO','كولومبيا','57'],['VE','فنزويلا','58'],
-    ['EC','الإكوادور','593'],['PE','بيرو','51'],['BO','بوليفيا','591'],['BR','البرازيل','55'],['PY','باراغواي','595'],
-    ['UY','أوروغواي','598'],['AR','الأرجنتين','54'],['CL','تشيلي','56'],['GY','غيانا','592'],['SR','سورينام','597'],
-    ['CN','الصين','86'],['JP','اليابان','81'],['KR','كوريا الجنوبية','82'],['KP','كوريا الشمالية','850'],['MN','منغوليا','976'],
-    ['IN','الهند','91'],['PK','باكستان','92'],['BD','بنغلاديش','880'],['LK','سريلانكا','94'],['NP','نيبال','977'],
-    ['BT','بوتان','975'],['MV','المالديف','960'],['AF','أفغانستان','93'],['KZ','كازاخستان','7'],['UZ','أوزبكستان','998'],
-    ['TM','تركمانستان','993'],['TJ','طاجيكستان','992'],['KG','قيرغيزستان','996'],['AZ','أذربيجان','994'],['GE','جورجيا','995'],
-    ['AM','أرمينيا','374'],['TH','تايلاند','66'],['VN','فيتنام','84'],['LA','لاوس','856'],['KH','كمبوديا','855'],
-    ['MM','ميانمار','95'],['MY','ماليزيا','60'],['SG','سنغافورة','65'],['ID','إندونيسيا','62'],['PH','الفلبين','63'],
-    ['BN','بروناي','673'],['TL','تيمور الشرقية','670'],
-    ['NG','نيجيريا','234'],['GH','غانا','233'],['CI','ساحل العاج','225'],['SN','السنغال','221'],['ML','مالي','223'],
-    ['BF','بوركينا فاسو','226'],['NE','النيجر','227'],['TD','تشاد','235'],['CM','الكاميرون','237'],['CF','أفريقيا الوسطى','236'],
-    ['GA','الغابون','241'],['CG','الكونغو','242'],['CD','الكونغو الديمقراطية','243'],['AO','أنغولا','244'],['ZM','زامبيا','260'],
-    ['ZW','زيمبابوي','263'],['MZ','موزمبيق','258'],['MW','مالاوي','265'],['TZ','تنزانيا','255'],['KE','كينيا','254'],
-    ['UG','أوغندا','256'],['RW','رواندا','250'],['BI','بوروندي','257'],['ET','إثيوبيا','251'],['ER','إريتريا','291'],
-    ['SS','جنوب السودان','211'],['ZA','جنوب أفريقيا','27'],['NA','ناميبيا','264'],['BW','بوتسوانا','267'],['LS','ليسوتو','266'],
-    ['SZ','إسواتيني','268'],['MG','مدغشقر','261'],['MU','موريشيوس','230'],['SC','سيشل','248'],['CV','الرأس الأخضر','238'],
-    ['GW','غينيا بيساو','245'],['GN','غينيا','224'],['SL','سيراليون','232'],['LR','ليبيريا','231'],['TG','توغو','228'],
-    ['BJ','بنين','229'],['GM','غامبيا','220'],['GQ','غينيا الاستوائية','240'],['ST','ساو تومي','239'],
-    ['AU','أستراليا','61'],['NZ','نيوزيلندا','64'],['PG','بابوا غينيا الجديدة','675'],['FJ','فيجي','679'],['SB','جزر سليمان','677'],
-    ['VU','فانواتو','678'],['WS','ساموا','685'],['TO','تونغا','676'],['KI','كيريباتي','686'],['TV','توفالو','688'],
-    ['NR','ناورو','674'],['PW','بالاو','680'],['FM','ميكرونيزيا','691'],['MH','جزر مارشال','692']
-  ];
-
-  function getCountryByIso(iso) { return COUNTRIES.find(c => c[0] === iso); }
-  function flagUrl(iso) { return 'https://flagcdn.com/w40/' + iso.toLowerCase() + '.png'; }
-
-  let detectedCountryIso = null;
-  async function detectCountryFromIP(){
-    try {
-      const r = await fetch('https://ipapi.co/json/', { cache: 'no-store' });
-      if (!r.ok) return null;
-      const j = await r.json();
-      return (j.country_code || '').toUpperCase() || null;
-    } catch(e){ return null; }
-  }
-
-  function getActiveWhatsAppNumber(){
-    const recips = Array.isArray(state.settings.whatsapp_recipients) ? state.settings.whatsapp_recipients : [];
-    const activeId = state.settings.active_recipient_id;
-    const active = recips.find(r => r.id === activeId);
-    if (active && active.enabled !== false && active.number) return String(active.number).replace(/\D/g,'');
-    return null;
-  }
+  // ============ SYRIA GOVERNORATES & DISTRICTS ============
+  const SYRIA_DATA = {
+    'دمشق': [
+      'الجميلة','الجورة','العمارة الجوانية','باب توما','القيمرية','الحميدية','الحريقة','الأمين','مئذنة الشحم','شاغور جواني',
+      'سوق ساروجة','العقيبة','العمارة البرانية','مسجد الأقصاب','القصاع','العدوي','القصور','فارس الخوري',
+      'القنوات','الحجاز','البرامكة','باب الجابية','باب سريجة','السويقة','قبر عاتكة','المجتهد','الأنصاري',
+      'جوبر الشرقي','جوبر الغربي','المأمونية','الاستقلال',
+      'ميدان وسطاني','الزاهرة','الحقلة','الدقاق','القاعة','باب مصلى',
+      'شاغور براني','باب شرقي','ابن عساكر','النضال','الوحدة','بلال','روضة الميدان','الزهور','التضامن','القزاز',
+      'السيدة عائشة','القدم','المصطفى','الشريباتي','العسالي','القدم الشرقي',
+      'كفرسوسة البلد','الإخلاص','الواحة','الفردوس','اللوان',
+      'الربوة','المزة القديمة (الشيخ سعد)','الجلاء','مزة جبل','فيلات شرقية','فيلات غربية','المزة 86','مزة بساتين',
+      'مشروع دمر','دمر الشرقية','دمر الغربية','العرين','الورود',
+      'برزة البلد','مساكن برزة','المنارة','العباس','النزهة','عش الورور',
+      'تشرين','القابون','المصانع','أراضي الجديدة','الجدار',
+      'أسد الدين','النقشبندي','الأيوبية','الفيحاء',
+      'قاسيون','أبو جرش','الشيخ محي الدين','المدارس','المزرعة','الشهداء',
+      'شورى','المصطبة','المرابط','الروضة','أبو رمانة','المالكي','الحبوبي',
+      'الكرمل','مخيم اليرموك'
+    ],
+    'ريف دمشق': [
+      'جرمانا','صحنايا','أشرفية صحنايا','صيدنايا','معربا','التل','داريا','المعضمية','الكسوة','الغزلانية',
+      'دوما','حرستا','ضاحية الأسد','سقبا','عربين','زملكا','حمورية','جديدة عرطوز','الديماس','يعفور',
+      'قطنا','رنكوس','سرغايا','الزبداني','بلودان','مضايا','بقين','عين الفيجة','دير قانون',
+      'النبك','يبرود','فليطة','الرحيبة','جيرود','الضمير'
+    ],
+    'درعا': [
+      'الزهراء','الأربعين','البحار','الكرك','حطين','السد الغربي','السد الشرقي','العباسية','ميسلون','الثورة',
+      'الصناعية','الشهداء','القادسية','المخيم','تشرين','المنشية','الأمونيين','الضاحية القديمة','الضاحية الجديدة',
+      'السحاري','الكاشف','السبيل','طريق السد','السل','المطار','الجمرك','اليرموك','السيبة','شارع السويدان',
+      'الأمويين','حي القصور',
+      'نوى','إزرع','الصنمين','بصرى الشام','داعل','طفس','جاسم','الحراك','الشيخ مسكين','خربة غزالة',
+      'المزيريب','الغارية الغربية','الغارية الشرقية','عتمان','كحيل','النعيمة','نصيب','ابطع','علما','عين ذكر',
+      'غصم','حيط','جلين','جملة','الكرك الشرقي','كويا','عابدين','معرية','المتاعية','نافعة',
+      'سحم الجولان','السماقيات','السهوة','صيدا','صماد','الشجرة','الطيبة','تل شهاب','أم المياذن','أم ولد',
+      'اليادودة','عقربا','بصير','براق','دير العدس','دير البخت','أنخل','غباغب','الحارة','جباب',
+      'كفر ناسج','كفر شمس','خبب','المسمية','موثبين','قيطة','القنية','سملين','الطيحة','تبنة',
+      'زمرين','أم القصور','عدوان','بصر الحرير','محجة','المليحة الغربية','المليحة الشرقية','ناحتة','نامر','الناصرية',
+      'نمر','قرفا','الشيخ سعد','الصورة','تسيل','الجيزة','المسيفرة'
+    ],
+    'حلب': [
+      'الفرقان','الحمدانية','العزيزية','السليمانية','الشهباء','حلب الجديدة','صلاح الدين','السكري','كرم الجبل','هنانو',
+      'الشيخ طه','الأشرفية','الميدان','الجلوم','باب الحديد','باب النيرب','الشيخ مقصود','الزهراء','سيف الدولة','الموكامبو',
+      'الأنصاري','الراموسة',
+      'منبج','الباب','عفرين','أعزاز','جرابلس','عين العرب (كوباني)','تل رفعت','عندان','حيان','دارة عزة',
+      'الأتارب','دير حافر','السفيرة','خان العسل','الحاضر','تل حاصل','نبل'
+    ],
+    'حمص': [
+      'الوعر','الإنشاءات','عكرمة','الزهراء','البياضة','كرم اللوز','بابا عمرو','دير بعلبة','القصور','الخالدية',
+      'الحميدية','باب تدمر','باب هود','جب الجندلي','وادي الذهب','الغوطة','الشماس','الأرمن','كرم الشامي','المهاجرين','الغربية',
+      'تدمر','الرستن','تلبيسة','القصير','تلكلخ','الحصن','شين','قربة','حديدة','الناصرة',
+      'المشرفة','جوسية','ربلة','الزارة','خربة التين'
+    ],
+    'حماة': [
+      'الحاضر','الأربعين','الشريعة','الحمراء','باب قبلي','الجراجمة','الميدان','القصور','الصوفانية','الكيلانية',
+      'كازو','البرازية','الحصى','الأندلس',
+      'سلمية','مصياف','محردة','السقيلبية','كفر زيتا','صوران','اللطامنة','كفرنبودة','شطحة','عين شمس',
+      'الحمرا','عقرب','الزيارة'
+    ],
+    'اللاذقية': [
+      'الأوقاف','الشيخ ظاهر','العوينة','الرمل الجنوبي','الرمل الشمالي','الصليبة','الزقزقانية','الكورنيش الجنوبي','الكورنيش الشمالي','القلعة',
+      'طريق الشام','مشروع الصليبة','الزراعة','سكن الطلاب','الدعتور','البصة','الغراف',
+      'جبلة','بانياس','القرداحة','الحفة','كسب','صلنفة','دريكيش','المزيرعة','قسطل معاف','ربيعة',
+      'عين الشرقية','البهلولية','فديو','عين البيضا'
+    ],
+    'طرطوس': [
+      'المدينة الرياضية','الكورنيش','الشيخ سعد','الرمال','الميناء','الصناعة','العنازة','الجنوبي','الثورة','المشروع',
+      'بانياس','صافيتا','دريكيش','الشيخ بدر','القدموس','مشتى الحلو','الكفرون','حمام واصل','برمانة المشايخ','بويضة',
+      'الطويحية','المنطار','العريمة'
+    ],
+    'إدلب': [
+      'المدينة','الحصن','ساحة الساعة','القصور','الجلاء','الشيخ إدريس',
+      'معرة النعمان','جسر الشغور','أريحا','بنش','سراقب','خان شيخون','كفرنبل','حاس','تفتناز','سلقين',
+      'حارم','الدانا','معرة مصرين','سرمدا','إحسم','أطمة','عندان','الأتارب','دارة عزة'
+    ],
+    'دير الزور': [
+      'المدينة','الجورة','القصور','الحميدية','العمال','المطار القديم','السبيل','الغسانية','الرشدية','الكنامات','الشيخ ياسين',
+      'الميادين','البوكمال','هجين','العشارة','التبني','صور','بقرص','الصالحية','الكشكية','خشام',
+      'جديدة عكيدات','ذيبان'
+    ],
+    'الرقة': [
+      'المدينة','المشلب','الدرعية','الرميلة','السبخة','الفردوس','الحرمين','الجزيرة','البياضية','الشيحان',
+      'تل أبيض','عين عيسى','سلوك','الشركراك','الثورة','المنصورة','الكرامة','الجرنية','معدان'
+    ],
+    'الحسكة': [
+      'المدينة','النشوة','العزيزية','الغربية','المفتي','الشلاح','الحمرا','الخابور','سالي','الصالحية',
+      'القامشلي','المالكية (ديريك)','رأس العين','عامودا','الدرباسية','تل تمر','شدادة','مركدة','الهول','البير','تل بيدر'
+    ],
+    'السويداء': [
+      'المدينة','القلعة','السجن','الشهباء','العريقة','الجبانة','الجامعة','الرحى',
+      'صلخد','شهبا','القريا','سليم','الريمة','عتيل','ملح','عرمان','المسيفرة','الثعلة','الكفر','ولغا','مربا'
+    ],
+    'القنيطرة': [
+      'المدينة','خان أرنبة','الجولان','السلام','البعث','الحصن',
+      'سعسع','جباتا الخشب','مجدل شمس','بقعاثا','مسعدة','عين قنية','حضر','بريكة','الصمدانية'
+    ]
+  };
 
   // ============ SHARE ============
   async function shareProduct(productId, productName, productPrice) {
@@ -710,9 +727,13 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
       itemsHtml += '<a href="' + productLink + '" style="display:flex;gap:12px;padding:12px 8px;border-bottom:1px solid #E7E5E4;text-decoration:none;color:inherit;border-radius:6px"><img src="' + escapeHtml(imgSrc) + '" style="width:60px;height:75px;object-fit:cover;border-radius:6px" onerror="this.src=\'https://via.placeholder.com/60x75?text=?\'"><div style="flex:1"><div style="font-weight:600;color:#0F0F0F">' + escapeHtml(it.name) + '</div><div style="font-size:.8rem;color:#737373">' + meta + '</div><div style="font-size:.85rem;margin-top:4px">الكمية: ' + it.qty + ' × ' + priceStr(it.price, currency) + '</div><div style="font-size:.8rem;color:#1A4D3A;font-weight:600;margin-top:4px">عرض المنتج ←</div></div></a>';
     });
 
-    let phoneHtml = order.customer_phone ? '<div style="margin-bottom:6px"><strong>الهاتف:</strong> ' + escapeHtml((order.country_code||'') + ' ' + order.customer_phone) + '</div>' : '';
+    let phoneHtml = order.customer_phone ? '<div style="margin-bottom:6px"><strong>الهاتف:</strong> ' + escapeHtml((order.country_code||'+963') + ' ' + order.customer_phone) + '</div>' : '';
+    let cityDistrict = '';
+    if (order.city || order.district) {
+      cityDistrict = '<div style="margin-bottom:6px"><strong>المحافظة:</strong> ' + escapeHtml(order.city || '—') + ' | <strong>الحي:</strong> ' + escapeHtml(order.district || '—') + '</div>';
+    }
 
-    main.innerHTML = '<div style="max-width:600px;margin:40px auto;background:#fff;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.06);padding:32px;font-family:Cairo,sans-serif" dir="rtl"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #E7E5E4"><div><div style="font-size:.85rem;color:#737373">رقم الطلب</div><div style="font-weight:700;font-size:1.2rem;color:#1A4D3A">' + escapeHtml(order.order_number) + '</div></div><span class="status-' + escapeHtml(order.status) + '">' + escapeHtml(statusLabel) + '</span></div><div style="margin-bottom:20px;font-size:.9rem"><div style="margin-bottom:6px"><strong>التاريخ:</strong> ' + new Date(order.created_at).toLocaleString('ar-EG') + '</div><div style="margin-bottom:6px"><strong>الاسم:</strong> ' + escapeHtml(order.customer_name) + '</div>' + phoneHtml + '<div><strong>العنوان:</strong> ' + escapeHtml(order.customer_address || '') + '</div></div><div style="margin-bottom:16px"><h3 style="font-size:1rem;font-weight:700;margin-bottom:8px">المنتجات</h3>' + itemsHtml + '</div><div style="display:flex;justify-content:space-between;padding-top:16px;border-top:1px solid #E7E5E4;font-size:1.1rem;font-weight:700"><span>الإجمالي</span><span>' + priceStr(order.total, currency) + '</span></div><a href="' + getSiteUrl() + '" style="display:block;margin-top:24px;text-align:center;padding:12px;background:#1A4D3A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">العودة للمتجر</a></div>';
+    main.innerHTML = '<div style="max-width:600px;margin:40px auto;background:#fff;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.06);padding:32px;font-family:Cairo,sans-serif" dir="rtl"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #E7E5E4"><div><div style="font-size:.85rem;color:#737373">رقم الطلب</div><div style="font-weight:700;font-size:1.2rem;color:#1A4D3A">' + escapeHtml(order.order_number) + '</div></div><span class="status-' + escapeHtml(order.status) + '">' + escapeHtml(statusLabel) + '</span></div><div style="margin-bottom:20px;font-size:.9rem"><div style="margin-bottom:6px"><strong>التاريخ:</strong> ' + new Date(order.created_at).toLocaleString('ar-EG') + '</div><div style="margin-bottom:6px"><strong>الاسم:</strong> ' + escapeHtml(order.customer_name) + '</div>' + phoneHtml + cityDistrict + '<div><strong>العنوان:</strong> ' + escapeHtml(order.customer_address || '') + '</div></div><div style="margin-bottom:16px"><h3 style="font-size:1rem;font-weight:700;margin-bottom:8px">المنتجات</h3>' + itemsHtml + '</div><div style="display:flex;justify-content:space-between;padding-top:16px;border-top:1px solid #E7E5E4;font-size:1.1rem;font-weight:700"><span>الإجمالي</span><span>' + priceStr(order.total, currency) + '</span></div><a href="' + getSiteUrl() + '" style="display:block;margin-top:24px;text-align:center;padding:12px;background:#1A4D3A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">العودة للمتجر</a></div>';
   }
 
   const orderParam = new URLSearchParams(window.location.search).get('order');
@@ -745,6 +766,14 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
     return { avg: (sum/r.length).toFixed(1), count: r.length };
   }
   function isInWishlist(id) { return state.wishlist.some(w => w.id === id); }
+
+  function getActiveWhatsAppNumber(){
+    const recips = Array.isArray(state.settings.whatsapp_recipients) ? state.settings.whatsapp_recipients : [];
+    const activeId = state.settings.active_recipient_id;
+    const active = recips.find(r => r.id === activeId);
+    if (active && active.enabled !== false && active.number) return String(active.number).replace(/\D/g,'');
+    return null;
+  }
 
   // ============ SETTINGS ============
   async function loadSettings() {
@@ -1103,7 +1132,7 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
     const token = getClientToken();
     const { data, error } = await sb.rpc('get_my_orders', { p_token: token });
     if (error || !data || !data.length) {
-      $('#ordersBody').innerHTML = '<div class="empty-state"><p>لا توجد طلبات سابقة</p></div>';
+      $('#ordersBody').innerHTML = '<div class="empty-state"><p>لا توجد طلبات سابقة</p><p style="font-size:.8rem;margin-top:8px;color:var(--muted)">يمكنك فتح رابط التتبع الذي وصلك في واتساب لعرض طلبك من أي متصفح.</p></div>';
       return;
     }
     const statusMap = { pending:'قيد المراجعة', confirmed:'تم التأكيد', shipped:'تم الشحن', delivered:'تم التسليم', cancelled:'ملغى' };
@@ -1130,58 +1159,28 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
   let checkoutMap = null, checkoutMarker = null;
   let tempMapLat = null, tempMapLng = null;
   let originalMapLat = null, originalMapLng = null;
-  let countryMenuOpen = false;
 
-  function renderCountryList(filter) {
-    const list = $('#coCountryList');
-    if (!list) return;
-    const q = (filter || '').trim().toLowerCase();
-    const items = COUNTRIES.filter(c => {
-      if (!q) return true;
-      return c[1].toLowerCase().includes(q) || ('+' + c[2]).includes(q) || c[0].toLowerCase().includes(q);
-    });
-    if (!items.length) {
-      list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:.85rem">لا توجد نتائج</div>';
+  function populateGovernorates() {
+    const sel = $('#coGovernorate');
+    if (!sel) return;
+    if (!sel.dataset.populated) {
+      const govs = Object.keys(SYRIA_DATA);
+      sel.innerHTML = '<option value="">اختر المحافظة *</option>' +
+        govs.map(g => '<option value="' + escapeHtml(g) + '">' + escapeHtml(g) + '</option>').join('');
+      sel.dataset.populated = '1';
+    }
+  }
+
+  function populateDistricts(gov) {
+    const sel = $('#coDistrict');
+    if (!sel) return;
+    if (!gov || !SYRIA_DATA[gov]) {
+      sel.innerHTML = '<option value="">اختر الحي/المدينة *</option>';
       return;
     }
-    const selectedIso = $('#coCountry').value;
-    list.innerHTML = items.map(c =>
-      '<div class="co-country-item ' + (c[0]===selectedIso?'active':'') + '" data-iso="' + c[0] + '">' +
-        '<img class="co-flag-img" src="' + flagUrl(c[0]) + '" alt="" loading="lazy">' +
-        '<span class="co-country-item-name">' + escapeHtml(c[1]) + '</span>' +
-        '<span class="co-country-item-code">+' + c[2] + '</span>' +
-      '</div>'
-    ).join('');
-    $$('#coCountryList .co-country-item').forEach(el => {
-      el.addEventListener('click', () => selectCountry(el.dataset.iso));
-    });
-  }
-
-  function selectCountry(iso) {
-    const c = getCountryByIso(iso);
-    if (!c) return;
-    $('#coCountry').value = iso;
-    $('#coCountryFlag').src = flagUrl(iso);
-    $('#coCountryCode').textContent = '+' + c[2];
-    closeCountryMenu();
-    const phoneEl = $('#coPhone');
-    if (phoneEl) phoneEl.focus();
-  }
-
-  function openCountryMenu() {
-    if (countryMenuOpen) return;
-    countryMenuOpen = true;
-    const search = $('#coCountrySearch');
-    search.value = '';
-    renderCountryList('');
-    $('#coCountryMenu').style.display = 'block';
-    setTimeout(() => search.focus(), 50);
-  }
-
-  function closeCountryMenu() {
-    countryMenuOpen = false;
-    const menu = $('#coCountryMenu');
-    if (menu) menu.style.display = 'none';
+    const list = SYRIA_DATA[gov];
+    sel.innerHTML = '<option value="">اختر الحي/المدينة *</option>' +
+      list.map(d => '<option value="' + escapeHtml(d) + '">' + escapeHtml(d) + '</option>').join('');
   }
 
   function applyCheckoutSettings() {
@@ -1192,13 +1191,12 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
     if (fatherField) fatherField.style.display = (middleMode === 'hidden') ? 'none' : '';
 
     const phoneReq = s.phone_required !== false;
-    const phoneField = $('#coPhone'), countryBtn = $('#coCountryBtn');
+    const phoneWrap = $('#coPhone') ? $('#coPhone').closest('.co-phone-wrap') : null;
     if (phoneReq) {
-      if (phoneField) phoneField.style.display = '';
-      if (countryBtn) countryBtn.style.display = '';
+      if (phoneWrap) phoneWrap.style.display = '';
     } else {
-      if (phoneField) { phoneField.value = ''; phoneField.style.display = 'none'; }
-      if (countryBtn) countryBtn.style.display = 'none';
+      if (phoneWrap) { phoneWrap.style.display = 'none'; }
+      if ($('#coPhone')) $('#coPhone').value = '';
     }
 
     const codEnabled = s.enable_cod !== false;
@@ -1354,28 +1352,18 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
     const summary = $('#mapSummary'); if (summary) summary.style.display = 'none';
     const openMapText = $('#openMapBtnText'); if (openMapText) openMapText.textContent = 'حدد موقعك على الخريطة';
 
-    // الدولة الافتراضية: settings → IP → سوريا
-    let defaultIso = null;
-    const adminDefault = String(state.settings.phone_default_country || '').replace(/[^\d]/g,'');
-    if (adminDefault) {
-      const found = COUNTRIES.find(c => c[2] === adminDefault);
-      if (found) defaultIso = found[0];
-    }
-    if (!defaultIso && detectedCountryIso && getCountryByIso(detectedCountryIso)) {
-      defaultIso = detectedCountryIso;
-    }
-    if (!defaultIso) defaultIso = 'SY';
-    selectCountry(defaultIso);
+    // إعادة تعيين المحافظة والحي
+    populateGovernorates();
+    $('#coGovernorate').value = '';
+    $('#coDistrict').innerHTML = '<option value="">اختر الحي/المدينة *</option>';
 
     applyCheckoutSettings();
-    closeCountryMenu();
 
     $('#checkoutModal').classList.add('open');
     document.body.style.overflow = 'hidden';
   }
 
   function closeCheckout() {
-    closeCountryMenu();
     closeMapModal();
     $('#checkoutModal').classList.remove('open');
     document.body.style.overflow = '';
@@ -1406,26 +1394,24 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
 
     const fullName = [firstName, fatherName, lastName].filter(x=>x).join(' ');
 
-    // 3) الهاتف
+    // 3) الهاتف (ثابت +963)
     const phoneReq = s.phone_required !== false;
-    let countryCode = null, phoneNumber = null;
+    const countryCode = '+963';
+    let phoneNumber = null;
     if (phoneReq) {
-      const iso = $('#coCountry').value;
-      const found = getCountryByIso(iso);
-      countryCode = '+' + (found ? found[2] : '963');
       phoneNumber = $('#coPhone').value.replace(/[\s\-]/g,'').trim();
       if (!phoneNumber) { toast('رقم الهاتف مطلوب','error'); return; }
-      if (!/^\d{6,15}$/.test(phoneNumber)) { toast('رقم الهاتف غير صالح','error'); return; }
+      if (!/^9\d{8}$/.test(phoneNumber)) { toast('رقم الهاتف يجب أن يبدأ بـ 9 ويتكون من 9 أرقام','error'); return; }
     }
 
-    // 4) العنوان
-    const city = $('#coCity').value.trim();
+    // 4) المحافظة والحي (إجباريان)
+    const governorate = $('#coGovernorate').value.trim();
     const district = $('#coDistrict').value.trim();
     const addressDetails = $('#coAddressDetails').value.trim();
-    if (!city) { toast('المدينة مطلوبة','error'); return; }
-    if (!district) { toast('الحي مطلوب','error'); return; }
+    if (!governorate) { toast('المحافظة مطلوبة','error'); return; }
+    if (!district) { toast('الحي/المدينة مطلوب','error'); return; }
 
-    const fullAddress = [city, district, addressDetails].filter(x=>x).join(' - ');
+    const fullAddress = [governorate, district, addressDetails].filter(x=>x).join(' - ');
     const notes = $('#coNotes').value.trim();
 
     // 5) طريقة الدفع
@@ -1463,7 +1449,7 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
         customer_name: fullName,
         customer_phone: phoneNumber,
         country_code: countryCode,
-        city: city,
+        city: governorate,
         district: district,
         customer_address: fullAddress,
         customer_notes: notes || null,
@@ -1491,7 +1477,9 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
       let msg = '*طلب جديد* #' + orderNumber + '\n\n';
       msg += '*الاسم:* ' + fullName + '\n';
       if (phoneNumber) msg += '*الهاتف:* ' + countryCode + ' ' + phoneNumber + '\n';
-      msg += '*العنوان:* ' + fullAddress + '\n';
+      msg += '*المحافظة:* ' + governorate + '\n';
+      msg += '*الحي/المدينة:* ' + district + '\n';
+      if (addressDetails) msg += '*تفاصيل العنوان:* ' + addressDetails + '\n';
       if (lat && lng) msg += '*الموقع:* https://www.google.com/maps?q=' + lat + ',' + lng + '\n';
       if (notes) msg += '*ملاحظات:* ' + notes + '\n';
       msg += '\n*طريقة الدفع:* ' + (isCod ? 'كاش عند التوصيل' : 'استلام شخصي') + '\n';
@@ -1504,12 +1492,13 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
       msg += '\n\n🔗 *تتبع الطلب:*\n' + trackingUrl;
 
       // تفريغ الفورم
-      ['coFirstName','coFatherName','coLastName','coPhone','coCity','coDistrict','coAddressDetails','coNotes'].forEach(id=>{
+      ['coFirstName','coFatherName','coLastName','coPhone','coCity','coAddressDetails','coNotes'].forEach(id=>{
         const el = document.getElementById(id); if (el) el.value = '';
       });
+      $('#coGovernorate').value = '';
+      $('#coDistrict').innerHTML = '<option value="">اختر الحي/المدينة *</option>';
       $('#coLat').value = ''; $('#coLng').value = '';
       if (checkoutMarker && checkoutMap) { checkoutMap.removeLayer(checkoutMarker); checkoutMarker = null; }
-      const cmb = $('#clearMarkerBtn'); if (cmb) cmb.style.display = 'none';
       const mapSum = $('#mapSummary'); if (mapSum) mapSum.style.display = 'none';
       const omt = $('#openMapBtnText'); if (omt) omt.textContent = 'حدد موقعك على الخريطة';
 
@@ -1558,23 +1547,15 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
   $('#checkoutModalBackdrop').addEventListener('click', closeCheckout);
   $('#shopNowBtn').addEventListener('click', scrollToProducts);
 
-  // أزرار طريقة الدفع
+  // Governorate → District
+  $('#coGovernorate').addEventListener('change', e => {
+    populateDistricts(e.target.value);
+  });
+
+  // Payment
   ['payCod','payPickup'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.addEventListener('change', updateCheckoutPaymentUI);
-  });
-
-  // Country picker
-  $('#coCountryBtn').addEventListener('click', (e) => {
-    e.stopPropagation();
-    if (countryMenuOpen) closeCountryMenu();
-    else openCountryMenu();
-  });
-  $('#coCountrySearch').addEventListener('input', (e) => renderCountryList(e.target.value));
-  document.addEventListener('click', (e) => {
-    if (countryMenuOpen && !e.target.closest('#coCountryMenu') && !e.target.closest('#coCountryBtn')) {
-      closeCountryMenu();
-    }
   });
 
   // Map modal
@@ -1589,7 +1570,6 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
     if ($('#mapModal').classList.contains('open')) { cancelMapModal(); return; }
-    if (countryMenuOpen) { closeCountryMenu(); return; }
   });
 
   $$('[data-cat]').forEach(el => {
@@ -1599,10 +1579,6 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
   (async () => {
     try {
       await loadSettings();
-
-      // كشف البلد عبر IP (اختياري)
-      try { detectedCountryIso = await detectCountryFromIP(); } catch(e) {}
-
       await loadCategoryCounts();
       renderCategories();
       renderChips();
