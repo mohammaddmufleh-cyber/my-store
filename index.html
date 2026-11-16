@@ -49,10 +49,11 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
 .hero-image{aspect-ratio:4/5;border-radius:var(--r-lg);overflow:hidden;background:var(--surface);box-shadow:var(--sh-md)}
 .hero-image img{width:100%;height:100%;object-fit:cover}
 
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 28px;border-radius:var(--r);font-weight:600;font-size:1rem;transition:all .15s;border:1px solid transparent}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 28px;border-radius:var(--r);font-weight:600;font-size:1rem;transition:all .15s;border:1px solid transparent;text-decoration:none}
 .btn-primary{background:var(--accent);color:#fff}
 .btn-primary:hover{background:var(--accent-h);transform:translateY(-1px)}
 .btn-secondary{background:var(--surface);color:var(--ink);border-color:var(--border)}
+.btn-ghost{background:var(--bg);color:var(--ink);border-color:var(--border)}
 .btn-lg{padding:16px 32px;font-size:1.05rem}
 .btn-block{width:100%}
 .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
@@ -280,25 +281,117 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
 #checkoutMap{height:400px;border-radius:8px;overflow:hidden;background:#eee}
 #mapSummary{margin-top:8px;padding:10px 12px;background:#F0F5F1;border:1px solid #86EFAC;border-radius:var(--r);font-size:.85rem;color:#065F46;font-weight:600;justify-content:space-between;align-items:center}
 
+/* ===== Progress Steps ===== */
+.co-progress{display:flex;align-items:center;justify-content:space-between;padding:0 4px 22px;margin-bottom:4px;gap:4px}
+.co-step{display:flex;flex-direction:column;align-items:center;gap:6px;flex:0 0 auto}
+.co-step-icon{width:34px;height:34px;border-radius:50%;background:#E7E5E4;color:#9CA3AF;font-weight:700;font-size:.85rem;display:flex;align-items:center;justify-content:center;transition:all .35s ease}
+.co-step span{font-size:.72rem;font-weight:600;color:#9CA3AF;transition:color .35s ease;white-space:nowrap}
+.co-step.done .co-step-icon{background:var(--success);color:#fff;transform:scale(1)}
+.co-step.done span{color:var(--success)}
+.co-step.active .co-step-icon{background:var(--accent);color:#fff;box-shadow:0 0 0 5px rgba(26,77,58,.15);transform:scale(1.05)}
+.co-step.active span{color:var(--accent);font-weight:700}
+.co-step-divider{flex:1;height:2px;background:#E7E5E4;margin:0 2px;border-radius:1px;transition:background .35s ease;align-self:flex-start;margin-top:17px}
+.co-step-divider.done{background:var(--success)}
+.co-step-divider.active{background:linear-gradient(to left,var(--success),var(--accent))}
+
+/* ===== Success Screen ===== */
+#checkoutSuccess{text-align:center;padding:8px 0 4px}
+.co-success-icon{width:72px;height:72px;background:linear-gradient(135deg,#10B981,#059669);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:2.4rem;font-weight:300;box-shadow:0 8px 24px rgba(16,185,129,.3);animation:coSuccessPop .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes coSuccessPop{0%{transform:scale(0)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
+.co-success-title{font-size:1.35rem;font-weight:700;color:var(--ink);margin-bottom:6px}
+.co-success-sub{font-size:.9rem;color:var(--muted);margin-bottom:20px}
+.co-success-num{display:inline-block;background:var(--bg);border:1px solid var(--border);padding:8px 16px;border-radius:var(--r);font-weight:700;color:var(--accent);font-family:monospace;font-size:1rem;direction:ltr;letter-spacing:.5px;margin:0 0 20px}
+.co-tracking-box{background:#FAFAF9;border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:16px}
+.co-tracking-box p{font-size:.8rem;color:var(--muted);margin-bottom:10px;line-height:1.6}
+.co-tracking-box button{width:100%;justify-content:center;font-size:.85rem}
+.co-success-actions{display:flex;gap:8px;flex-wrap:wrap}
+.co-success-actions .btn{flex:1;justify-content:center;min-width:120px}
+
 @media(max-width:480px){.co-two-col{grid-template-columns:1fr}}
 
 @media(max-width:1024px){.products-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:768px){
-  .hero{grid-template-columns:1fr;gap:24px}
+  .header-inner{padding:12px 0;gap:12px;flex-wrap:wrap}
+  .logo{font-size:1.25rem}
+  .search-wrap{display:block !important;max-width:none;flex:1;order:3;width:100%;margin-top:8px}
+  .nav-actions{gap:2px}
+  .icon-btn{width:36px;height:36px}
+  .container{padding:0 14px}
+  .hero{grid-template-columns:1fr;margin:20px 0 32px;gap:18px}
   .hero-image{aspect-ratio:16/9}
-  .trust-bar{grid-template-columns:repeat(2,1fr)}
+  .hero-title{font-size:clamp(1.6rem,6vw,2.2rem);margin-bottom:14px}
+  .hero-subtitle{font-size:.95rem;margin-bottom:20px}
+  .btn-lg{padding:14px 24px;font-size:.95rem}
+  .section{margin-bottom:40px}
+  .section-title{font-size:1.35rem}
+  .trust-bar{grid-template-columns:repeat(2,1fr);margin-bottom:40px}
+  .trust-item{padding:16px 10px}
+  .trust-item h4{font-size:.8rem}
+  .trust-item p{font-size:.7rem}
   .categories-grid{grid-template-columns:1fr}
-  .products-grid{grid-template-columns:repeat(2,1fr);gap:16px}
-  .footer-grid{grid-template-columns:1fr 1fr;gap:32px}
+  .products-grid{grid-template-columns:repeat(2,1fr);gap:12px}
+  .product-name{font-size:.85rem}
+  .product-category{font-size:.65rem}
+  .product-info{padding:10px 2px 6px}
+  .product-price{font-size:.9rem}
+  .wish-btn,.share-btn{width:32px;height:32px}
+  .share-btn{left:48px}
+  .wish-btn svg,.share-btn svg{width:15px;height:15px}
+  .filters-bar{margin-bottom:20px}
+  .chip{padding:7px 12px;font-size:.8rem}
+  .footer{padding:40px 0 24px;margin-top:60px}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:24px}
   .footer-brand{grid-column:span 2}
-  .search-wrap{display:none}
+  .footer-bottom{font-size:.75rem}
   .product-detail{grid-template-columns:1fr}
-  .product-detail-info{padding:24px}
+  .product-detail-info{padding:20px 16px}
   .product-gallery{aspect-ratio:1}
+  .product-detail-title{font-size:1.3rem}
+  .product-detail-price{font-size:1.25rem}
+
+  /* Modal full screen on mobile */
+  .modal{padding:0;align-items:flex-start}
+  .modal-content{max-width:100%;max-height:100vh;height:100%;border-radius:0;margin:0}
+  .modal-close{top:12px;left:12px;width:36px;height:36px}
+
+  /* Checkout adjustments */
+  #checkoutModal .modal-content > div{padding:24px 18px !important}
+  #checkoutModal h2{font-size:1.15rem !important;margin-bottom:16px !important}
+  .co-field{padding:11px 14px;font-size:.95rem}
+  .co-progress{padding-bottom:18px}
+  .co-step-icon{width:30px;height:30px;font-size:.78rem}
+  .co-step span{font-size:.65rem}
+  .co-step-divider{margin-top:15px}
+  .co-radio{padding:11px}
+  .co-radio-title{font-size:.88rem}
+  .co-phone-prefix{padding:11px 12px;font-size:.9rem}
+
+  /* Map modal */
+  #mapModal .modal-content > div{padding:16px !important}
+  #checkoutMap{height:calc(100vh - 240px) !important;min-height:300px}
+
+  /* Drawers full width */
   .drawer{max-width:100%}
+  .drawer-body{padding:16px 18px}
+
+  /* Gallery */
   .gallery-nav{width:40px;height:40px}
   .gallery-prev{right:8px}
   .gallery-next{left:8px}
+
+  /* Toast */
+  .toast-container{bottom:16px}
+  .toast{font-size:.82rem;padding:10px 16px}
+
+  /* Buttons min touch target */
+  .btn{min-height:42px}
+}
+
+@media(max-width:380px){
+  .co-step span{font-size:.6rem}
+  .co-step-icon{width:28px;height:28px;font-size:.72rem}
+  .products-grid{gap:10px}
+  .product-name{font-size:.8rem}
 }
 </style>
 </head>
@@ -443,7 +536,27 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
   <div class="modal-content" style="max-width:560px">
     <button class="modal-close" id="closeCheckoutBtn"><svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
     <div style="padding:36px 28px">
-      <h2 style="font-size:1.35rem;margin-bottom:20px">معلومات الشحن والدفع</h2>
+
+      <!-- Progress Bar -->
+      <div class="co-progress" id="coProgress">
+        <div class="co-step done" data-step="1">
+          <div class="co-step-icon">✓</div>
+          <span>السلة</span>
+        </div>
+        <div class="co-step-divider done"></div>
+        <div class="co-step active" data-step="2">
+          <div class="co-step-icon">2</div>
+          <span>المعلومات</span>
+        </div>
+        <div class="co-step-divider"></div>
+        <div class="co-step" data-step="3">
+          <div class="co-step-icon">3</div>
+          <span>التأكيد</span>
+        </div>
+      </div>
+
+      <h2 style="font-size:1.35rem;margin-bottom:20px" id="coFormTitle">معلومات الشحن والدفع</h2>
+
       <form id="checkoutForm" style="display:flex;flex-direction:column;gap:12px" novalidate>
 
         <div class="co-two-col">
@@ -452,7 +565,6 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
         </div>
         <input class="co-field" type="text" id="coLastName" placeholder="الكنية *" required>
 
-        <!-- الهاتف -->
         <div>
           <label style="display:block;font-size:.85rem;font-weight:600;margin-bottom:6px">رقم الهاتف <span style="color:var(--danger)">*</span></label>
           <div class="co-phone-wrap">
@@ -461,7 +573,6 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
           </div>
         </div>
 
-        <!-- المحافظة والحي -->
         <div class="co-two-col">
           <select class="co-field" id="coGovernorate" required>
             <option value="">اختر المحافظة *</option>
@@ -489,7 +600,6 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
           <div id="pickupInfo" style="display:none"></div>
         </div>
 
-        <!-- الموقع -->
         <div id="mapSection">
           <div style="font-weight:600;font-size:.9rem;margin-bottom:8px">📍 الموقع على الخريطة (اختياري)</div>
           <button type="button" id="openMapBtn" class="btn btn-secondary btn-block" style="justify-content:center">
@@ -510,6 +620,23 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
 
         <button type="submit" class="btn btn-primary btn-block" id="coSubmitBtn">تأكيد الطلب عبر واتساب</button>
       </form>
+
+      <!-- Success Screen -->
+      <div id="checkoutSuccess" style="display:none">
+        <div class="co-success-icon">✓</div>
+        <h3 class="co-success-title">تم استلام طلبك!</h3>
+        <p class="co-success-sub">سنتواصل معك عبر واتساب قريبًا</p>
+        <div class="co-success-num" id="successOrderNumber">—</div>
+        <div class="co-tracking-box">
+          <p>احفظ رابط تتبع الطلب لعرضه لاحقًا من أي متصفح:</p>
+          <button type="button" id="copyTrackingBtn" class="btn btn-secondary">📋 نسخ رابط التتبع</button>
+        </div>
+        <div class="co-success-actions">
+          <button type="button" id="closeSuccessBtn" class="btn btn-ghost">إغلاق</button>
+          <a id="openWhatsappBtn" href="#" target="_blank" class="btn btn-primary">فتح واتساب</a>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -1160,6 +1287,42 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
   let tempMapLat = null, tempMapLng = null;
   let originalMapLat = null, originalMapLng = null;
 
+  function resetProgressSteps() {
+    const progress = $('#coProgress');
+    if (!progress) return;
+    const steps = progress.querySelectorAll('.co-step');
+    const dividers = progress.querySelectorAll('.co-step-divider');
+    steps.forEach((s, i) => {
+      s.classList.remove('done', 'active');
+      if (i === 0) s.classList.add('done');
+      else if (i === 1) s.classList.add('active');
+      const icon = s.querySelector('.co-step-icon');
+      if (icon) icon.textContent = i === 0 ? '✓' : String(i + 1);
+    });
+    dividers.forEach((d, i) => {
+      d.classList.remove('done', 'active');
+      if (i === 0) d.classList.add('done');
+    });
+  }
+
+  function markCheckoutCompleted() {
+    const progress = $('#coProgress');
+    if (!progress) return;
+    const steps = progress.querySelectorAll('.co-step');
+    const dividers = progress.querySelectorAll('.co-step-divider');
+    if (steps[1]) {
+      steps[1].classList.remove('active');
+      steps[1].classList.add('done');
+      const icon = steps[1].querySelector('.co-step-icon');
+      if (icon) icon.textContent = '✓';
+    }
+    if (dividers[1]) dividers[1].classList.add('done');
+    if (steps[2]) {
+      steps[2].classList.remove('done');
+      steps[2].classList.add('active');
+    }
+  }
+
   function populateGovernorates() {
     const sel = $('#coGovernorate');
     if (!sel) return;
@@ -1345,6 +1508,12 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
   async function openCheckout() {
     if (!state.cart.length) return;
 
+    // إعادة تعيين شريط التقدم وشاشة النجاح
+    resetProgressSteps();
+    $('#checkoutSuccess').style.display = 'none';
+    $('#checkoutForm').style.display = 'flex';
+    $('#coFormTitle').textContent = 'معلومات الشحن والدفع';
+
     // إعادة تعيين الموقع
     $('#coLat').value = ''; $('#coLng').value = '';
     tempMapLat = null; tempMapLng = null;
@@ -1492,7 +1661,7 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
       msg += '\n\n🔗 *تتبع الطلب:*\n' + trackingUrl;
 
       // تفريغ الفورم
-      ['coFirstName','coFatherName','coLastName','coPhone','coCity','coAddressDetails','coNotes'].forEach(id=>{
+      ['coFirstName','coFatherName','coLastName','coPhone','coAddressDetails','coNotes'].forEach(id=>{
         const el = document.getElementById(id); if (el) el.value = '';
       });
       $('#coGovernorate').value = '';
@@ -1503,9 +1672,34 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
       const omt = $('#openMapBtnText'); if (omt) omt.textContent = 'حدد موقعك على الخريطة';
 
       state.cart = []; saveCart(); updateBadges(); refreshOrdersCount();
-      closeCheckout(); closeCart();
-      toast('تم استلام طلبك ✓');
-      setTimeout(() => window.open('https://wa.me/' + wa + '?text=' + encodeURIComponent(msg), '_blank'), 400);
+
+      // === شاشة النجاح ===
+      markCheckoutCompleted();
+
+      // إخفاء الفورم وعرض شاشة النجاح
+      $('#checkoutForm').style.display = 'none';
+      $('#coFormTitle').textContent = 'تم استلام طلبك';
+      $('#checkoutSuccess').style.display = 'block';
+      $('#successOrderNumber').textContent = orderNumber;
+
+      // زر نسخ رابط التتبع
+      const copyBtn = $('#copyTrackingBtn');
+      copyBtn.textContent = '📋 نسخ رابط التتبع';
+      copyBtn.onclick = async () => {
+        try {
+          await navigator.clipboard.writeText(trackingUrl);
+          copyBtn.textContent = '✓ تم النسخ';
+          setTimeout(() => { copyBtn.textContent = '📋 نسخ رابط التتبع'; }, 2500);
+        } catch(err) {
+          window.prompt('انسخ الرابط يدويًا:', trackingUrl);
+        }
+      };
+
+      // زر فتح واتساب
+      $('#openWhatsappBtn').href = 'https://wa.me/' + wa + '?text=' + encodeURIComponent(msg);
+
+      // فتح واتساب تلقائيًا بعد ثانية
+      setTimeout(() => window.open('https://wa.me/' + wa + '?text=' + encodeURIComponent(msg), '_blank'), 800);
 
     } catch(err) {
       console.error(err);
@@ -1546,6 +1740,12 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
   $('#closeCheckoutBtn').addEventListener('click', closeCheckout);
   $('#checkoutModalBackdrop').addEventListener('click', closeCheckout);
   $('#shopNowBtn').addEventListener('click', scrollToProducts);
+
+  // زر إغلاق شاشة النجاح
+  $('#closeSuccessBtn').addEventListener('click', () => {
+    closeCheckout();
+    closeCart();
+  });
 
   // Governorate → District
   $('#coGovernorate').addEventListener('change', e => {
