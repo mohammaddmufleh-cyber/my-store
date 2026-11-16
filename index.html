@@ -141,7 +141,7 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
 .drawer-close{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--muted);transition:background .15s}
 .drawer-close:hover{background:var(--bg);color:var(--ink)}
 .drawer-body{flex:1;overflow-y:auto;padding:20px 24px}
-.drawer-footer{padding:20px 24px;border-top:1px solid var(--border)}
+.drawer-footer{padding:16px 24px;border-top:1px solid var(--border)}
 
 .cart-item{display:flex;gap:12px;padding:16px 0;border-bottom:1px solid var(--border)}
 .cart-item:last-child{border-bottom:none}
@@ -271,7 +271,6 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
 .co-subtotal-row{display:flex;justify-content:space-between;padding:12px;background:var(--bg);border-radius:var(--r);font-size:.95rem}
 #mapSection{display:block}
 
-/* ===== Phone with fixed prefix ===== */
 .co-phone-wrap{display:flex;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;background:var(--surface);transition:border-color .15s, box-shadow .15s}
 .co-phone-wrap:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(26,77,58,.08)}
 .co-phone-prefix{padding:12px 14px;background:#FAFAF9;font-weight:700;direction:ltr;border-left:1px solid var(--border);flex-shrink:0;font-family:monospace;font-size:.95rem;display:flex;align-items:center;color:var(--ink)}
@@ -306,6 +305,15 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
 .co-tracking-box button{width:100%;justify-content:center;font-size:.85rem}
 .co-success-actions{display:flex;gap:8px;flex-wrap:wrap}
 .co-success-actions .btn{flex:1;justify-content:center;min-width:120px}
+
+/* ===== OTP ===== */
+.otp-title{font-size:1.15rem;font-weight:700;margin-bottom:10px;text-align:center}
+.otp-hint{font-size:.82rem;color:var(--muted);margin-bottom:16px;line-height:1.6;text-align:center}
+.otp-code-input{padding:16px;text-align:center;font-size:1.6rem;font-weight:700;letter-spacing:10px;direction:ltr;width:100%;border:2px solid var(--border);border-radius:var(--r);font-family:monospace;transition:border-color .15s, box-shadow .15s}
+.otp-code-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(26,77,58,.1)}
+.otp-resend{width:100%;background:none;color:var(--accent);font-size:.85rem;font-weight:600;padding:10px;margin-top:10px;text-decoration:underline;cursor:pointer;transition:color .15s;font-family:inherit}
+.otp-resend:hover:not(:disabled){color:var(--accent-h)}
+.otp-resend:disabled{color:var(--muted);cursor:not-allowed;text-decoration:none}
 
 @media(max-width:480px){.co-two-col{grid-template-columns:1fr}}
 
@@ -348,13 +356,9 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
   .product-gallery{aspect-ratio:1}
   .product-detail-title{font-size:1.3rem}
   .product-detail-price{font-size:1.25rem}
-
-  /* Modal full screen on mobile */
   .modal{padding:0;align-items:flex-start}
   .modal-content{max-width:100%;max-height:100vh;height:100%;border-radius:0;margin:0}
   .modal-close{top:12px;left:12px;width:36px;height:36px}
-
-  /* Checkout adjustments */
   #checkoutModal .modal-content > div{padding:24px 18px !important}
   #checkoutModal h2{font-size:1.15rem !important;margin-bottom:16px !important}
   .co-field{padding:11px 14px;font-size:.95rem}
@@ -365,25 +369,15 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
   .co-radio{padding:11px}
   .co-radio-title{font-size:.88rem}
   .co-phone-prefix{padding:11px 12px;font-size:.9rem}
-
-  /* Map modal */
   #mapModal .modal-content > div{padding:16px !important}
   #checkoutMap{height:calc(100vh - 240px) !important;min-height:300px}
-
-  /* Drawers full width */
   .drawer{max-width:100%}
   .drawer-body{padding:16px 18px}
-
-  /* Gallery */
   .gallery-nav{width:40px;height:40px}
   .gallery-prev{right:8px}
   .gallery-next{left:8px}
-
-  /* Toast */
   .toast-container{bottom:16px}
   .toast{font-size:.82rem;padding:10px 16px}
-
-  /* Buttons min touch target */
   .btn{min-height:42px}
 }
 
@@ -520,6 +514,11 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
 <aside class="drawer" id="ordersDrawer">
   <div class="drawer-header"><h3 class="drawer-title">طلباتي</h3><button class="drawer-close" id="closeOrdersBtn"><svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
   <div class="drawer-body" id="ordersBody"></div>
+  <div class="drawer-footer">
+    <button class="btn btn-secondary btn-block" id="openOtpBtn" style="justify-content:center">
+      🔍 استرجاع طلباتك من متصفح آخر
+    </button>
+  </div>
 </aside>
 
 <div class="modal" id="productModal">
@@ -537,28 +536,17 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
     <button class="modal-close" id="closeCheckoutBtn"><svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
     <div style="padding:36px 28px">
 
-      <!-- Progress Bar -->
       <div class="co-progress" id="coProgress">
-        <div class="co-step done" data-step="1">
-          <div class="co-step-icon">✓</div>
-          <span>السلة</span>
-        </div>
+        <div class="co-step done" data-step="1"><div class="co-step-icon">✓</div><span>السلة</span></div>
         <div class="co-step-divider done"></div>
-        <div class="co-step active" data-step="2">
-          <div class="co-step-icon">2</div>
-          <span>المعلومات</span>
-        </div>
+        <div class="co-step active" data-step="2"><div class="co-step-icon">2</div><span>المعلومات</span></div>
         <div class="co-step-divider"></div>
-        <div class="co-step" data-step="3">
-          <div class="co-step-icon">3</div>
-          <span>التأكيد</span>
-        </div>
+        <div class="co-step" data-step="3"><div class="co-step-icon">3</div><span>التأكيد</span></div>
       </div>
 
       <h2 style="font-size:1.35rem;margin-bottom:20px" id="coFormTitle">معلومات الشحن والدفع</h2>
 
       <form id="checkoutForm" style="display:flex;flex-direction:column;gap:12px" novalidate>
-
         <div class="co-two-col">
           <input class="co-field" type="text" id="coFirstName" placeholder="الاسم الأول *" required>
           <input class="co-field" type="text" id="coFatherName" placeholder="اسم الأب">
@@ -621,7 +609,6 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
         <button type="submit" class="btn btn-primary btn-block" id="coSubmitBtn">تأكيد الطلب عبر واتساب</button>
       </form>
 
-      <!-- Success Screen -->
       <div id="checkoutSuccess" style="display:none">
         <div class="co-success-icon">✓</div>
         <h3 class="co-success-title">تم استلام طلبك!</h3>
@@ -658,6 +645,37 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
   </div>
 </div>
 
+<!-- ============ OTP MODAL ============ -->
+<div class="modal" id="otpModal">
+  <div class="modal-backdrop" id="otpModalBackdrop"></div>
+  <div class="modal-content" style="max-width:440px">
+    <button class="modal-close" id="closeOtpBtn"><svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    <div style="padding:36px 24px">
+
+      <!-- Step 1: Phone Input -->
+      <div id="otpStep1">
+        <h2 class="otp-title">🔐 استرجاع طلباتك</h2>
+        <p class="otp-hint">أدخل رقم هاتفك لاستلام رمز التحقق عبر واتساب</p>
+        <div class="co-phone-wrap" style="margin-bottom:14px">
+          <span class="co-phone-prefix">+963</span>
+          <input type="tel" id="otpPhone" inputmode="tel" dir="ltr" placeholder="9XX XXX XXX">
+        </div>
+        <button type="button" id="otpSendBtn" class="btn btn-primary btn-block">إرسال رمز التحقق</button>
+      </div>
+
+      <!-- Step 2: Code Input -->
+      <div id="otpStep2" style="display:none">
+        <h2 class="otp-title">📱 أدخل رمز التحقق</h2>
+        <p class="otp-hint">أرسلنا رمزًا مكونًا من 6 أرقام إلى رقمك عبر واتساب</p>
+        <input type="text" id="otpCode" class="otp-code-input" maxlength="6" inputmode="numeric" placeholder="000000" dir="ltr">
+        <button type="button" id="otpVerifyBtn" class="btn btn-primary btn-block" style="margin-top:14px">تحقق</button>
+        <button type="button" id="otpResendBtn" class="otp-resend">لم يصلك الرمز؟ إعادة الإرسال</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <div class="gallery-modal" id="galleryModal">
   <button class="gallery-close" id="galleryClose"><svg viewBox="0 0 24 24" style="width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
   <button class="gallery-nav gallery-prev" id="galleryPrev"><svg viewBox="0 0 24 24" style="width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2"><path d="M9 18l6-6-6-6"/></svg></button>
@@ -674,6 +692,8 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
 
   const SUPABASE_URL = 'https://smjrowqoxoxsvikjdpay.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_UEDOsxue9Y_mDYLJ0uvk2Q_lJdGH5Un';
+  const EDGE_SEND_OTP_URL = SUPABASE_URL + '/functions/v1/send-otp';
+  const EDGE_VERIFY_OTP_URL = SUPABASE_URL + '/functions/v1/verify-otp';
   const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   const PAGE_SIZE = 24;
@@ -1259,9 +1279,14 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
     const token = getClientToken();
     const { data, error } = await sb.rpc('get_my_orders', { p_token: token });
     if (error || !data || !data.length) {
-      $('#ordersBody').innerHTML = '<div class="empty-state"><p>لا توجد طلبات سابقة</p><p style="font-size:.8rem;margin-top:8px;color:var(--muted)">يمكنك فتح رابط التتبع الذي وصلك في واتساب لعرض طلبك من أي متصفح.</p></div>';
+      $('#ordersBody').innerHTML = '<div class="empty-state"><p>لا توجد طلبات سابقة في هذا المتصفح</p><p style="font-size:.8rem;margin-top:8px;color:var(--muted)">يمكنك استخدام زر استرجاع الطلبات في الأسفل لعرض طلباتك من متصفح آخر</p></div>';
       return;
     }
+    renderOrdersList(data);
+    $('#ordersBadge').textContent = data.length;
+    $('#ordersBadge').dataset.count = data.length;
+  }
+  function renderOrdersList(data) {
     const statusMap = { pending:'قيد المراجعة', confirmed:'تم التأكيد', shipped:'تم الشحن', delivered:'تم التسليم', cancelled:'ملغى' };
     $('#ordersBody').innerHTML = data.map(o => {
       const statusLabel = statusMap[o.status] || o.status;
@@ -1276,11 +1301,205 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
       thumbsHtml += '</div>';
       return '<a href="' + getSiteUrl() + '?order=' + encodeURIComponent(o.order_number) + '" class="order-card" style="display:block;text-decoration:none;color:inherit"><div class="order-header"><span class="order-number">' + escapeHtml(o.order_number) + '</span><span class="order-status status-' + escapeHtml(o.status) + '">' + statusLabel + '</span></div><div style="font-size:.8rem;color:var(--muted)">' + new Date(o.created_at).toLocaleDateString('ar-EG') + ' • ' + itemsCount + ' منتج</div>' + thumbsHtml + '<div style="display:flex;justify-content:space-between;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)"><span class="order-total">' + formatPrice(o.total) + '</span><span style="font-size:.85rem;color:var(--accent);font-weight:600">عرض التفاصيل ←</span></div></a>';
     }).join('');
-    $('#ordersBadge').textContent = data.length;
-    $('#ordersBadge').dataset.count = data.length;
   }
   function closeOrders() { $('#ordersBackdrop').classList.remove('open'); $('#ordersDrawer').classList.remove('open'); }
   async function refreshOrdersCount() { const token = getClientToken(); const { data } = await sb.rpc('get_my_orders', { p_token: token }); const cnt = (data && data.length) || 0; $('#ordersBadge').textContent = cnt; $('#ordersBadge').dataset.count = cnt; }
+
+  // ============ OTP ============
+  let otpResendTimer = null;
+  let otpCurrentPhone = null;
+
+  function openOtpModal() {
+    closeOrders();
+    $('#otpModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    $('#otpStep1').style.display = 'block';
+    $('#otpStep2').style.display = 'none';
+    $('#otpPhone').value = '';
+    $('#otpCode').value = '';
+    otpCurrentPhone = null;
+    if (otpResendTimer) { clearInterval(otpResendTimer); otpResendTimer = null; }
+    setTimeout(() => $('#otpPhone').focus(), 200);
+  }
+
+  function closeOtpModal() {
+    $('#otpModal').classList.remove('open');
+    document.body.style.overflow = '';
+    if (otpResendTimer) { clearInterval(otpResendTimer); otpResendTimer = null; }
+  }
+
+  function normalizePhone(raw) {
+    let p = String(raw || '').replace(/[\s\-\(\)]/g,'');
+    if (p.startsWith('+963')) p = p.slice(4);
+    else if (p.startsWith('00963')) p = p.slice(5);
+    else if (p.startsWith('963')) p = p.slice(3);
+    else if (p.startsWith('0')) p = p.slice(1);
+    return p;
+  }
+
+  async function sendOtpCode() {
+    const rawPhone = $('#otpPhone').value.trim();
+    const phone = normalizePhone(rawPhone);
+    if (!phone) { toast('أدخل رقم الهاتف','error'); return; }
+    if (!/^9\d{8}$/.test(phone)) { toast('رقم الهاتف يجب أن يبدأ بـ 9 ويتكون من 9 أرقام','error'); return; }
+
+    const btn = $('#otpSendBtn');
+    btn.disabled = true;
+    btn.textContent = 'جارٍ الإرسال...';
+
+    try {
+      const res = await fetch(EDGE_SEND_OTP_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'apikey': SUPABASE_ANON_KEY
+        },
+        body: JSON.stringify({ phone: '963' + phone })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        const errMsg = data.error || 'تعذر إرسال الرمز. حاول لاحقًا.';
+        toast(errMsg, 'error');
+        btn.disabled = false;
+        btn.textContent = 'إرسال رمز التحقق';
+        return;
+      }
+
+      otpCurrentPhone = phone;
+      $('#otpStep1').style.display = 'none';
+      $('#otpStep2').style.display = 'block';
+      $('#otpCode').value = '';
+      setTimeout(() => $('#otpCode').focus(), 200);
+      toast('تم إرسال رمز التحقق عبر واتساب ✓');
+      startResendTimer();
+
+    } catch(err) {
+      console.error(err);
+      toast('حدث خطأ في الاتصال، حاول مجددًا','error');
+      btn.disabled = false;
+      btn.textContent = 'إرسال رمز التحقق';
+    }
+  }
+
+  function startResendTimer() {
+    const btn = $('#otpResendBtn');
+    let remaining = 60;
+    btn.disabled = true;
+    btn.textContent = 'إعادة الإرسال بعد ' + remaining + ' ثانية';
+    if (otpResendTimer) clearInterval(otpResendTimer);
+    otpResendTimer = setInterval(() => {
+      remaining--;
+      if (remaining <= 0) {
+        clearInterval(otpResendTimer);
+        otpResendTimer = null;
+        btn.disabled = false;
+        btn.textContent = 'لم يصلك الرمز؟ إعادة الإرسال';
+      } else {
+        btn.textContent = 'إعادة الإرسال بعد ' + remaining + ' ثانية';
+      }
+    }, 1000);
+  }
+
+  async function resendOtpCode() {
+    if (!otpCurrentPhone) { toast('حدث خطأ، حاول مجددًا','error'); return; }
+    const btn = $('#otpResendBtn');
+    btn.disabled = true;
+    btn.textContent = 'جارٍ الإرسال...';
+    try {
+      const res = await fetch(EDGE_SEND_OTP_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'apikey': SUPABASE_ANON_KEY
+        },
+        body: JSON.stringify({ phone: '963' + otpCurrentPhone })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        toast(data.error || 'تعذر الإرسال','error');
+        btn.disabled = false;
+        btn.textContent = 'لم يصلك الرمز؟ إعادة الإرسال';
+        return;
+      }
+      toast('تم إرسال رمز جديد ✓');
+      startResendTimer();
+    } catch(err) {
+      console.error(err);
+      toast('حدث خطأ','error');
+      btn.disabled = false;
+      btn.textContent = 'لم يصلك الرمز؟ إعادة الإرسال';
+    }
+  }
+
+  async function verifyOtpCode() {
+    const code = $('#otpCode').value.trim();
+    if (!code || !/^\d{6}$/.test(code)) { toast('أدخل رمزًا صحيحًا مكونًا من 6 أرقام','error'); return; }
+    if (!otpCurrentPhone) { toast('حدث خطأ، حاول مجددًا','error'); return; }
+
+    const btn = $('#otpVerifyBtn');
+    btn.disabled = true;
+    btn.textContent = 'جارٍ التحقق...';
+
+    try {
+      const res = await fetch(EDGE_VERIFY_OTP_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'apikey': SUPABASE_ANON_KEY
+        },
+        body: JSON.stringify({ phone: '963' + otpCurrentPhone, code: code })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        toast(data.error || 'رمز التحقق غير صحيح','error');
+        btn.disabled = false;
+        btn.textContent = 'تحقق';
+        return;
+      }
+
+      const orders = data.orders || [];
+
+      // حفظ رقم الهاتف للاستخدام المستقبلي
+      localStorage.setItem('client_phone', otpCurrentPhone);
+
+      closeOtpModal();
+
+      if (!orders.length) {
+        toast('لا توجد طلبات لهذا الرقم','error');
+        // عرض درج فارغ مع رسالة
+        setTimeout(() => {
+          $('#ordersBackdrop').classList.add('open');
+          $('#ordersDrawer').classList.add('open');
+          $('#ordersBody').innerHTML = '<div class="empty-state"><p>لا توجد طلبات لهذا الرقم</p></div>';
+        }, 300);
+        return;
+      }
+
+      // عرض الطلبات في درج الطلبات
+      setTimeout(() => {
+        $('#ordersBackdrop').classList.add('open');
+        $('#ordersDrawer').classList.add('open');
+        renderOrdersList(orders);
+        $('#ordersBadge').textContent = orders.length;
+        $('#ordersBadge').dataset.count = orders.length;
+      }, 300);
+
+      toast('تم استرجاع ' + orders.length + ' طلب ✓');
+
+    } catch(err) {
+      console.error(err);
+      toast('حدث خطأ، حاول مجددًا','error');
+      btn.disabled = false;
+      btn.textContent = 'تحقق';
+    }
+  }
 
   // ============ CHECKOUT ============
   let checkoutMap = null, checkoutMarker = null;
@@ -1508,20 +1727,17 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
   async function openCheckout() {
     if (!state.cart.length) return;
 
-    // إعادة تعيين شريط التقدم وشاشة النجاح
     resetProgressSteps();
     $('#checkoutSuccess').style.display = 'none';
     $('#checkoutForm').style.display = 'flex';
     $('#coFormTitle').textContent = 'معلومات الشحن والدفع';
 
-    // إعادة تعيين الموقع
     $('#coLat').value = ''; $('#coLng').value = '';
     tempMapLat = null; tempMapLng = null;
     if (checkoutMarker && checkoutMap) { checkoutMap.removeLayer(checkoutMarker); checkoutMarker = null; }
     const summary = $('#mapSummary'); if (summary) summary.style.display = 'none';
     const openMapText = $('#openMapBtnText'); if (openMapText) openMapText.textContent = 'حدد موقعك على الخريطة';
 
-    // إعادة تعيين المحافظة والحي
     populateGovernorates();
     $('#coGovernorate').value = '';
     $('#coDistrict').innerHTML = '<option value="">اختر الحي/المدينة *</option>';
@@ -1543,14 +1759,12 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
 
     const s = state.settings || {};
 
-    // 1) منع الطلب بدون واتساب نشط
     const wa = getActiveWhatsAppNumber();
     if (!wa) {
       toast('لا يمكن إتمام الطلب حاليًا — لم يتم إعداد رقم واتساب. حاول لاحقًا.','error');
       return;
     }
 
-    // 2) الاسم
     const firstName = $('#coFirstName').value.trim();
     const middleMode = s.middle_name_mode || 'optional';
     const fatherName = (middleMode === 'hidden') ? '' : $('#coFatherName').value.trim();
@@ -1563,7 +1777,6 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
 
     const fullName = [firstName, fatherName, lastName].filter(x=>x).join(' ');
 
-    // 3) الهاتف (ثابت +963)
     const phoneReq = s.phone_required !== false;
     const countryCode = '+963';
     let phoneNumber = null;
@@ -1573,7 +1786,6 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
       if (!/^9\d{8}$/.test(phoneNumber)) { toast('رقم الهاتف يجب أن يبدأ بـ 9 ويتكون من 9 أرقام','error'); return; }
     }
 
-    // 4) المحافظة والحي (إجباريان)
     const governorate = $('#coGovernorate').value.trim();
     const district = $('#coDistrict').value.trim();
     const addressDetails = $('#coAddressDetails').value.trim();
@@ -1583,22 +1795,18 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
     const fullAddress = [governorate, district, addressDetails].filter(x=>x).join(' - ');
     const notes = $('#coNotes').value.trim();
 
-    // 5) طريقة الدفع
     const isCod = $('#payCod') && $('#payCod').checked;
     const isPickup = $('#payPickup') && $('#payPickup').checked;
     if (!isCod && !isPickup) { toast('اختر طريقة الدفع','error'); return; }
     const paymentMethod = isCod ? 'cod' : 'pickup';
 
-    // 6) الإجمالي
     const codFee = isCod ? Number(s.cod_delivery_fee || 0) : 0;
     const subtotal = state.cart.reduce((sum,i)=>sum+i.price*i.qty, 0);
     const total = subtotal + codFee;
 
-    // 7) الموقع
     const lat = $('#coLat').value ? Number($('#coLat').value) : null;
     const lng = $('#coLng').value ? Number($('#coLng').value) : null;
 
-    // 8) حظر / rate limit
     const blocked = await checkIfBlocked();
     if (blocked) { toast('تم حظرك من إتمام الطلبات','error'); return; }
 
@@ -1660,7 +1868,6 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
       msg += '\n*الإجمالي:* ' + formatPrice(total);
       msg += '\n\n🔗 *تتبع الطلب:*\n' + trackingUrl;
 
-      // تفريغ الفورم
       ['coFirstName','coFatherName','coLastName','coPhone','coAddressDetails','coNotes'].forEach(id=>{
         const el = document.getElementById(id); if (el) el.value = '';
       });
@@ -1673,16 +1880,13 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
 
       state.cart = []; saveCart(); updateBadges(); refreshOrdersCount();
 
-      // === شاشة النجاح ===
       markCheckoutCompleted();
 
-      // إخفاء الفورم وعرض شاشة النجاح
       $('#checkoutForm').style.display = 'none';
       $('#coFormTitle').textContent = 'تم استلام طلبك';
       $('#checkoutSuccess').style.display = 'block';
       $('#successOrderNumber').textContent = orderNumber;
 
-      // زر نسخ رابط التتبع
       const copyBtn = $('#copyTrackingBtn');
       copyBtn.textContent = '📋 نسخ رابط التتبع';
       copyBtn.onclick = async () => {
@@ -1695,10 +1899,8 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
         }
       };
 
-      // زر فتح واتساب
       $('#openWhatsappBtn').href = 'https://wa.me/' + wa + '?text=' + encodeURIComponent(msg);
 
-      // فتح واتساب تلقائيًا بعد ثانية
       setTimeout(() => window.open('https://wa.me/' + wa + '?text=' + encodeURIComponent(msg), '_blank'), 800);
 
     } catch(err) {
@@ -1741,7 +1943,24 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
   $('#checkoutModalBackdrop').addEventListener('click', closeCheckout);
   $('#shopNowBtn').addEventListener('click', scrollToProducts);
 
-  // زر إغلاق شاشة النجاح
+  // OTP
+  $('#openOtpBtn').addEventListener('click', openOtpModal);
+  $('#closeOtpBtn').addEventListener('click', closeOtpModal);
+  $('#otpModalBackdrop').addEventListener('click', closeOtpModal);
+  $('#otpSendBtn').addEventListener('click', sendOtpCode);
+  $('#otpVerifyBtn').addEventListener('click', verifyOtpCode);
+  $('#otpResendBtn').addEventListener('click', resendOtpCode);
+  $('#otpCode').addEventListener('input', e => {
+    e.target.value = e.target.value.replace(/\D/g,'').slice(0,6);
+  });
+  $('#otpCode').addEventListener('keypress', e => {
+    if (e.key === 'Enter') verifyOtpCode();
+  });
+  $('#otpPhone').addEventListener('keypress', e => {
+    if (e.key === 'Enter') sendOtpCode();
+  });
+
+  // Close success
   $('#closeSuccessBtn').addEventListener('click', () => {
     closeCheckout();
     closeCart();
@@ -1770,6 +1989,7 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
     if ($('#mapModal').classList.contains('open')) { cancelMapModal(); return; }
+    if ($('#otpModal').classList.contains('open')) { closeOtpModal(); return; }
   });
 
   $$('[data-cat]').forEach(el => {
