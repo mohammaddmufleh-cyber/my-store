@@ -1,14 +1,3 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>المتجر</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
 :root{
   --bg:#FAFAF9;--surface:#FFF;--ink:#0F0F0F;--muted:#737373;
@@ -255,7 +244,7 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
 .toast.error{background:var(--danger)}
 @keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
 
-/* ===== Checkout additions ===== */
+/* ===== Checkout ===== */
 .leaflet-container{direction:ltr;font-family:'Cairo',sans-serif}
 .co-two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .co-field{padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);width:100%}
@@ -271,11 +260,27 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
 .co-subtotal-row{display:flex;justify-content:space-between;padding:12px;background:var(--bg);border-radius:var(--r);font-size:.95rem}
 #mapSection{display:block}
 
+/* ===== Phone with country picker ===== */
 .co-phone-wrap{display:flex;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;background:var(--surface);transition:border-color .15s, box-shadow .15s}
 .co-phone-wrap:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(26,77,58,.08)}
-.co-phone-prefix{padding:12px 14px;background:#FAFAF9;font-weight:700;direction:ltr;border-left:1px solid var(--border);flex-shrink:0;font-family:monospace;font-size:.95rem;display:flex;align-items:center;color:var(--ink)}
+.co-country-btn{display:flex;align-items:center;gap:6px;padding:12px 12px;background:#FAFAF9;border:none;border-left:1px solid var(--border);font-weight:700;font-size:.95rem;cursor:pointer;flex-shrink:0;transition:background .15s;font-family:inherit;color:var(--ink);direction:ltr}
+.co-country-btn:hover{background:#F0F5F1}
+.co-country-btn:focus{outline:none;background:#F0F5F1}
+#coCountryCode{font-family:monospace;display:inline-block}
+.co-flag-img{width:22px;height:16px;object-fit:cover;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.1);flex-shrink:0;display:inline-block}
 .co-phone-wrap input{flex:1;padding:12px 16px;border:none;background:transparent;direction:ltr;text-align:left;font-size:.95rem;outline:none;color:var(--ink);font-family:inherit}
 .co-phone-wrap input::placeholder{text-align:left}
+
+.co-country-menu{margin-top:8px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh-md);overflow:hidden}
+.co-country-search{width:100%;padding:10px 12px;border:none;border-bottom:1px solid var(--border);background:var(--surface);font-family:inherit;font-size:.9rem;direction:rtl}
+.co-country-search:focus{outline:none;background:#FAFAF9}
+.co-country-list{max-height:280px;overflow-y:auto;overscroll-behavior:contain}
+.co-country-item{display:flex;align-items:center;gap:10px;padding:9px 12px;cursor:pointer;font-size:.88rem;transition:background .1s;border-bottom:1px solid #F5F5F4}
+.co-country-item:last-child{border-bottom:none}
+.co-country-item:hover{background:#F0F5F1}
+.co-country-item.active{background:#E8F0EC;font-weight:700}
+.co-country-item-name{flex:1;color:var(--ink)}
+.co-country-item-code{font-family:monospace;color:var(--muted);font-size:.82rem;direction:ltr}
 
 #checkoutMap{height:400px;border-radius:8px;overflow:hidden;background:#eee}
 #mapSummary{margin-top:8px;padding:10px 12px;background:#F0F5F1;border:1px solid #86EFAC;border-radius:var(--r);font-size:.85rem;color:#065F46;font-weight:600;justify-content:space-between;align-items:center}
@@ -291,7 +296,6 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
 .co-step.active span{color:var(--accent);font-weight:700}
 .co-step-divider{flex:1;height:2px;background:#E7E5E4;margin:0 2px;border-radius:1px;transition:background .35s ease;align-self:flex-start;margin-top:17px}
 .co-step-divider.done{background:var(--success)}
-.co-step-divider.active{background:linear-gradient(to left,var(--success),var(--accent))}
 
 /* ===== Success Screen ===== */
 #checkoutSuccess{text-align:center;padding:8px 0 4px}
@@ -368,7 +372,7 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
   .co-step-divider{margin-top:15px}
   .co-radio{padding:11px}
   .co-radio-title{font-size:.88rem}
-  .co-phone-prefix{padding:11px 12px;font-size:.9rem}
+  .co-country-btn{padding:11px 10px;font-size:.88rem}
   #mapModal .modal-content > div{padding:16px !important}
   #checkoutMap{height:calc(100vh - 240px) !important;min-height:300px}
   .drawer{max-width:100%}
@@ -388,9 +392,6 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
   .product-name{font-size:.8rem}
 }
 </style>
-</head>
-<body>
-
 <div id="announcementBar"></div>
 
 <header class="header">
@@ -473,15 +474,17 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
       <div class="footer-brand"><h3 id="footerStoreName">المتجر</h3><p>نقدم لك أفضل المنتجات المختارة بعناية، مع خدمة عملاء مميزة وشحن سريع لجميع المناطق.</p></div>
       <div class="footer-col"><h4>المتجر</h4><ul>
         <li><a href="#products">جميع المنتجات</a></li>
-        <li><a href="#" data-cat="ملابس">ملابس</a></li>
-        <li><a href="#" data-cat="أحذية وحقائب">أحذية وحقائب</a></li>
-        <li><a href="#" data-cat="إكسسوارات">إكسسوارات</a></li>
+        <li class="footer-cat-item" style="display:none"><a href="#" data-cat="">—</a></li>
       </ul></div>
-      <div class="footer-col"><h4>المساعدة</h4><ul>
-        <li><a href="#" id="footerWhatsapp">تواصل واتساب</a></li>
-        <li><a href="#">سياسة الإرجاع</a></li>
-        <li><a href="#">الشحن والتوصيل</a></li>
-      </ul></div>
+      <div class="footer-col">
+        <h4>المساعدة</h4>
+        <ul id="footerHelpList">
+          <li id="footerWhatsappItem" style="display:none"><a href="#" id="footerWhatsapp" target="_blank">تواصل واتساب</a></li>
+          <li id="footerEmailItem" style="display:none"><a href="#" id="footerEmail">تواصل بالبريد</a></li>
+          <li><a href="#">سياسة الإرجاع</a></li>
+          <li><a href="#">الشحن والتوصيل</a></li>
+        </ul>
+      </div>
       <div class="footer-col"><h4>قانوني</h4><ul>
         <li><a href="#">الشروط والأحكام</a></li>
         <li><a href="#">سياسة الخصوصية</a></li>
@@ -514,7 +517,7 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
 <aside class="drawer" id="ordersDrawer">
   <div class="drawer-header"><h3 class="drawer-title">طلباتي</h3><button class="drawer-close" id="closeOrdersBtn"><svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
   <div class="drawer-body" id="ordersBody"></div>
-  <div class="drawer-footer">
+  <div class="drawer-footer" id="ordersFooter" style="display:none">
     <button class="btn btn-secondary btn-block" id="openOtpBtn" style="justify-content:center">
       🔍 استرجاع طلباتك من متصفح آخر
     </button>
@@ -556,8 +559,17 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
         <div>
           <label style="display:block;font-size:.85rem;font-weight:600;margin-bottom:6px">رقم الهاتف <span style="color:var(--danger)">*</span></label>
           <div class="co-phone-wrap">
-            <span class="co-phone-prefix">+963</span>
+            <button type="button" class="co-country-btn" id="coCountryBtn">
+              <img id="coCountryFlag" class="co-flag-img" src="https://flagcdn.com/w40/sy.png" alt="">
+              <span id="coCountryCode">+963</span>
+              <svg width="10" height="10" viewBox="0 0 24 24" style="stroke:currentColor;fill:none;stroke-width:2.5"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
             <input type="tel" id="coPhone" inputmode="tel" dir="ltr" placeholder="9XX XXX XXX">
+          </div>
+          <input type="hidden" id="coCountry" value="SY">
+          <div class="co-country-menu" id="coCountryMenu" style="display:none">
+            <input type="text" class="co-country-search" id="coCountrySearch" placeholder="ابحث عن دولة...">
+            <div class="co-country-list" id="coCountryList"></div>
           </div>
         </div>
 
@@ -652,18 +664,16 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
     <button class="modal-close" id="closeOtpBtn"><svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
     <div style="padding:36px 24px">
 
-      <!-- Step 1: Phone Input -->
       <div id="otpStep1">
         <h2 class="otp-title">🔐 استرجاع طلباتك</h2>
         <p class="otp-hint">أدخل رقم هاتفك لاستلام رمز التحقق عبر واتساب</p>
         <div class="co-phone-wrap" style="margin-bottom:14px">
-          <span class="co-phone-prefix">+963</span>
+          <span class="co-phone-prefix" style="padding:12px 14px;background:#FAFAF9;font-weight:700;direction:ltr;border-left:1px solid var(--border);flex-shrink:0;font-family:monospace;font-size:.95rem;display:flex;align-items:center;color:var(--ink)">+963</span>
           <input type="tel" id="otpPhone" inputmode="tel" dir="ltr" placeholder="9XX XXX XXX">
         </div>
         <button type="button" id="otpSendBtn" class="btn btn-primary btn-block">إرسال رمز التحقق</button>
       </div>
 
-      <!-- Step 2: Code Input -->
       <div id="otpStep2" style="display:none">
         <h2 class="otp-title">📱 أدخل رمز التحقق</h2>
         <p class="otp-hint">أرسلنا رمزًا مكونًا من 6 أرقام إلى رقمك عبر واتساب</p>
@@ -730,102 +740,53 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
   const SYM = { SYP:'ل.س', USD:'$', EUR:'€', SAR:'ر.س', AED:'د.إ' };
   function priceStr(n, currency) { return Number(n || 0).toLocaleString('ar-EG') + ' ' + (SYM[currency] || 'ل.س'); }
 
-  // ============ SYRIA GOVERNORATES & DISTRICTS ============
-  const SYRIA_DATA = {
-    'دمشق': [
-      'الجميلة','الجورة','العمارة الجوانية','باب توما','القيمرية','الحميدية','الحريقة','الأمين','مئذنة الشحم','شاغور جواني',
-      'سوق ساروجة','العقيبة','العمارة البرانية','مسجد الأقصاب','القصاع','العدوي','القصور','فارس الخوري',
-      'القنوات','الحجاز','البرامكة','باب الجابية','باب سريجة','السويقة','قبر عاتكة','المجتهد','الأنصاري',
-      'جوبر الشرقي','جوبر الغربي','المأمونية','الاستقلال',
-      'ميدان وسطاني','الزاهرة','الحقلة','الدقاق','القاعة','باب مصلى',
-      'شاغور براني','باب شرقي','ابن عساكر','النضال','الوحدة','بلال','روضة الميدان','الزهور','التضامن','القزاز',
-      'السيدة عائشة','القدم','المصطفى','الشريباتي','العسالي','القدم الشرقي',
-      'كفرسوسة البلد','الإخلاص','الواحة','الفردوس','اللوان',
-      'الربوة','المزة القديمة (الشيخ سعد)','الجلاء','مزة جبل','فيلات شرقية','فيلات غربية','المزة 86','مزة بساتين',
-      'مشروع دمر','دمر الشرقية','دمر الغربية','العرين','الورود',
-      'برزة البلد','مساكن برزة','المنارة','العباس','النزهة','عش الورور',
-      'تشرين','القابون','المصانع','أراضي الجديدة','الجدار',
-      'أسد الدين','النقشبندي','الأيوبية','الفيحاء',
-      'قاسيون','أبو جرش','الشيخ محي الدين','المدارس','المزرعة','الشهداء',
-      'شورى','المصطبة','المرابط','الروضة','أبو رمانة','المالكي','الحبوبي',
-      'الكرمل','مخيم اليرموك'
-    ],
-    'ريف دمشق': [
-      'جرمانا','صحنايا','أشرفية صحنايا','صيدنايا','معربا','التل','داريا','المعضمية','الكسوة','الغزلانية',
-      'دوما','حرستا','ضاحية الأسد','سقبا','عربين','زملكا','حمورية','جديدة عرطوز','الديماس','يعفور',
-      'قطنا','رنكوس','سرغايا','الزبداني','بلودان','مضايا','بقين','عين الفيجة','دير قانون',
-      'النبك','يبرود','فليطة','الرحيبة','جيرود','الضمير'
-    ],
-    'درعا': [
-      'الزهراء','الأربعين','البحار','الكرك','حطين','السد الغربي','السد الشرقي','العباسية','ميسلون','الثورة',
-      'الصناعية','الشهداء','القادسية','المخيم','تشرين','المنشية','الأمونيين','الضاحية القديمة','الضاحية الجديدة',
-      'السحاري','الكاشف','السبيل','طريق السد','السل','المطار','الجمرك','اليرموك','السيبة','شارع السويدان',
-      'الأمويين','حي القصور',
-      'نوى','إزرع','الصنمين','بصرى الشام','داعل','طفس','جاسم','الحراك','الشيخ مسكين','خربة غزالة',
-      'المزيريب','الغارية الغربية','الغارية الشرقية','عتمان','كحيل','النعيمة','نصيب','ابطع','علما','عين ذكر',
-      'غصم','حيط','جلين','جملة','الكرك الشرقي','كويا','عابدين','معرية','المتاعية','نافعة',
-      'سحم الجولان','السماقيات','السهوة','صيدا','صماد','الشجرة','الطيبة','تل شهاب','أم المياذن','أم ولد',
-      'اليادودة','عقربا','بصير','براق','دير العدس','دير البخت','أنخل','غباغب','الحارة','جباب',
-      'كفر ناسج','كفر شمس','خبب','المسمية','موثبين','قيطة','القنية','سملين','الطيحة','تبنة',
-      'زمرين','أم القصور','عدوان','بصر الحرير','محجة','المليحة الغربية','المليحة الشرقية','ناحتة','نامر','الناصرية',
-      'نمر','قرفا','الشيخ سعد','الصورة','تسيل','الجيزة','المسيفرة'
-    ],
-    'حلب': [
-      'الفرقان','الحمدانية','العزيزية','السليمانية','الشهباء','حلب الجديدة','صلاح الدين','السكري','كرم الجبل','هنانو',
-      'الشيخ طه','الأشرفية','الميدان','الجلوم','باب الحديد','باب النيرب','الشيخ مقصود','الزهراء','سيف الدولة','الموكامبو',
-      'الأنصاري','الراموسة',
-      'منبج','الباب','عفرين','أعزاز','جرابلس','عين العرب (كوباني)','تل رفعت','عندان','حيان','دارة عزة',
-      'الأتارب','دير حافر','السفيرة','خان العسل','الحاضر','تل حاصل','نبل'
-    ],
-    'حمص': [
-      'الوعر','الإنشاءات','عكرمة','الزهراء','البياضة','كرم اللوز','بابا عمرو','دير بعلبة','القصور','الخالدية',
-      'الحميدية','باب تدمر','باب هود','جب الجندلي','وادي الذهب','الغوطة','الشماس','الأرمن','كرم الشامي','المهاجرين','الغربية',
-      'تدمر','الرستن','تلبيسة','القصير','تلكلخ','الحصن','شين','قربة','حديدة','الناصرة',
-      'المشرفة','جوسية','ربلة','الزارة','خربة التين'
-    ],
-    'حماة': [
-      'الحاضر','الأربعين','الشريعة','الحمراء','باب قبلي','الجراجمة','الميدان','القصور','الصوفانية','الكيلانية',
-      'كازو','البرازية','الحصى','الأندلس',
-      'سلمية','مصياف','محردة','السقيلبية','كفر زيتا','صوران','اللطامنة','كفرنبودة','شطحة','عين شمس',
-      'الحمرا','عقرب','الزيارة'
-    ],
-    'اللاذقية': [
-      'الأوقاف','الشيخ ظاهر','العوينة','الرمل الجنوبي','الرمل الشمالي','الصليبة','الزقزقانية','الكورنيش الجنوبي','الكورنيش الشمالي','القلعة',
-      'طريق الشام','مشروع الصليبة','الزراعة','سكن الطلاب','الدعتور','البصة','الغراف',
-      'جبلة','بانياس','القرداحة','الحفة','كسب','صلنفة','دريكيش','المزيرعة','قسطل معاف','ربيعة',
-      'عين الشرقية','البهلولية','فديو','عين البيضا'
-    ],
-    'طرطوس': [
-      'المدينة الرياضية','الكورنيش','الشيخ سعد','الرمال','الميناء','الصناعة','العنازة','الجنوبي','الثورة','المشروع',
-      'بانياس','صافيتا','دريكيش','الشيخ بدر','القدموس','مشتى الحلو','الكفرون','حمام واصل','برمانة المشايخ','بويضة',
-      'الطويحية','المنطار','العريمة'
-    ],
-    'إدلب': [
-      'المدينة','الحصن','ساحة الساعة','القصور','الجلاء','الشيخ إدريس',
-      'معرة النعمان','جسر الشغور','أريحا','بنش','سراقب','خان شيخون','كفرنبل','حاس','تفتناز','سلقين',
-      'حارم','الدانا','معرة مصرين','سرمدا','إحسم','أطمة','عندان','الأتارب','دارة عزة'
-    ],
-    'دير الزور': [
-      'المدينة','الجورة','القصور','الحميدية','العمال','المطار القديم','السبيل','الغسانية','الرشدية','الكنامات','الشيخ ياسين',
-      'الميادين','البوكمال','هجين','العشارة','التبني','صور','بقرص','الصالحية','الكشكية','خشام',
-      'جديدة عكيدات','ذيبان'
-    ],
-    'الرقة': [
-      'المدينة','المشلب','الدرعية','الرميلة','السبخة','الفردوس','الحرمين','الجزيرة','البياضية','الشيحان',
-      'تل أبيض','عين عيسى','سلوك','الشركراك','الثورة','المنصورة','الكرامة','الجرنية','معدان'
-    ],
-    'الحسكة': [
-      'المدينة','النشوة','العزيزية','الغربية','المفتي','الشلاح','الحمرا','الخابور','سالي','الصالحية',
-      'القامشلي','المالكية (ديريك)','رأس العين','عامودا','الدرباسية','تل تمر','شدادة','مركدة','الهول','البير','تل بيدر'
-    ],
-    'السويداء': [
-      'المدينة','القلعة','السجن','الشهباء','العريقة','الجبانة','الجامعة','الرحى',
-      'صلخد','شهبا','القريا','سليم','الريمة','عتيل','ملح','عرمان','المسيفرة','الثعلة','الكفر','ولغا','مربا'
-    ],
-    'القنيطرة': [
-      'المدينة','خان أرنبة','الجولان','السلام','البعث','الحصن',
-      'سعسع','جباتا الخشب','مجدل شمس','بقعاثا','مسعدة','عين قنية','حضر','بريكة','الصمدانية'
-    ]
+  // ============ COUNTRIES ============
+  const COUNTRIES = [
+    ['SY','سوريا','963'],['LB','لبنان','961'],['JO','الأردن','962'],['PS','فلسطين','970'],['IQ','العراق','964'],
+    ['SA','السعودية','966'],['YE','اليمن','967'],['EG','مصر','20'],['SD','السودان','249'],['LY','ليبيا','218'],
+    ['TN','تونس','216'],['DZ','الجزائر','213'],['MA','المغرب','212'],['MR','موريتانيا','222'],['KW','الكويت','965'],
+    ['BH','البحرين','973'],['QA','قطر','974'],['AE','الإمارات','971'],['OM','عمان','968'],['KM','جزر القمر','269'],
+    ['DJ','جيبوتي','253'],['SO','الصومال','252'],
+    ['TR','تركيا','90'],['IR','إيران','98'],
+    ['GB','بريطانيا','44'],['FR','فرنسا','33'],['DE','ألمانيا','49'],['IT','إيطاليا','39'],['ES','إسبانيا','34'],
+    ['PT','البرتغال','351'],['NL','هولندا','31'],['BE','بلجيكا','32'],['LU','لوكسمبورغ','352'],['CH','سويسرا','41'],
+    ['AT','النمسا','43'],['IE','إيرلندا','353'],['DK','الدنمارك','45'],['SE','السويد','46'],['NO','النرويج','47'],
+    ['FI','فنلندا','358'],['IS','آيسلندا','354'],['PL','بولندا','48'],['CZ','التشيك','420'],['SK','سلوفاكيا','421'],
+    ['HU','المجر','36'],['RO','رومانيا','40'],['BG','بلغاريا','359'],['GR','اليونان','30'],['HR','كرواتيا','385'],
+    ['SI','سلوفينيا','386'],['RS','صربيا','381'],['BA','البوسنة','387'],['ME','الجبل الأسود','382'],['MK','مقدونيا','389'],
+    ['AL','ألبانيا','355'],['EE','إستونيا','372'],['LV','لاتفيا','371'],['LT','ليتوانيا','370'],['UA','أوكرانيا','380'],
+    ['BY','روسيا البيضاء','375'],['MD','مولدوفا','373'],['RU','روسيا','7'],['MT','مالطا','356'],['CY','قبرص','357'],
+    ['US','الولايات المتحدة','1'],['CA','كندا','1'],['MX','المكسيك','52'],['BR','البرازيل','55'],['AR','الأرجنتين','54'],
+    ['CL','تشيلي','56'],['CO','كولومبيا','57'],['VE','فنزويلا','58'],['PE','بيرو','51'],['EC','الإكوادور','593'],
+    ['CN','الصين','86'],['JP','اليابان','81'],['KR','كوريا الجنوبية','82'],['IN','الهند','91'],['PK','باكستان','92'],
+    ['BD','بنغلاديش','880'],['LK','سريلانكا','94'],['AF','أفغانستان','93'],['KZ','كازاخستان','7'],['UZ','أوزبكستان','998'],
+    ['AZ','أذربيجان','994'],['GE','جورجيا','995'],['AM','أرمينيا','374'],['TH','تايلاند','66'],['VN','فيتنام','84'],
+    ['MY','ماليزيا','60'],['SG','سنغافورة','65'],['ID','إندونيسيا','62'],['PH','الفلبين','63'],
+    ['NG','نيجيريا','234'],['GH','غانا','233'],['KE','كينيا','254'],['ET','إثيوبيا','251'],['ZA','جنوب أفريقيا','27'],
+    ['AU','أستراليا','61'],['NZ','نيوزيلندا','64']
+  ];
+
+  function getCountryByIso(iso) { return COUNTRIES.find(c => c[0] === iso); }
+  function flagUrl(iso) { return 'https://flagcdn.com/w40/' + iso.toLowerCase() + '.png'; }
+
+  // ============ SYRIA FALLBACK DATA ============
+  const SYRIA_GOVERNORATES = ['دمشق','ريف دمشق','درعا','حلب','حمص','حماة','اللاذقية','طرطوس','إدلب','دير الزور','الرقة','الحسكة','السويداء','القنيطرة'];
+
+  const SYRIA_DATA_FALLBACK = {
+    'دمشق': ['المزة','كفرسوسة','أبو رمانة','المالكي','الصالحية','ركن الدين','برزة','القابون','جوبر','الميدان','الشاغور','القدم','دمر','اليرموك','التجارة','السبينة','ببيلا','يلدا','الحجر الأسود','التضامن'],
+    'ريف دمشق': ['جرمانا','صحنايا','صيدنايا','معربا','التل','داريا','المعضمية','الكسوة','الغزلانية','دوما','حرستا','سقبا','عربين','زملكا','حمورية','جديدة عرطوز','الديماس','قطنا','الزبداني','بلودان','النبك','يبرود','الرحيبة','جيرود'],
+    'درعا': ['الزهراء','الأربعين','البحار','الكرك','حطين','السد الغربي','السد الشرقي','العباسية','ميسلون','الثورة','الصناعية','الشهداء','القادسية','المخيم','تشرين','المنشية','الأمونيين','الضاحية القديمة','الضاحية الجديدة','السحاري','الكاشف','السبيل','طريق السد','السل','المطار','الجمرك','اليرموك','السيبة','شارع السويدان','الأمويين','حي القصور','نوى','إزرع','الصنمين','بصرى الشام','داعل','طفس','جاسم','الحراك','الشيخ مسكين','خربة غزالة','المزيريب','عتمان','كحيل','النعيمة','نصيب','علما','غصم','حيط','جلين','الطيبة','تل شهاب','اليادودة','بصير','غباغب','الحارة','خبب','المسمية','موثبين','الجيزة','المسيفرة'],
+    'حلب': ['الفرقان','الحمدانية','العزيزية','السليمانية','الشهباء','حلب الجديدة','صلاح الدين','السكري','كرم الجبل','هنانو','الشيخ طه','الأشرفية','الميدان','الجلوم','باب الحديد','باب النيرب','الشيخ مقصود','الزهراء','سيف الدولة','الموكامبو','الأنصاري','الراموسة','منبج','الباب','عفرين','أعزاز','جرابلس','عين العرب','تل رفعت','عندان','دارة عزة'],
+    'حمص': ['الوعر','الإنشاءات','عكرمة','الزهراء','البياضة','كرم اللوز','بابا عمرو','دير بعلبة','القصور','الخالدية','الحميدية','باب تدمر','باب هود','جب الجندلي','وادي الذهب','الغوطة','الشماس','المهاجرين','الغربية','تدمر','الرستن','تلبيسة','القصير','تلكلخ','الحصن','شين','قربة','الناصرة','المشرفة','جوسية','ربلة','الزارة'],
+    'حماة': ['الحاضر','الأربعين','الشريعة','الحمراء','باب قبلي','الجراجمة','الميدان','القصور','الصوفانية','الكيلانية','كازو','البرازية','الحصى','الأندلس','سلمية','مصياف','محردة','السقيلبية','كفر زيتا','صوران','اللطامنة','شطحة','عين شمس','عقرب','الزيارة'],
+    'اللاذقية': ['الأوقاف','الشيخ ظاهر','العوينة','الرمل الجنوبي','الرمل الشمالي','الصليبة','الزقزقانية','الكورنيش الجنوبي','الكورنيش الشمالي','القلعة','طريق الشام','مشروع الصليبة','الزراعة','الدعتور','البصة','الغراف','جبلة','بانياس','القرداحة','الحفة','كسب','صلنفة','دريكيش','المزيرعة','قسطل معاف','ربيعة'],
+    'طرطوس': ['المدينة الرياضية','الكورنيش','الشيخ سعد','الرمال','الميناء','الصناعة','العنازة','الجنوبي','الثورة','المشروع','بانياس','صافيتا','دريكيش','الشيخ بدر','القدموس','مشتى الحلو','الكفرون','حمام واصل','برمانة المشايخ','بويضة','الطويحية','المنطار','العريمة'],
+    'إدلب': ['المدينة','الحصن','ساحة الساعة','القصور','الجلاء','الشيخ إدريس','معرة النعمان','جسر الشغور','أريحا','بنش','سراقب','خان شيخون','كفرنبل','حاس','تفتناز','سلقين','حارم','الدانا','معرة مصرين','سرمدا','إحسم','أطمة','عندان','الأتارب','دارة عزة'],
+    'دير الزور': ['المدينة','الجورة','القصور','الحميدية','العمال','المطار القديم','السبيل','الغسانية','الرشدية','الكنامات','الشيخ ياسين','الميادين','البوكمال','هجين','العشارة','التبني','صور','بقرص','الصالحية','الكشكية','خشام','جديدة عكيدات','ذيبان'],
+    'الرقة': ['المدينة','المشلب','الدرعية','الرميلة','السبخة','الفردوس','الحرمين','الجزيرة','البياضية','الشيحان','تل أبيض','عين عيسى','سلوك','الشركراك','الثورة','المنصورة','الكرامة','الجرنية','معدان'],
+    'الحسكة': ['المدينة','النشوة','العزيزية','الغربية','المفتي','الشلاح','الحمرا','الخابور','سالي','الصالحية','القامشلي','المالكية','رأس العين','عامودا','الدرباسية','تل تمر','شدادة','مركدة','الهول','البير','تل بيدر'],
+    'السويداء': ['المدينة','القلعة','السجن','الشهباء','العريقة','الجبانة','الجامعة','الرحى','صلخد','شهبا','القريا','سليم','الريمة','عتيل','ملح','عرمان','المسيفرة','الثعلة','الكفر','ولغا','مربا'],
+    'القنيطرة': ['المدينة','خان أرنبة','الجولان','السلام','البعث','الحصن','سعسع','جباتا الخشب','مجدل شمس','بقعاثا','مسعدة','عين قنية','حضر','بريكة','الصمدانية']
   };
 
   // ============ SHARE ============
@@ -880,7 +841,16 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
       cityDistrict = '<div style="margin-bottom:6px"><strong>المحافظة:</strong> ' + escapeHtml(order.city || '—') + ' | <strong>الحي:</strong> ' + escapeHtml(order.district || '—') + '</div>';
     }
 
-    main.innerHTML = '<div style="max-width:600px;margin:40px auto;background:#fff;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.06);padding:32px;font-family:Cairo,sans-serif" dir="rtl"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #E7E5E4"><div><div style="font-size:.85rem;color:#737373">رقم الطلب</div><div style="font-weight:700;font-size:1.2rem;color:#1A4D3A">' + escapeHtml(order.order_number) + '</div></div><span class="status-' + escapeHtml(order.status) + '">' + escapeHtml(statusLabel) + '</span></div><div style="margin-bottom:20px;font-size:.9rem"><div style="margin-bottom:6px"><strong>التاريخ:</strong> ' + new Date(order.created_at).toLocaleString('ar-EG') + '</div><div style="margin-bottom:6px"><strong>الاسم:</strong> ' + escapeHtml(order.customer_name) + '</div>' + phoneHtml + cityDistrict + '<div><strong>العنوان:</strong> ' + escapeHtml(order.customer_address || '') + '</div></div><div style="margin-bottom:16px"><h3 style="font-size:1rem;font-weight:700;margin-bottom:8px">المنتجات</h3>' + itemsHtml + '</div><div style="display:flex;justify-content:space-between;padding-top:16px;border-top:1px solid #E7E5E4;font-size:1.1rem;font-weight:700"><span>الإجمالي</span><span>' + priceStr(order.total, currency) + '</span></div><a href="' + getSiteUrl() + '" style="display:block;margin-top:24px;text-align:center;padding:12px;background:#1A4D3A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">العودة للمتجر</a></div>';
+    // Calculate subtotal and delivery fee
+    const deliveryFee = Number(order.delivery_fee || 0);
+    const total = Number(order.total || 0);
+    const subtotal = total - deliveryFee;
+
+    const deliveryFeeHtml = deliveryFee > 0
+      ? '<div style="display:flex;justify-content:space-between;padding:10px 16px;background:#FEF3C7;border:1px solid #FCD34D;border-radius:8px;font-size:.9rem;color:#92400E;font-weight:600;margin-top:8px"><span>🚚 أجور التوصيل</span><span>' + priceStr(deliveryFee, currency) + '</span></div>'
+      : '';
+
+    main.innerHTML = '<div style="max-width:600px;margin:40px auto;background:#fff;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.06);padding:32px;font-family:Cairo,sans-serif" dir="rtl"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #E7E5E4"><div><div style="font-size:.85rem;color:#737373">رقم الطلب</div><div style="font-weight:700;font-size:1.2rem;color:#1A4D3A">' + escapeHtml(order.order_number) + '</div></div><span class="status-' + escapeHtml(order.status) + '">' + escapeHtml(statusLabel) + '</span></div><div style="margin-bottom:20px;font-size:.9rem"><div style="margin-bottom:6px"><strong>التاريخ:</strong> ' + new Date(order.created_at).toLocaleString('ar-EG') + '</div><div style="margin-bottom:6px"><strong>الاسم:</strong> ' + escapeHtml(order.customer_name) + '</div>' + phoneHtml + cityDistrict + '<div><strong>العنوان:</strong> ' + escapeHtml(order.customer_address || '') + '</div></div><div style="margin-bottom:16px"><h3 style="font-size:1rem;font-weight:700;margin-bottom:8px">المنتجات</h3>' + itemsHtml + '</div><div style="padding:12px 16px;background:#FAFAF9;border-radius:8px;margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:.9rem;color:#737373;margin-bottom:6px"><span>المنتجات</span><span>' + priceStr(subtotal, currency) + '</span></div>' + (deliveryFee > 0 ? '<div style="display:flex;justify-content:space-between;font-size:.9rem;color:#92400E;font-weight:600"><span>🚚 أجور التوصيل</span><span>' + priceStr(deliveryFee, currency) + '</span></div>' : '') + '</div><div style="display:flex;justify-content:space-between;padding-top:16px;border-top:1px solid #E7E5E4;font-size:1.1rem;font-weight:700"><span>الإجمالي</span><span>' + priceStr(total, currency) + '</span></div><a href="' + getSiteUrl() + '" style="display:block;margin-top:24px;text-align:center;padding:12px;background:#1A4D3A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">العودة للمتجر</a></div>';
   }
 
   const orderParam = new URLSearchParams(window.location.search).get('order');
@@ -895,7 +865,9 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
     wishlist: JSON.parse(localStorage.getItem('wishlist') || '[]'),
     selectedProduct: null, selectedOptions: { size: '', color: '' },
     currentGalleryImages: [], currentGalleryIndex: 0,
-    currentRating: 5, touchStartX: 0
+    currentRating: 5, touchStartX: 0,
+    categories: [],
+    districts: {}
   };
 
   function formatPrice(n) { return priceStr(n, state.settings.currency); }
@@ -926,8 +898,28 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
   async function loadSettings() {
     const { data } = await sb.from('store_settings').select('*').eq('id',1).maybeSingle();
     if (data) state.settings = data;
+
+    // Load categories (dynamically)
+    const DEFAULT_CATS = [
+      { name:'ملابس', image:'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600&q=80' },
+      { name:'أحذية وحقائب', image:'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=600&q=80' },
+      { name:'إكسسوارات', image:'https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=600&q=80' }
+    ];
+    let cats = data?.categories;
+    if (!Array.isArray(cats) || !cats.length) cats = DEFAULT_CATS;
+    state.categories = cats.map(c => typeof c === 'string' ? { name:c, image:'' } : c);
+
+    // Load districts (dynamically)
+    const d = data?.districts;
+    if (d && typeof d === 'object' && !Array.isArray(d)) {
+      state.districts = d;
+    } else {
+      state.districts = SYRIA_DATA_FALLBACK;
+    }
+
     applySettings();
   }
+
   function applySettings() {
     const s = state.settings, name = s.store_name || 'المتجر';
     document.title = name;
@@ -939,11 +931,7 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
     if (s.hero_image && typeof s.hero_image === 'string' && s.hero_image.startsWith('http')) {
       $('#heroImage img').src = s.hero_image;
     }
-    const wa = s.whatsapp_number ? String(s.whatsapp_number).replace(/\D/g,'') : getActiveWhatsAppNumber();
-    if (wa) {
-      const w = $('#footerWhatsapp');
-      if (w) { w.href = 'https://wa.me/' + wa; w.target = '_blank'; }
-    }
+
     const annBar = $('#announcementBar');
     if (annBar) {
       if (s.announcement && s.announcement.trim()) {
@@ -953,6 +941,56 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
         annBar.style.display = 'none';
       }
     }
+
+    // ===== Footer contact links =====
+    const waItem = $('#footerWhatsappItem');
+    const emItem = $('#footerEmailItem');
+    if (waItem) {
+      if (s.contact_whatsapp_enabled && s.contact_whatsapp_number) {
+        const wa = String(s.contact_whatsapp_number).replace(/\D/g,'');
+        const a = $('#footerWhatsapp');
+        a.href = 'https://wa.me/' + wa;
+        a.target = '_blank';
+        a.textContent = 'تواصل واتساب';
+        waItem.style.display = '';
+      } else {
+        waItem.style.display = 'none';
+      }
+    }
+    if (emItem) {
+      if (s.contact_email_enabled && s.contact_email) {
+        const a = $('#footerEmail');
+        a.href = 'mailto:' + s.contact_email;
+        a.textContent = s.contact_email;
+        emItem.style.display = '';
+      } else {
+        emItem.style.display = 'none';
+      }
+    }
+
+    // ===== OTP button visibility =====
+    const otpFooter = $('#ordersFooter');
+    if (otpFooter) {
+      otpFooter.style.display = (s.show_otp_button !== false) ? 'block' : 'none';
+    }
+
+    // ===== Footer categories =====
+    renderFooterCategories();
+  }
+
+  function renderFooterCategories() {
+    const col = $$('.footer-col')[0];
+    if (!col) return;
+    const ul = col.querySelector('ul');
+    if (!ul) return;
+    let html = '<li><a href="#products">جميع المنتجات</a></li>';
+    state.categories.forEach(cat => {
+      html += '<li><a href="#" data-cat="' + escapeHtml(cat.name) + '">' + escapeHtml(cat.name) + '</a></li>';
+    });
+    ul.innerHTML = html;
+    ul.querySelectorAll('[data-cat]').forEach(a => {
+      a.addEventListener('click', e => { e.preventDefault(); filterCategory(a.dataset.cat); });
+    });
   }
 
   async function loadCategoryCounts() {
@@ -964,22 +1002,32 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
 
   // ============ CATEGORIES ============
   function renderCategories() {
-    const cats = [
-      { k:'ملابس', l:'ملابس', img:'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600&q=80' },
-      { k:'أحذية وحقائب', l:'أحذية وحقائب', img:'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=600&q=80' },
-      { k:'إكسسوارات', l:'إكسسوارات', img:'https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=600&q=80' }
+    const DEFAULT_IMGS = {
+      'ملابس': 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600&q=80',
+      'أحذية وحقائب': 'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=600&q=80',
+      'إكسسوارات': 'https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=600&q=80'
+    };
+    const cats = state.categories.length ? state.categories : [
+      { name:'ملابس', image:DEFAULT_IMGS['ملابس'] },
+      { name:'أحذية وحقائب', image:DEFAULT_IMGS['أحذية وحقائب'] },
+      { name:'إكسسوارات', image:DEFAULT_IMGS['إكسسوارات'] }
     ];
-    $('#categoriesGrid').innerHTML = cats.map(c => '<div class="category-card" data-cat="' + c.k + '"><img src="' + c.img + '" alt="" loading="lazy"><div class="category-overlay">' + escapeHtml(c.l) + '</div></div>').join('');
+    $('#categoriesGrid').innerHTML = cats.map(c => {
+      const img = c.image || DEFAULT_IMGS[c.name] || 'https://via.placeholder.com/600x400?text=' + encodeURIComponent(c.name);
+      return '<div class="category-card" data-cat="' + escapeHtml(c.name) + '"><img src="' + escapeHtml(img) + '" alt="" loading="lazy" onerror="this.src=\'https://via.placeholder.com/600x400?text=?\'"><div class="category-overlay">' + escapeHtml(c.name) + '</div></div>';
+    }).join('');
     $$('.category-card').forEach(el => el.addEventListener('click', () => filterCategory(el.dataset.cat)));
   }
+
   function renderChips() {
-    const cats = [['all','الكل'],['ملابس','ملابس'],['أحذية وحقائب','أحذية وحقائب'],['إكسسوارات','إكسسوارات']];
     const total = Object.values(state.categoryCounts).reduce((a,b)=>a+Number(b),0);
-    $('#filterChips').innerHTML = cats.map(([k,l]) => {
-      const cnt = k === 'all' ? total : (state.categoryCounts[k] || 0);
-      const active = state.filters.category === k ? 'active' : '';
-      return '<button class="chip ' + active + '" data-cat="' + k + '">' + escapeHtml(l) + ' <span class="chip-count">(' + cnt + ')</span></button>';
-    }).join('');
+    let html = '<button class="chip ' + (state.filters.category === 'all' ? 'active' : '') + '" data-cat="all">الكل <span class="chip-count">(' + total + ')</span></button>';
+    state.categories.forEach(cat => {
+      const cnt = state.categoryCounts[cat.name] || 0;
+      const active = state.filters.category === cat.name ? 'active' : '';
+      html += '<button class="chip ' + active + '" data-cat="' + escapeHtml(cat.name) + '">' + escapeHtml(cat.name) + ' <span class="chip-count">(' + cnt + ')</span></button>';
+    });
+    $('#filterChips').innerHTML = html;
     $$('#filterChips .chip').forEach(el => el.addEventListener('click', () => filterCategory(el.dataset.cat)));
   }
 
@@ -1465,15 +1513,11 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
       }
 
       const orders = data.orders || [];
-
-      // حفظ رقم الهاتف للاستخدام المستقبلي
       localStorage.setItem('client_phone', otpCurrentPhone);
-
       closeOtpModal();
 
       if (!orders.length) {
         toast('لا توجد طلبات لهذا الرقم','error');
-        // عرض درج فارغ مع رسالة
         setTimeout(() => {
           $('#ordersBackdrop').classList.add('open');
           $('#ordersDrawer').classList.add('open');
@@ -1482,7 +1526,6 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
         return;
       }
 
-      // عرض الطلبات في درج الطلبات
       setTimeout(() => {
         $('#ordersBackdrop').classList.add('open');
         $('#ordersDrawer').classList.add('open');
@@ -1499,6 +1542,61 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
       btn.disabled = false;
       btn.textContent = 'تحقق';
     }
+  }
+
+  // ============ COUNTRY PICKER ============
+  let countryMenuOpen = false;
+
+  function renderCountryList(filter) {
+    const list = $('#coCountryList');
+    if (!list) return;
+    const q = (filter || '').trim().toLowerCase();
+    const items = COUNTRIES.filter(c => {
+      if (!q) return true;
+      return c[1].toLowerCase().includes(q) || ('+' + c[2]).includes(q) || c[0].toLowerCase().includes(q);
+    });
+    if (!items.length) {
+      list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:.85rem">لا توجد نتائج</div>';
+      return;
+    }
+    const selectedIso = $('#coCountry').value;
+    list.innerHTML = items.map(c =>
+      '<div class="co-country-item ' + (c[0]===selectedIso?'active':'') + '" data-iso="' + c[0] + '">' +
+        '<img class="co-flag-img" src="' + flagUrl(c[0]) + '" alt="" loading="lazy">' +
+        '<span class="co-country-item-name">' + escapeHtml(c[1]) + '</span>' +
+        '<span class="co-country-item-code">+' + c[2] + '</span>' +
+      '</div>'
+    ).join('');
+    $$('#coCountryList .co-country-item').forEach(el => {
+      el.addEventListener('click', () => selectCountry(el.dataset.iso));
+    });
+  }
+
+  function selectCountry(iso) {
+    const c = getCountryByIso(iso);
+    if (!c) return;
+    $('#coCountry').value = iso;
+    $('#coCountryFlag').src = flagUrl(iso);
+    $('#coCountryCode').textContent = '+' + c[2];
+    closeCountryMenu();
+    const phoneEl = $('#coPhone');
+    if (phoneEl) phoneEl.focus();
+  }
+
+  function openCountryMenu() {
+    if (countryMenuOpen) return;
+    countryMenuOpen = true;
+    const search = $('#coCountrySearch');
+    search.value = '';
+    renderCountryList('');
+    $('#coCountryMenu').style.display = 'block';
+    setTimeout(() => search.focus(), 50);
+  }
+
+  function closeCountryMenu() {
+    countryMenuOpen = false;
+    const menu = $('#coCountryMenu');
+    if (menu) menu.style.display = 'none';
   }
 
   // ============ CHECKOUT ============
@@ -1546,7 +1644,7 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
     const sel = $('#coGovernorate');
     if (!sel) return;
     if (!sel.dataset.populated) {
-      const govs = Object.keys(SYRIA_DATA);
+      const govs = Object.keys(state.districts).length ? Object.keys(state.districts) : SYRIA_GOVERNORATES;
       sel.innerHTML = '<option value="">اختر المحافظة *</option>' +
         govs.map(g => '<option value="' + escapeHtml(g) + '">' + escapeHtml(g) + '</option>').join('');
       sel.dataset.populated = '1';
@@ -1556,11 +1654,11 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
   function populateDistricts(gov) {
     const sel = $('#coDistrict');
     if (!sel) return;
-    if (!gov || !SYRIA_DATA[gov]) {
+    if (!gov) {
       sel.innerHTML = '<option value="">اختر الحي/المدينة *</option>';
       return;
     }
-    const list = SYRIA_DATA[gov];
+    const list = (state.districts[gov]) || SYRIA_DATA_FALLBACK[gov] || [];
     sel.innerHTML = '<option value="">اختر الحي/المدينة *</option>' +
       list.map(d => '<option value="' + escapeHtml(d) + '">' + escapeHtml(d) + '</option>').join('');
   }
@@ -1602,6 +1700,15 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
     const mapSec = $('#mapSection');
     if (mapSec) mapSec.style.display = mapEnabled ? '' : 'none';
 
+    // Default country from settings
+    let defaultIso = 'SY';
+    const adminDefault = String(s.phone_default_country || '').replace(/[^\d]/g,'');
+    if (adminDefault) {
+      const found = COUNTRIES.find(c => c[2] === adminDefault);
+      if (found) defaultIso = found[0];
+    }
+    selectCountry(defaultIso);
+
     updateCheckoutPaymentUI();
   }
 
@@ -1641,7 +1748,7 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
     const tt = $('#coTotal'); if (tt) tt.textContent = formatPrice(total);
   }
 
-  // ===== MAP (MODAL) =====
+  // ===== MAP =====
   function openMapModal() {
     originalMapLat = $('#coLat').value;
     originalMapLng = $('#coLng').value;
@@ -1743,12 +1850,14 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
     $('#coDistrict').innerHTML = '<option value="">اختر الحي/المدينة *</option>';
 
     applyCheckoutSettings();
+    closeCountryMenu();
 
     $('#checkoutModal').classList.add('open');
     document.body.style.overflow = 'hidden';
   }
 
   function closeCheckout() {
+    closeCountryMenu();
     closeMapModal();
     $('#checkoutModal').classList.remove('open');
     document.body.style.overflow = '';
@@ -1777,13 +1886,20 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
 
     const fullName = [firstName, fatherName, lastName].filter(x=>x).join(' ');
 
+    // Phone with country
     const phoneReq = s.phone_required !== false;
-    const countryCode = '+963';
+    const iso = $('#coCountry').value || 'SY';
+    const countryObj = getCountryByIso(iso);
+    const countryCode = countryObj ? '+' + countryObj[2] : '+963';
     let phoneNumber = null;
     if (phoneReq) {
       phoneNumber = $('#coPhone').value.replace(/[\s\-]/g,'').trim();
       if (!phoneNumber) { toast('رقم الهاتف مطلوب','error'); return; }
-      if (!/^9\d{8}$/.test(phoneNumber)) { toast('رقم الهاتف يجب أن يبدأ بـ 9 ويتكون من 9 أرقام','error'); return; }
+      if (iso === 'SY') {
+        if (!/^9\d{8}$/.test(phoneNumber)) { toast('رقم الهاتف السوري يجب أن يبدأ بـ 9 ويتكون من 9 أرقام','error'); return; }
+      } else {
+        if (!/^\d{6,15}$/.test(phoneNumber)) { toast('رقم الهاتف غير صالح (6-15 رقماً)','error'); return; }
+      }
     }
 
     const governorate = $('#coGovernorate').value.trim();
@@ -1916,7 +2032,14 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
   $('#searchInput').addEventListener('input', e => {
     clearTimeout(searchTimer);
     const val = e.target.value;
-    searchTimer = setTimeout(() => { state.filters.search = val; loadProducts(true); }, 350);
+    searchTimer = setTimeout(() => {
+      state.filters.search = val;
+      loadProducts(true);
+      // Scroll to products on mobile after search
+      if (window.innerWidth <= 768 && val.trim().length > 0) {
+        setTimeout(() => scrollToProducts(), 400);
+      }
+    }, 350);
   });
   $('#sortSelect').addEventListener('change', e => { state.filters.sort = e.target.value; loadProducts(true); });
 
@@ -1960,6 +2083,19 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
     if (e.key === 'Enter') sendOtpCode();
   });
 
+  // Country picker
+  $('#coCountryBtn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (countryMenuOpen) closeCountryMenu();
+    else openCountryMenu();
+  });
+  $('#coCountrySearch').addEventListener('input', (e) => renderCountryList(e.target.value));
+  document.addEventListener('click', (e) => {
+    if (countryMenuOpen && !e.target.closest('#coCountryMenu') && !e.target.closest('#coCountryBtn')) {
+      closeCountryMenu();
+    }
+  });
+
   // Close success
   $('#closeSuccessBtn').addEventListener('click', () => {
     closeCheckout();
@@ -1988,12 +2124,9 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
   // ESC
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
+    if (countryMenuOpen) { closeCountryMenu(); return; }
     if ($('#mapModal').classList.contains('open')) { cancelMapModal(); return; }
     if ($('#otpModal').classList.contains('open')) { closeOtpModal(); return; }
-  });
-
-  $$('[data-cat]').forEach(el => {
-    if (el.tagName === 'A') el.addEventListener('click', e => { e.preventDefault(); filterCategory(el.dataset.cat); });
   });
 
   (async () => {
