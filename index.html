@@ -1,4 +1,17 @@
-<style>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المتجر</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+
+ <style>
 :root{
   --bg:#FAFAF9;--surface:#FFF;--ink:#0F0F0F;--muted:#737373;
   --border:#E7E5E4;--accent:#1A4D3A;--accent-h:#133A2C;
@@ -392,6 +405,10 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
   .product-name{font-size:.8rem}
 }
 </style>
+</head>
+<body>
+
+<div id="announcementBar"></div>
 <div id="announcementBar"></div>
 
 <header class="header">
@@ -695,7 +712,10 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
 </div>
 
 <div class="toast-container" id="toastContainer"></div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (function() {
   'use strict';
