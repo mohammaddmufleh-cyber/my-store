@@ -764,15 +764,20 @@ tr:hover td{background:#FAFBFC}
 
   // ============ OWNER VISIBILITY ============
   function applyOwnerVisibility(){
-    $$('.owner-only').forEach(el => {
-      if (state.isOwner) { el.style.display = ''; }
-      else { el.style.display = 'none'; }
-    });
-    ['navAdmins','navWhatsapp','navCategories','navDistricts'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.style.display = state.isOwner ? 'flex' : 'none';
-    });
-  }
+  $$('.owner-only').forEach(el => {
+    if (state.isOwner) { 
+      el.classList.remove('owner-only');
+      el.style.display = '';
+    } else { 
+      el.classList.add('owner-only');
+      el.style.display = 'none'; 
+    }
+  });
+  ['navAdmins','navWhatsapp','navCategories','navDistricts'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = state.isOwner ? 'flex' : 'none';
+  });
+}
 
   // ============ AUTH ============
   async function checkSession(){
