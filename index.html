@@ -715,8 +715,6 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
 (function() {
   'use strict';
 
@@ -861,14 +859,9 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
       cityDistrict = '<div style="margin-bottom:6px"><strong>المحافظة:</strong> ' + escapeHtml(order.city || '—') + ' | <strong>الحي:</strong> ' + escapeHtml(order.district || '—') + '</div>';
     }
 
-    // Calculate subtotal and delivery fee
     const deliveryFee = Number(order.delivery_fee || 0);
     const total = Number(order.total || 0);
     const subtotal = total - deliveryFee;
-
-    const deliveryFeeHtml = deliveryFee > 0
-      ? '<div style="display:flex;justify-content:space-between;padding:10px 16px;background:#FEF3C7;border:1px solid #FCD34D;border-radius:8px;font-size:.9rem;color:#92400E;font-weight:600;margin-top:8px"><span>🚚 أجور التوصيل</span><span>' + priceStr(deliveryFee, currency) + '</span></div>'
-      : '';
 
     main.innerHTML = '<div style="max-width:600px;margin:40px auto;background:#fff;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.06);padding:32px;font-family:Cairo,sans-serif" dir="rtl"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #E7E5E4"><div><div style="font-size:.85rem;color:#737373">رقم الطلب</div><div style="font-weight:700;font-size:1.2rem;color:#1A4D3A">' + escapeHtml(order.order_number) + '</div></div><span class="status-' + escapeHtml(order.status) + '">' + escapeHtml(statusLabel) + '</span></div><div style="margin-bottom:20px;font-size:.9rem"><div style="margin-bottom:6px"><strong>التاريخ:</strong> ' + new Date(order.created_at).toLocaleString('ar-EG') + '</div><div style="margin-bottom:6px"><strong>الاسم:</strong> ' + escapeHtml(order.customer_name) + '</div>' + phoneHtml + cityDistrict + '<div><strong>العنوان:</strong> ' + escapeHtml(order.customer_address || '') + '</div></div><div style="margin-bottom:16px"><h3 style="font-size:1rem;font-weight:700;margin-bottom:8px">المنتجات</h3>' + itemsHtml + '</div><div style="padding:12px 16px;background:#FAFAF9;border-radius:8px;margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:.9rem;color:#737373;margin-bottom:6px"><span>المنتجات</span><span>' + priceStr(subtotal, currency) + '</span></div>' + (deliveryFee > 0 ? '<div style="display:flex;justify-content:space-between;font-size:.9rem;color:#92400E;font-weight:600"><span>🚚 أجور التوصيل</span><span>' + priceStr(deliveryFee, currency) + '</span></div>' : '') + '</div><div style="display:flex;justify-content:space-between;padding-top:16px;border-top:1px solid #E7E5E4;font-size:1.1rem;font-weight:700"><span>الإجمالي</span><span>' + priceStr(total, currency) + '</span></div><a href="' + getSiteUrl() + '" style="display:block;margin-top:24px;text-align:center;padding:12px;background:#1A4D3A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">العودة للمتجر</a></div>';
   }
@@ -919,7 +912,6 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
     const { data } = await sb.from('store_settings').select('*').eq('id',1).maybeSingle();
     if (data) state.settings = data;
 
-    // Load categories (dynamically)
     const DEFAULT_CATS = [
       { name:'ملابس', image:'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600&q=80' },
       { name:'أحذية وحقائب', image:'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=600&q=80' },
@@ -929,7 +921,6 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
     if (!Array.isArray(cats) || !cats.length) cats = DEFAULT_CATS;
     state.categories = cats.map(c => typeof c === 'string' ? { name:c, image:'' } : c);
 
-    // Load districts (dynamically)
     const d = data?.districts;
     if (d && typeof d === 'object' && !Array.isArray(d)) {
       state.districts = d;
@@ -962,6 +953,15 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
       }
     }
 
+    // ===== Maintenance mode =====
+    if (s.maintenance_mode === true) {
+      document.body.classList.add('maintenance-on');
+      const banner = $('#maintenanceBanner');
+      if (banner) banner.textContent = '⚠️ المتجر في وضع الصيانة — لا يمكن استقبال طلبات جديدة حالياً';
+    } else {
+      document.body.classList.remove('maintenance-on');
+    }
+
     // ===== Footer contact links =====
     const waItem = $('#footerWhatsappItem');
     const emItem = $('#footerEmailItem');
@@ -988,13 +988,11 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
       }
     }
 
-    // ===== OTP button visibility =====
     const otpFooter = $('#ordersFooter');
     if (otpFooter) {
       otpFooter.style.display = (s.show_otp_button !== false) ? 'block' : 'none';
     }
 
-    // ===== Footer categories =====
     renderFooterCategories();
   }
 
@@ -1346,17 +1344,23 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
     $('#ordersBody').innerHTML = '<div style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</div>';
     const token = getClientToken();
     const { data, error } = await sb.rpc('get_my_orders', { p_token: token });
-    if (error || !data || !data.length) {
+    if (error || !data) {
       $('#ordersBody').innerHTML = '<div class="empty-state"><p>لا توجد طلبات سابقة في هذا المتصفح</p><p style="font-size:.8rem;margin-top:8px;color:var(--muted)">يمكنك استخدام زر استرجاع الطلبات في الأسفل لعرض طلباتك من متصفح آخر</p></div>';
       return;
     }
     renderOrdersList(data);
-    $('#ordersBadge').textContent = data.length;
-    $('#ordersBadge').dataset.count = data.length;
+    const visibleCount = data.filter(o => o.status !== 'cancelled').length;
+    $('#ordersBadge').textContent = visibleCount;
+    $('#ordersBadge').dataset.count = visibleCount;
   }
   function renderOrdersList(data) {
+    const visible = (data || []).filter(o => o.status !== 'cancelled');
+    if (!visible.length) {
+      $('#ordersBody').innerHTML = '<div class="empty-state"><p>لا توجد طلبات حالياً</p><p style="font-size:.8rem;margin-top:8px;color:var(--muted)">يمكنك استخدام زر استرجاع الطلبات في الأسفل لعرض طلباتك من متصفح آخر</p></div>';
+      return;
+    }
     const statusMap = { pending:'قيد المراجعة', confirmed:'تم التأكيد', shipped:'تم الشحن', delivered:'تم التسليم', cancelled:'ملغى' };
-    $('#ordersBody').innerHTML = data.map(o => {
+    $('#ordersBody').innerHTML = visible.map(o => {
       const statusLabel = statusMap[o.status] || o.status;
       const items = o.items || [];
       const itemsCount = items.reduce((s,i)=>s+(i.qty||1), 0);
@@ -1367,11 +1371,43 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
       });
       if (items.length > maxShow) thumbsHtml += '<div style="width:44px;height:56px;border-radius:6px;background:#E7E5E4;display:flex;align-items:center;justify-content:center;color:#737373;font-size:.75rem;font-weight:700">+' + (items.length - maxShow) + '</div>';
       thumbsHtml += '</div>';
-      return '<a href="' + getSiteUrl() + '?order=' + encodeURIComponent(o.order_number) + '" class="order-card" style="display:block;text-decoration:none;color:inherit"><div class="order-header"><span class="order-number">' + escapeHtml(o.order_number) + '</span><span class="order-status status-' + escapeHtml(o.status) + '">' + statusLabel + '</span></div><div style="font-size:.8rem;color:var(--muted)">' + new Date(o.created_at).toLocaleDateString('ar-EG') + ' • ' + itemsCount + ' منتج</div>' + thumbsHtml + '<div style="display:flex;justify-content:space-between;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)"><span class="order-total">' + formatPrice(o.total) + '</span><span style="font-size:.85rem;color:var(--accent);font-weight:600">عرض التفاصيل ←</span></div></a>';
+      const canCancel = o.status === 'pending';
+      const cancelBtn = canCancel ? '<button type="button" class="btn-cancel" data-cancel-id="' + o.id + '" data-cancel-num="' + escapeHtml(o.order_number) + '">✕ إلغاء</button>' : '';
+      return '<a href="' + getSiteUrl() + '?order=' + encodeURIComponent(o.order_number) + '" class="order-card" style="display:block;text-decoration:none;color:inherit"><div class="order-header"><span class="order-number">' + escapeHtml(o.order_number) + '</span><span class="order-status status-' + escapeHtml(o.status) + '">' + statusLabel + '</span></div><div style="font-size:.8rem;color:var(--muted)">' + new Date(o.created_at).toLocaleDateString('ar-EG') + ' • ' + itemsCount + ' منتج</div>' + thumbsHtml + '<div style="display:flex;justify-content:space-between;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);align-items:center"><span class="order-total">' + formatPrice(o.total) + '</span><div style="display:flex;gap:8px;align-items:center"><span style="font-size:.85rem;color:var(--accent);font-weight:600">عرض التفاصيل ←</span>' + cancelBtn + '</div></div></a>';
     }).join('');
+
+    $$('#ordersBody [data-cancel-id]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        cancelMyOrder(btn.dataset.cancelId, btn.dataset.cancelNum);
+      });
+    });
   }
+
+  async function cancelMyOrder(orderId, orderNumber) {
+    if (!confirm('هل تريد إلغاء الطلب ' + orderNumber + '؟\nلا يمكن التراجع عن هذا الإجراء.')) return;
+    const token = getClientToken();
+    try {
+      const { data, error } = await sb.rpc('cancel_my_order', { p_token: token, p_order_id: orderId });
+      if (error || !data) { toast('تعذر إلغاء الطلب، حاول مجدداً','error'); return; }
+      toast('تم إلغاء الطلب ✓');
+      await openOrders();
+      refreshOrdersCount();
+    } catch(e) {
+      console.error(e);
+      toast('تعذر إلغاء الطلب، حاول مجدداً','error');
+    }
+  }
+
   function closeOrders() { $('#ordersBackdrop').classList.remove('open'); $('#ordersDrawer').classList.remove('open'); }
-  async function refreshOrdersCount() { const token = getClientToken(); const { data } = await sb.rpc('get_my_orders', { p_token: token }); const cnt = (data && data.length) || 0; $('#ordersBadge').textContent = cnt; $('#ordersBadge').dataset.count = cnt; }
+  async function refreshOrdersCount() {
+    const token = getClientToken();
+    const { data } = await sb.rpc('get_my_orders', { p_token: token });
+    const cnt = ((data || []).filter(o => o.status !== 'cancelled')).length;
+    $('#ordersBadge').textContent = cnt;
+    $('#ordersBadge').dataset.count = cnt;
+  }
 
   // ============ OTP ============
   let otpResendTimer = null;
@@ -1533,10 +1569,11 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
       }
 
       const orders = data.orders || [];
+      const visibleOrders = orders.filter(o => o.status !== 'cancelled');
       localStorage.setItem('client_phone', otpCurrentPhone);
       closeOtpModal();
 
-      if (!orders.length) {
+      if (!visibleOrders.length) {
         toast('لا توجد طلبات لهذا الرقم','error');
         setTimeout(() => {
           $('#ordersBackdrop').classList.add('open');
@@ -1550,11 +1587,11 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
         $('#ordersBackdrop').classList.add('open');
         $('#ordersDrawer').classList.add('open');
         renderOrdersList(orders);
-        $('#ordersBadge').textContent = orders.length;
-        $('#ordersBadge').dataset.count = orders.length;
+        $('#ordersBadge').textContent = visibleOrders.length;
+        $('#ordersBadge').dataset.count = visibleOrders.length;
       }, 300);
 
-      toast('تم استرجاع ' + orders.length + ' طلب ✓');
+      toast('تم استرجاع ' + visibleOrders.length + ' طلب ✓');
 
     } catch(err) {
       console.error(err);
@@ -1720,7 +1757,6 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
     const mapSec = $('#mapSection');
     if (mapSec) mapSec.style.display = mapEnabled ? '' : 'none';
 
-    // Default country from settings
     let defaultIso = 'SY';
     const adminDefault = String(s.phone_default_country || '').replace(/[^\d]/g,'');
     if (adminDefault) {
@@ -1854,6 +1890,11 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
   async function openCheckout() {
     if (!state.cart.length) return;
 
+    if (state.settings.maintenance_mode === true) {
+      toast('المتجر في وضع الصيانة — لا يمكن إتمام الطلبات حالياً','error');
+      return;
+    }
+
     resetProgressSteps();
     $('#checkoutSuccess').style.display = 'none';
     $('#checkoutForm').style.display = 'flex';
@@ -1888,6 +1929,11 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
 
     const s = state.settings || {};
 
+    if (s.maintenance_mode === true) {
+      toast('المتجر في وضع الصيانة — لا يمكن إتمام الطلبات حالياً','error');
+      return;
+    }
+
     const wa = getActiveWhatsAppNumber();
     if (!wa) {
       toast('لا يمكن إتمام الطلب حاليًا — لم يتم إعداد رقم واتساب. حاول لاحقًا.','error');
@@ -1906,7 +1952,6 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
 
     const fullName = [firstName, fatherName, lastName].filter(x=>x).join(' ');
 
-    // Phone with country
     const phoneReq = s.phone_required !== false;
     const iso = $('#coCountry').value || 'SY';
     const countryObj = getCountryByIso(iso);
@@ -2055,13 +2100,21 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
     searchTimer = setTimeout(() => {
       state.filters.search = val;
       loadProducts(true);
-      // Scroll to products on mobile after search
-      if (window.innerWidth <= 768 && val.trim().length > 0) {
+      if (val.trim().length > 0) {
         setTimeout(() => scrollToProducts(), 400);
       }
     }, 350);
   });
   $('#sortSelect').addEventListener('change', e => { state.filters.sort = e.target.value; loadProducts(true); });
+
+  // ===== Mobile search placeholder =====
+  function updateSearchPlaceholder() {
+    const input = $('#searchInput');
+    if (!input) return;
+    input.placeholder = window.innerWidth <= 768 ? 'ابحث' : 'ابحث عن منتج...';
+  }
+  updateSearchPlaceholder();
+  window.addEventListener('resize', updateSearchPlaceholder);
 
   const io = new IntersectionObserver(entries => {
     if (entries[0].isIntersecting && state.hasMore && !state.loading && state.products.length > 0) loadProducts(false);
@@ -2116,24 +2169,20 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
     }
   });
 
-  // Close success
   $('#closeSuccessBtn').addEventListener('click', () => {
     closeCheckout();
     closeCart();
   });
 
-  // Governorate → District
   $('#coGovernorate').addEventListener('change', e => {
     populateDistricts(e.target.value);
   });
 
-  // Payment
   ['payCod','payPickup'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.addEventListener('change', updateCheckoutPaymentUI);
   });
 
-  // Map modal
   $('#openMapBtn').addEventListener('click', openMapModal);
   $('#closeMapModalBtn').addEventListener('click', cancelMapModal);
   $('#mapModalBackdrop').addEventListener('click', cancelMapModal);
@@ -2141,7 +2190,6 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
   $('#cancelMapBtn').addEventListener('click', cancelMapModal);
   $('#clearMarkerBtn').addEventListener('click', clearMapLocation);
 
-  // ESC
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
     if (countryMenuOpen) { closeCountryMenu(); return; }
@@ -2178,3 +2226,4 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
 </script>
 </body>
 </html>
+  
