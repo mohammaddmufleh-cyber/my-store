@@ -43,7 +43,16 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
 .search-input{width:100%;padding:10px 40px 10px 16px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg);transition:border-color .15s}
 .search-input:focus{outline:none;border-color:var(--accent);background:var(--surface)}
 
-#announcementBar{background:var(--accent);color:#fff;text-align:center;padding:10px 20px;font-size:.9rem;font-weight:600;display:none}
+#maintenanceBanner{
+  display:none;background:linear-gradient(90deg,#B91C1C,#991B1B);
+  color:#fff;text-align:center;padding:12px 20px;font-size:.9rem;
+  font-weight:700;box-shadow:0 2px 8px rgba(185,28,28,.2);
+}
+body.maintenance-on #maintenanceBanner{display:block}
+body.maintenance-on #checkoutBtn,
+body.maintenance-on #addToCartFromModal{
+  opacity:.45;pointer-events:none;cursor:not-allowed;
+}
 
 .hero{margin:32px 0 48px;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
 .hero-title{font-size:clamp(2rem,5vw,3.5rem);font-weight:700;line-height:1.1;letter-spacing:-.03em;margin-bottom:20px}
@@ -409,7 +418,7 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
 <body>
 
 <div id="announcementBar"></div>
-<div id="announcementBar"></div>
+<div id="maintenanceBanner"></div>
 
 <header class="header">
   <div class="container">
