@@ -770,6 +770,22 @@ tr:hover td{background:#FAFBFC}
   function fmtNum(n){return Number(n||0).toLocaleString('ar-EG')}
   function fmtDate(d){if(!d)return'—';try{return new Date(d).toLocaleString('ar-EG',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'})}catch(e){return'—'}}
   function normalizeImages(images){if(!images)return[];if(Array.isArray(images))return images.filter(u=>typeof u==='string'&&u.startsWith('http'));if(typeof images==='string'){try{const p=JSON.parse(images);if(Array.isArray(p))return p.filter(u=>typeof u==='string'&&u.startsWith('http'))}catch(e){}if(images.startsWith('http'))return[images]}return[]}
+  function normalizeDistrictsAdmin(d){
+    if (!d || typeof d !== 'object' || Array.isArray(d)) return {};
+    const out = {};
+    Object.keys(d).forEach(gov => {
+      const v = d[gov];
+      if (Array.isArray(v)) {
+        out[gov] = { enabled: true, areas: v };
+      } else if (v && typeof v === 'object') {
+        out[gov] = {
+          enabled: v.enabled !== false,
+          areas: Array.isArray(v.areas) ? v.areas : []
+        };
+      }
+    });
+    return out;
+  }
   function normalizeArabicClient(s){if(!s)return'';return s.toLowerCase().replace(/[أإآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/\s+/g,' ').trim()}
   function showLoading(){$('#loadingOverlay').classList.add('show')}
   function hideLoading(){$('#loadingOverlay').classList.remove('show')}
@@ -906,7 +922,7 @@ tr:hover td{background:#FAFBFC}
     // normalize: strings or objects
     state.categories = cats.map(c => typeof c === 'string' ? { name:c, image:'' } : c);
     // Districts
-    state.districts = (data?.districts && typeof data.districts === 'object' && !Array.isArray(data.districts)) ? { ...data.districts } : {};
+        state.districts = normalizeDistrictsAdmin(data?.districts);
     return data;
   }
 
@@ -1282,36 +1298,65 @@ tr:hover td{background:#FAFBFC}
       c.innerHTML = '<div style="text-align:center;padding:32px;color:var(--muted)">اختر محافظة لعرض أحيائها</div>';
       return;
     }
-    const list = Array.isArray(state.districts[gov]) ? state.districts[gov] : [];
-    let html = '<div class="district-chips">';
+    const entry = state.districts[gov] || { enabled: true, areas: [] };
+    const list = Array.isArray(entry.areas) ? entry.areas : [];
+    const isEnabled = entry.enabled !== false;
+
+    let html = '<div style="padding:16px 24px;border-bottom:1px solid var(--border);background:#FEF3C7">';
+    html += '<div class="switch-row" style="background:transparent;border:none;padding:0;margin:0">';
+    html += '<div class="switch-info"><div class="switch-title">إظهار المحافظة للزبائن</div><div class="switch-desc">عند التعطيل: تختفي المحافظة وأحياؤها من صفحة الطلب</div></div>';
+    html += '<label class="switch"><input type="checkbox" id="govEnabledToggle" ' + (isEnabled ? 'checked' : '') + '><span class="switch-slider"></span></label>';
+    html += '</div></div>';
+
+    html += '<div class="district-chips">';
     if (!list.length) {
       html += '<span style="color:var(--muted);font-size:.85rem;padding:4px 8px">لا توجد أحياء مسجلة بعد لهذه المحافظة</span>';
     } else {
       list.forEach((d, idx) => {
-        html += `<div class="district-chip">
-          <span class="district-chip-name">${escapeHtml(d)}</span>
-          <button type="button" class="district-chip-btn district-chip-edit" data-dist-edit="${idx}" title="تعديل"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-          <button type="button" class="district-chip-btn" data-dist-del="${idx}" title="حذف"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
-        </div>`;
+        html += '<div class="district-chip">' +
+          '<span class="district-chip-name">' + escapeHtml(d) + '</span>' +
+          '<button type="button" class="district-chip-btn district-chip-edit" data-dist-edit="' + idx + '" title="تعديل"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>' +
+          '<button type="button" class="district-chip-btn" data-dist-del="' + idx + '" title="حذف"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>' +
+          '</div>';
       });
     }
     html += '</div>';
-    html += `<div class="district-add-row">
-      <input type="text" id="newDistrictInput" placeholder="أضف حياً أو مدينة جديدة..." maxlength="80">
-      <button type="button" class="btn btn-primary" id="addDistrictBtn"><svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> إضافة</button>
-    </div>`;
+    html += '<div class="district-add-row">' +
+      '<input type="text" id="newDistrictInput" placeholder="أضف حياً أو مدينة جديدة..." maxlength="80">' +
+      '<button type="button" class="btn btn-primary" id="addDistrictBtn"><svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> إضافة</button>' +
+      '</div>';
     c.innerHTML = html;
 
     $('#addDistrictBtn').addEventListener('click', addDistrict);
     const ni = $('#newDistrictInput');
     if (ni) ni.addEventListener('keypress', e => { if (e.key === 'Enter') { e.preventDefault(); addDistrict(); } });
 
+    const toggle = $('#govEnabledToggle');
+    if (toggle) toggle.addEventListener('change', (e) => toggleGovEnabled(gov, e.target.checked));
+
     $$('[data-dist-edit]').forEach(b => b.addEventListener('click', () => editDistrict(+b.dataset.distEdit)));
     $$('[data-dist-del]').forEach(b => b.addEventListener('click', () => deleteDistrict(+b.dataset.distDel)));
   }
+
+  async function toggleGovEnabled(gov, enabled){
+    showLoading();
+    try {
+      const current = state.districts[gov] || { enabled: true, areas: [] };
+      const updated = { ...state.districts, [gov]: { ...current, enabled } };
+      const { error } = await sb.from('store_settings').update({ districts: updated }).eq('id', 1);
+      if (error) throw error;
+      state.districts = updated;
+      toast(enabled ? 'تم تفعيل المحافظة ✓' : 'تم إخفاء المحافظة ✓');
+    } catch(e) {
+      console.error(e);
+      toast('تعذر الحفظ', 'error');
+      renderDistrictsList();
+    } finally { hideLoading(); }
+  }  
   async function saveDistricts(updatedGovList){
     const gov = state.currentDistrictGov;
-    const newDistricts = { ...state.districts, [gov]: updatedGovList };
+    const current = state.districts[gov] || { enabled: true, areas: [] };
+    const newDistricts = { ...state.districts, [gov]: { ...current, areas: updatedGovList } };
     const { error } = await sb.from('store_settings').update({ districts: newDistricts }).eq('id', 1);
     if (error) throw error;
     state.districts = newDistricts;
@@ -1321,8 +1366,9 @@ tr:hover td{background:#FAFBFC}
     const name = inp ? inp.value.trim() : '';
     if (!name) { toast('أدخل اسم الحي','error'); return; }
     const gov = state.currentDistrictGov;
-    const list = Array.isArray(state.districts[gov]) ? [...state.districts[gov]] : [];
-    if (list.some(d => d === name)) { toast('هذا الحي موجود بالفعل','error'); return; }
+    const entry = state.districts[gov] || { enabled: true, areas: [] };
+    const list = Array.isArray(entry.areas) ? [...entry.areas] : [];
+    if (list.some(d => d === name)) { toast('هذا الحي موجود بالفعل','error'); return; }   
     list.push(name);
     showLoading();
     try {
@@ -1334,9 +1380,10 @@ tr:hover td{background:#FAFBFC}
       toast('تعذر الحفظ', 'error');
     } finally { hideLoading(); }
   }
-  function editDistrict(idx){
+    function editDistrict(idx){
     const gov = state.currentDistrictGov;
-    const list = state.districts[gov] || [];
+    const entry = state.districts[gov] || { enabled: true, areas: [] };
+    const list = Array.isArray(entry.areas) ? entry.areas : [];
     const current = list[idx];
     if (current === undefined) return;
     state.districtForm.editingIndex = idx;
@@ -1354,7 +1401,8 @@ tr:hover td{background:#FAFBFC}
     const name = $('#districtNameInput').value.trim();
     if (!name) { toast('اسم الحي مطلوب','error'); return; }
     const gov = state.currentDistrictGov;
-    const list = Array.isArray(state.districts[gov]) ? [...state.districts[gov]] : [];
+    const entry = state.districts[gov] || { enabled: true, areas: [] };
+    const list = Array.isArray(entry.areas) ? [...entry.areas] : [];
     const idx = state.districtForm.editingIndex;
     if (idx === null || idx === undefined) return;
     if (list.some((d, i) => d === name && i !== idx)) { toast('هذا الاسم موجود بالفعل','error'); return; }
@@ -1372,7 +1420,8 @@ tr:hover td{background:#FAFBFC}
   }
   async function deleteDistrict(idx){
     const gov = state.currentDistrictGov;
-    const list = Array.isArray(state.districts[gov]) ? [...state.districts[gov]] : [];
+    const entry = state.districts[gov] || { enabled: true, areas: [] };
+    const list = Array.isArray(entry.areas) ? [...entry.areas] : [];
     const name = list[idx];
     if (!name) return;
     if (!confirm(`حذف "${name}" من ${gov}؟`)) return;
