@@ -557,6 +557,17 @@ tr:hover td{background:#FAFBFC}
               <label class="switch"><input type="checkbox" id="setEnableMap"><span class="switch-slider"></span></label>
             </div>
           </div>
+          <div class="form-section" id="section-free-return">
+            <div class="form-section-title">الإرجاع المجاني</div>
+            <div class="switch-row">
+              <div class="switch-info"><div class="switch-title">إظهار شارة "إرجاع مجاني"</div><div class="switch-desc">تظهر في الشريط التعريفي أسفل الصفحة الرئيسية</div></div>
+              <label class="switch"><input type="checkbox" id="setShowFreeReturn"><span class="switch-slider"></span></label>
+            </div>
+            <div class="form-grid">
+              <div class="form-field"><label class="form-label">العنوان</label><input type="text" class="form-input" id="setFreeReturnTitle" maxlength="30" placeholder="إرجاع مجاني"></div>
+              <div class="form-field"><label class="form-label">الوصف</label><input type="text" class="form-input" id="setFreeReturnDesc" maxlength="50" placeholder="خلال 14 يوم"></div>
+            </div>
+          </div>
 
           <div class="form-section owner-only" id="section-contact">
             <div class="form-section-title">التواصل (يظهر في صفحة الزبون)</div>
@@ -1713,6 +1724,9 @@ tr:hover td{background:#FAFBFC}
       $('#setContactEmailEnabled').checked=data.contact_email_enabled===true;
       $('#setContactEmail').value=data.contact_email||'';
       $('#setMaintenanceMode').checked=data.maintenance_mode===true;
+      $('#setShowFreeReturn').checked=data.show_free_return!==false;
+      $('#setFreeReturnTitle').value=data.free_return_title||'';
+      $('#setFreeReturnDesc').value=data.free_return_desc||'';
     }catch(e){console.error(e);toast('تعذر التحميل','error')}
   }
   async function saveSettings(){
@@ -1738,6 +1752,9 @@ tr:hover td{background:#FAFBFC}
       contact_email_enabled:$('#setContactEmailEnabled').checked,
       contact_email:$('#setContactEmail').value.trim()||null,
       maintenance_mode:$('#setMaintenanceMode').checked,
+      show_free_return:$('#setShowFreeReturn').checked,
+      free_return_title:$('#setFreeReturnTitle').value.trim()||'إرجاع مجاني',
+      free_return_desc:$('#setFreeReturnDesc').value.trim()||'خلال 14 يوم',
       updated_at:new Date().toISOString()
     };
     // Only owner can change store_name
