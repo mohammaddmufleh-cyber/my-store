@@ -739,6 +739,20 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
     if (s == null) return '';
     return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
+  function normalizeDistricts(d) {
+    if (!d || typeof d !== 'object' || Array.isArray(d)) return {};
+    const out = {};
+    Object.keys(d).forEach(gov => {
+      const v = d[gov];
+      if (Array.isArray(v)) {
+        out[gov] = { enabled: true, areas: v };
+      } else if (v && typeof v === 'object') {
+        out[gov] = { enabled: v.enabled !== false, areas: Array.isArray(v.areas) ? v.areas : [] };
+      }
+    });
+    return out;
+  }
+
   function normalizeImages(images) {
     if (!images) return [];
     if (typeof images === 'string') {
@@ -928,13 +942,16 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
     if (!Array.isArray(cats) || !cats.length) cats = DEFAULT_CATS;
     state.categories = cats.map(c => typeof c === 'string' ? { name:c, image:'' } : c);
 
-    const d = data?.districts;
-    if (d && typeof d === 'object' && !Array.isArray(d)) {
-      state.districts = d;
+    const normalized = normalizeDistricts(data?.districts);
+    if (Object.keys(normalized).length) {
+      state.districts = normalized;
     } else {
-      state.districts = SYRIA_DATA_FALLBACK;
+      const fb = {};
+      Object.keys(SYRIA_DATA_FALLBACK).forEach(g => {
+        fb[g] = { enabled: true, areas: SYRIA_DATA_FALLBACK[g] };
+      });
+      state.districts = fb;
     }
-
     applySettings();
   }
 
@@ -1720,12 +1737,17 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
   function populateGovernorates() {
     const sel = $('#coGovernorate');
     if (!sel) return;
-    if (!sel.dataset.populated) {
-      const govs = Object.keys(state.districts).length ? Object.keys(state.districts) : SYRIA_GOVERNORATES;
-      sel.innerHTML = '<option value="">اختر المحافظة *</option>' +
-        govs.map(g => '<option value="' + escapeHtml(g) + '">' + escapeHtml(g) + '</option>').join('');
-      sel.dataset.populated = '1';
-    }
+    const allKeys = Object.keys(state.districts);
+    const enabledGovs = allKeys.filter(g => {
+      const e = state.districts[g];
+      return e && e.enabled !== false;
+    });
+    const govs = enabledGovs.length ? enabledGovs : SYRIA_GOVERNORATES;
+    const currentVal = sel.value;
+    sel.innerHTML = '<option value="">اختر المحافظة *</option>' +
+      govs.map(g => '<option value="' + escapeHtml(g) + '">' + escapeHtml(g) + '</option>').join('');
+    if (currentVal && govs.includes(currentVal)) sel.value = currentVal;
+    sel.dataset.populated = '1';
   }
 
   function populateDistricts(gov) {
@@ -1735,7 +1757,11 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
       sel.innerHTML = '<option value="">اختر الحي/المدينة *</option>';
       return;
     }
-    const list = (state.districts[gov]) || SYRIA_DATA_FALLBACK[gov] || [];
+    const entry = state.districts[gov];
+    let list = [];
+    if (entry && Array.isArray(entry.areas)) list = entry.areas;
+    else if (Array.isArray(entry)) list = entry;
+    else if (SYRIA_DATA_FALLBACK[gov]) list = SYRIA_DATA_FALLBACK[gov];
     sel.innerHTML = '<option value="">اختر الحي/المدينة *</option>' +
       list.map(d => '<option value="' + escapeHtml(d) + '">' + escapeHtml(d) + '</option>').join('');
   }
