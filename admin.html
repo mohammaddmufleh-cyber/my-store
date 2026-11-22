@@ -487,6 +487,17 @@ tr:hover td{background:#FAFBFC}
         <div class="card-header"><div><div class="card-title">إعدادات المتجر</div><div class="card-title-sub">اسم المتجر، العملة، التواصل، الدفع، والمحتوى</div></div></div>
         <div class="modal-body" style="padding:24px 28px;max-height:none">
 
+          <div class="form-section owner-only" id="section-maintenance">
+            <div class="form-section-title">⚠️ وضع الصيانة</div>
+            <div class="switch-row" style="border:2px solid #FCD34D;background:#FEF3C7">
+              <div class="switch-info">
+                <div class="switch-title">تفعيل وضع الصيانة</div>
+                <div class="switch-desc">عند التفعيل: يظهر شريط أحمر في صفحة الزبون، ويتعطل زر "إتمام الطلب" و"أضف إلى السلة" مؤقتاً</div>
+              </div>
+              <label class="switch"><input type="checkbox" id="setMaintenanceMode"><span class="switch-slider"></span></label>
+            </div>
+          </div>
+
           <div class="form-section" id="section-store-info">
             <div class="form-section-title">معلومات المتجر</div>
             <div class="form-grid">
@@ -752,7 +763,7 @@ tr:hover td{background:#FAFBFC}
   function showLoading(){$('#loadingOverlay').classList.add('show')}
   function hideLoading(){$('#loadingOverlay').classList.remove('show')}
   function generateFileName(file){const ext=(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg';return`products/${Date.now()}-${Math.random().toString(36).substring(2,10)}.${ext}`}
-  function getProductUrl(id){const url=new URL(window.location.origin+'/');url.searchParams.set('product',id);return url.toString()}
+  function extractStoragePath(url){if(!url||typeof url!=='string')return null;const marker='/'+STORAGE_BUCKET+'/';const idx=url.indexOf(marker);if(idx===-1)return null;return url.substring(idx+marker.length).split('?')[0]||null}  function getProductUrl(id){const url=new URL(window.location.origin+'/');url.searchParams.set('product',id);return url.toString()}
   function openProductInStore(id){const url=getProductUrl(id);const w=window.open(url,'_blank','noopener,noreferrer');if(!w)window.location.href=url}
   function getStatusLabel(s){const m={pending:'قيد المراجعة',confirmed:'تم التأكيد',shipped:'تم الشحن',delivered:'تم التسليم',cancelled:'ملغى'};return m[s]||s}
   function getStatusBadgeClass(s){const m={pending:'badge-warning',confirmed:'badge-info',shipped:'badge-purple',delivered:'badge-success',cancelled:'badge-danger'};return m[s]||'badge-gray'}
@@ -1701,6 +1712,7 @@ tr:hover td{background:#FAFBFC}
       $('#setContactWhatsappNumber').value=data.contact_whatsapp_number||'';
       $('#setContactEmailEnabled').checked=data.contact_email_enabled===true;
       $('#setContactEmail').value=data.contact_email||'';
+      $('#setMaintenanceMode').checked=data.maintenance_mode===true;
     }catch(e){console.error(e);toast('تعذر التحميل','error')}
   }
   async function saveSettings(){
@@ -1725,6 +1737,7 @@ tr:hover td{background:#FAFBFC}
       contact_whatsapp_number:$('#setContactWhatsappNumber').value.replace(/\D/g,'')||null,
       contact_email_enabled:$('#setContactEmailEnabled').checked,
       contact_email:$('#setContactEmail').value.trim()||null,
+      maintenance_mode:$('#setMaintenanceMode').checked,
       updated_at:new Date().toISOString()
     };
     // Only owner can change store_name
@@ -1751,7 +1764,15 @@ tr:hover td{background:#FAFBFC}
     if(!state.deleteTarget)return;
     showLoading();
     try{
-      if(state.deleteType==='product'){
+           if(state.deleteType==='product'){
+        const prod=state.products.data.find(x=>x.id===state.deleteTarget);
+        if(prod){
+          const imgs=normalizeImages(prod.images);
+          const paths=imgs.map(extractStoragePath).filter(Boolean);
+          if(paths.length>0){
+            try{await sb.storage.from(STORAGE_BUCKET).remove(paths)}catch(se){console.warn('Storage delete:',se)}
+          }
+        }
         const {error}=await sb.from('products').delete().eq('id',state.deleteTarget);if(error)throw error;
         toast('تم حذف المنتج');closeDeleteConfirm();
         if(state.products.data.length===1&&state.products.page>0)state.products.page--;
