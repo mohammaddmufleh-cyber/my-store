@@ -320,6 +320,7 @@ tr:hover td{background:#FAFBFC}
     </div>
     <nav class="sidebar-nav">
       <a class="nav-item active" data-page="dashboard"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>لوحة القيادة</a>
+      <a class="nav-item" data-page="revenue" id="navRevenue" style="display:none"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>الإيرادات</a>
       <a class="nav-item" data-page="products"><svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>المنتجات</a>
       <a class="nav-item" data-page="categories" id="navCategories" style="display:none"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>الأقسام</a>
            <a class="nav-item" data-page="banners" id="navBanners" style="display:none"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>الإعلانات</a>
@@ -353,7 +354,6 @@ tr:hover td{background:#FAFBFC}
         <div class="stat-card owner-only" id="revenueStatCard">
           <div class="stat-card-header">
             <div class="stat-icon gold"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
-            <button id="resetRevenueBtn" class="reset-rev-btn" title="تصفير الإيرادات"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button>
           </div>
           <div class="stat-label">الإيرادات (المُسلَّمة)</div>
           <div class="stat-value" id="statRevenue">—</div>
@@ -379,6 +379,17 @@ tr:hover td{background:#FAFBFC}
         </div>
       </div>
     </div>
+    <!-- ===== REVENUE (OWNER) ===== -->
+    <div class="page" id="page-revenue">
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">الإيرادات حسب القسم</div><div class="card-title-sub">الإيراد = قيمة المنتجات فقط (بدون توصيل) من الطلبات المُسلَّمة</div></div>
+          <button class="btn btn-danger" id="resetAllRevenueBtn"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg> تصفير الكل</button>
+        </div>
+        <div class="table-wrap"><table><thead><tr><th>القسم</th><th>عدد الطلبات</th><th>الإيراد</th><th style="width:120px;text-align:left">الإجراءات</th></tr></thead><tbody id="revenueTableBody"><tr><td colspan="4" style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</td></tr></tbody></table></div>
+      </div>
+    </div>
+
 
     <!-- ===== PRODUCTS ===== -->
     <div class="page" id="page-products">
@@ -719,17 +730,16 @@ tr:hover td{background:#FAFBFC}
 
 <div class="modal-overlay" id="resetRevenueModal">
   <div class="modal-box narrow">
-    <div class="modal-header"><h2 class="modal-title">تصفير الإيرادات</h2><button class="modal-close" id="closeResetRevenueBtn"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+    <div class="modal-header"><h2 class="modal-title" id="resetRevenueModalTitle">تصفير الإيرادات</h2><button class="modal-close" id="closeResetRevenueBtn"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
     <div class="modal-body" style="padding:24px 28px">
-      <p style="font-size:.95rem;line-height:1.7;color:var(--ink);margin-bottom:12px">سيتم <strong>تصفير عداد الإيرادات</strong> ليبدأ العد من اللحظة الحالية.</p>
+      <p id="resetRevenueModalText" style="font-size:.95rem;line-height:1.7;color:var(--ink);margin-bottom:12px">سيتم تصفير عداد الإيرادات.</p>
       <ul style="margin:0;padding-right:20px;font-size:.85rem;color:var(--muted);line-height:1.8">
         <li>✅ <strong>لن يتم حذف أي طلبات</strong> — جميع البيانات محفوظة.</li>
-        <li>✅ المبيعات التاريخية ستبقى ظاهرة في عمود "المبيعات".</li>
-        <li>⚠️ الإيرادات في لوحة القيادة وجدول أعلى المنتجات ستبدأ من صفر.</li>
+        <li>⚠️ الأرقام ستبدأ من صفر من الآن.</li>
         <li>⚠️ التغيير لا يمكن التراجع عنه من الواجهة.</li>
       </ul>
     </div>
-    <div class="modal-footer" style="justify-content:center"><button class="btn btn-ghost" id="cancelResetRevenueBtn">إلغاء</button><button class="btn btn-danger" id="confirmResetRevenueBtn">نعم، صفّر الإيرادات</button></div>
+    <div class="modal-footer" style="justify-content:center"><button class="btn btn-ghost" id="cancelResetRevenueBtn">إلغاء</button><button class="btn btn-danger" id="confirmResetRevenueBtn">نعم، صفّر</button></div>
   </div>
 </div>
 
@@ -823,7 +833,8 @@ tr:hover td{background:#FAFBFC}
     deleteTarget: null, deleteType: null,
     categoryForm: { editingIndex: null, uploadedImageUrl: null },
     districtForm: { editingIndex: null, gov: null },
-    banners: { editingId: null, uploadedImageUrl: null, data: [] }
+    banners: { editingId: null, uploadedImageUrl: null, data: [] },
+    revenue: { data: [], resetTarget: null }
   };
 
   function escapeHtml(s){if(s==null)return'';return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -873,7 +884,7 @@ tr:hover td{background:#FAFBFC}
       el.style.display = 'none'; 
     }
   });
-  ['navAdmins','navWhatsapp','navCategories','navDistricts','navBanners'].forEach(id => {
+  ['navAdmins','navWhatsapp','navCategories','navDistricts','navBanners','navRevenue'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.display = state.isOwner ? 'flex' : 'none';
   });
@@ -941,7 +952,7 @@ tr:hover td{background:#FAFBFC}
   }
 
   function switchPage(page){
-    if((page==='admins'||page==='categories'||page==='districts'||page==='whatsapp'||page==='banners')&&!state.isOwner){toast('غير مصرح','error');return}
+    if((page==='admins'||page==='categories'||page==='districts'||page==='whatsapp'||page==='banners'||page==='revenue')&&!state.isOwner){toast('غير مصرح','error');return}
     state.currentPage=page;
     $$('.nav-item').forEach(el=>el.classList.toggle('active',el.dataset.page===page));
     $$('.page').forEach(el=>el.classList.remove('active'));
@@ -957,6 +968,7 @@ tr:hover td{background:#FAFBFC}
       whatsapp:{title:'أرقام الواتساب',sub:'المستلمون'},
       districts:{title:'المحافظات والأحياء',sub:'إدارة الأحياء'},
       banners:{title:'الإعلانات',sub:'بانرات الصفحة الرئيسية'},
+      revenue:{title:'الإيرادات',sub:'الإيرادات حسب القسم'},
       settings:{title:'الإعدادات',sub:'ضبط المتجر'}
     };
     const t=titles[page]||titles.dashboard;
@@ -964,6 +976,7 @@ tr:hover td{background:#FAFBFC}
     if(page==='products'){loadCategoriesFirst().then(()=>loadProducts())}
     else if(page==='categories')loadCategoriesPage();
     else if(page==='banners')loadBannersPage();
+    else if(page==='revenue')loadRevenuePage();
     else if(page==='orders')loadOrders();
     else if(page==='reviews')loadReviews();
     else if(page==='blocked')loadBlocked();
@@ -1027,9 +1040,13 @@ tr:hover td{background:#FAFBFC}
       if(state.isOwner){
         const {data:settings}=await sb.from('store_settings').select('revenue_count_from').eq('id',1).maybeSingle();
         const cutoff=settings?.revenue_count_from||'1970-01-01';
-        // NEW: only delivered orders
-        const {data:od}=await sb.from('orders').select('total,status,created_at').eq('status','delivered').gte('created_at',cutoff);
-        const rev=(od||[]).reduce((s,o)=>s+Number(o.total||0),0);
+        const {data:od}=await sb.from('orders').select('items,status,created_at').eq('status','delivered').gte('created_at',cutoff);
+        let rev=0;
+        (od||[]).forEach(o=>{
+          (o.items||[]).forEach(it=>{
+            rev += Number(it.price||0) * Number(it.qty||1);
+          });
+        });
         $('#statRevenue').textContent=fmtPrice(rev);
       }
     }catch(e){console.error(e)}
@@ -1066,22 +1083,7 @@ tr:hover td{background:#FAFBFC}
     }catch(e){console.error(e);tbody.innerHTML=`<tr><td colspan="${colCount}" style="text-align:center;padding:32px;color:var(--danger)">تعذر التحميل</td></tr>`}
   }
 
-  // ============ RESET REVENUE ============
-  function openResetRevenueModal(){if(!state.isOwner)return;$('#resetRevenueModal').classList.add('show');document.body.style.overflow='hidden'}
-  function closeResetRevenueModal(){$('#resetRevenueModal').classList.remove('show');document.body.style.overflow=''}
-  async function confirmResetRevenue(){
-    if(!state.isOwner){toast('غير مصرح','error');return}
-    showLoading();
-    try{
-      const {error}=await sb.from('store_settings').update({revenue_count_from:new Date().toISOString()}).eq('id',1);
-      if(error)throw error;
-      toast('تم تصفير الإيرادات ✓');
-      closeResetRevenueModal();
-      await loadDashboardStats();
-      await loadTopProducts();
-    }catch(e){console.error(e);toast('تعذر: '+(e.message||''),'error')}
-    finally{hideLoading()}
-  }
+  // ============ RESET REVENUE (removed — merged into REVENUE section) ============
 
   // ============ PRODUCTS ============
   async function loadProducts(){
@@ -2312,6 +2314,101 @@ tr:hover td{background:#FAFBFC}
     finally{hideLoading()}
   }
 
+  // ============ REVENUE ============
+  async function loadRevenuePage(){
+    const tbody = $('#revenueTableBody');
+    if (tbody) tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</td></tr>';
+    try {
+      const { data, error } = await sb.rpc('get_category_revenue');
+      if (error) throw error;
+      state.revenue.data = data || [];
+      renderRevenueTable();
+    } catch(e) {
+      console.error(e);
+      if (tbody) tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--danger)">تعذر التحميل</td></tr>';
+    }
+  }
+
+  function renderRevenueTable(){
+    const tbody = $('#revenueTableBody');
+    if (!tbody) return;
+    if (!state.revenue.data.length) {
+      tbody.innerHTML = '<tr><td colspan="4"><div class="empty"><p>لا توجد إيرادات مسجلة بعد</p></div></td></tr>';
+      return;
+    }
+    tbody.innerHTML = state.revenue.data.map(r => {
+      const isUnknown = r.category === 'غير معروف';
+      const catLabel = isUnknown ? '<span style="color:var(--muted);font-style:italic">غير معروف (منتج محذوف)</span>' : escapeHtml(r.category);
+      return '<tr>' +
+        '<td><strong>' + catLabel + '</strong></td>' +
+        '<td>' + fmtNum(r.orders_count) + '</td>' +
+        '<td><strong style="color:var(--accent)">' + fmtPrice(r.revenue) + '</strong></td>' +
+        '<td><div class="actions-cell">' +
+          '<button class="action-btn delete" data-reset-cat="' + escapeHtml(r.category) + '" title="تصفير هذا القسم"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button>' +
+        '</div></td>' +
+      '</tr>';
+    }).join('');
+    $$('[data-reset-cat]').forEach(b => b.addEventListener('click', () => openResetCategoryModal(b.dataset.resetCat)));
+  }
+
+  function openResetCategoryModal(category){
+    if (!state.isOwner) return;
+    state.revenue.resetTarget = category;
+    const t = $('#resetRevenueModalTitle'), x = $('#resetRevenueModalText');
+    if (t) t.textContent = 'تصفير إيرادات "' + category + '"';
+    if (x) x.innerHTML = 'سيتم تصفير عداد الإيرادات لهذا القسم فقط (<strong>' + escapeHtml(category) + '</strong>).';
+    $('#resetRevenueModal').classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function openResetAllModal(){
+    if (!state.isOwner) return;
+    state.revenue.resetTarget = '__ALL__';
+    const t = $('#resetRevenueModalTitle'), x = $('#resetRevenueModalText');
+    if (t) t.textContent = 'تصفير كل الإيرادات';
+    if (x) x.innerHTML = 'سيتم تصفير عداد الإيرادات <strong>لكل الأقسام</strong>.';
+    $('#resetRevenueModal').classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeResetRevenueModal(){
+    $('#resetRevenueModal').classList.remove('show');
+    document.body.style.overflow = '';
+    state.revenue.resetTarget = null;
+  }
+
+  async function confirmResetRevenue(){
+    if (!state.revenue.resetTarget) return;
+    if (!state.isOwner) { toast('غير مصرح', 'error'); return; }
+    showLoading();
+    try {
+      if (state.revenue.resetTarget === '__ALL__') {
+        const { error } = await sb.from('store_settings').update({
+          revenue_count_from: new Date().toISOString(),
+          category_revenue_cutoffs: {}
+        }).eq('id', 1);
+        if (error) throw error;
+        toast('تم تصفير كل الإيرادات ✓');
+      } else {
+        const { data: cur } = await sb.from('store_settings').select('category_revenue_cutoffs').eq('id', 1).maybeSingle();
+        const cutoffs = (cur && cur.category_revenue_cutoffs && typeof cur.category_revenue_cutoffs === 'object') ? { ...cur.category_revenue_cutoffs } : {};
+        cutoffs[state.revenue.resetTarget] = new Date().toISOString();
+        const { error } = await sb.from('store_settings').update({ category_revenue_cutoffs: cutoffs }).eq('id', 1);
+        if (error) throw error;
+        toast('تم تصفير "' + state.revenue.resetTarget + '" ✓');
+      }
+      closeResetRevenueModal();
+      await loadRevenuePage();
+      await loadDashboardStats();
+      await loadTopProducts();
+    } catch(e) {
+      console.error(e);
+      toast('تعذر: ' + (e.message || ''), 'error');
+    } finally {
+      hideLoading();
+    }
+  }
+
   // ============ DELETE CONFIRM ============
   function openDeleteConfirm(id,type){
     state.deleteTarget=id;state.deleteType=type;
@@ -2432,10 +2529,11 @@ tr:hover td{background:#FAFBFC}
   $('#cancelWaBtn').addEventListener('click',closeWaModal);
   $('#confirmWaBtn').addEventListener('click',confirmWa);
 
-  $('#resetRevenueBtn').addEventListener('click',openResetRevenueModal);
-  $('#closeResetRevenueBtn').addEventListener('click',closeResetRevenueModal);
-  $('#cancelResetRevenueBtn').addEventListener('click',closeResetRevenueModal);
-  $('#confirmResetRevenueBtn').addEventListener('click',confirmResetRevenue);
+  const resetAllBtn = $('#resetAllRevenueBtn');
+  if (resetAllBtn) resetAllBtn.addEventListener('click', openResetAllModal);
+  $('#closeResetRevenueBtn').addEventListener('click', closeResetRevenueModal);
+  $('#cancelResetRevenueBtn').addEventListener('click', closeResetRevenueModal);
+  $('#confirmResetRevenueBtn').addEventListener('click', confirmResetRevenue);
 
   $('#closeLightboxBtn').addEventListener('click',closeLightbox);
   $('#imageLightbox').addEventListener('click',e=>{if(e.target.id==='imageLightbox')closeLightbox()});
