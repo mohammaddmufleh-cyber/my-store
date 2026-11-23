@@ -2319,9 +2319,23 @@ tr:hover td{background:#FAFBFC}
     const tbody = $('#revenueTableBody');
     if (tbody) tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</td></tr>';
     try {
+      if (!state.categories.length) await loadSettingsCache();
       const { data, error } = await sb.rpc('get_category_revenue');
       if (error) throw error;
-      state.revenue.data = data || [];
+
+      const map = {};
+      (data || []).forEach(r => { map[r.category] = r; });
+
+      const allCats = state.categories.map(c => c.name);
+      if (map['غير معروف']) allCats.push('غير معروف');
+
+      const merged = allCats.map(cat => map[cat] || { category: cat, revenue: 0, orders_count: 0 });
+
+      Object.keys(map).forEach(cat => {
+        if (!allCats.includes(cat)) merged.push(map[cat]);
+      });
+
+      state.revenue.data = merged;
       renderRevenueTable();
     } catch(e) {
       console.error(e);
