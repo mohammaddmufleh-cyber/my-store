@@ -627,12 +627,28 @@ tr:hover td{background:#FAFBFC}
     <div class="modal-header"><h2 class="modal-title" id="categoryModalTitle">إضافة قسم</h2><button class="modal-close" id="closeCategoryModalBtn"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
     <div class="modal-body">
       <div class="form-field full" style="margin-bottom:12px"><label class="form-label">اسم القسم <span class="req">*</span></label><input type="text" class="form-input" id="catNameInput" placeholder="مثال: ملابس رجالية" maxlength="50"></div>
-      <div class="form-field full"><label class="form-label">رابط صورة القسم (اختياري)</label><input type="url" class="form-input" id="catImageInput" placeholder="https://..." style="direction:ltr;text-align:right"><p class="form-hint">إذا تُرك فارغاً، ستُستخدم صورة افتراضية</p></div>
+
+      <div class="form-field full" style="margin-bottom:12px">
+        <label class="form-label">صورة القسم (اختياري)</label>
+        <div id="catImagePreviewWrap" style="display:none;margin-bottom:10px;position:relative;width:100%;max-width:240px;aspect-ratio:16/10;border-radius:var(--r);overflow:hidden;border:1px solid var(--border);background:var(--bg)">
+          <img id="catImagePreview" src="" alt="" style="width:100%;height:100%;object-fit:cover;display:block">
+          <button type="button" id="catImageRemoveBtn" style="position:absolute;top:6px;left:6px;width:28px;height:28px;border-radius:50%;background:rgba(220,38,38,0.95);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button type="button" class="btn btn-ghost" id="catImageUploadBtn" style="flex:1;justify-content:center;min-width:140px"><svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> رفع من الجهاز</button>
+          <input type="file" id="catImageFile" accept="image/*" style="display:none">
+        </div>
+      </div>
+
+      <div class="form-field full">
+        <label class="form-label">أو رابط صورة (URL)</label>
+        <input type="url" class="form-input" id="catImageInput" placeholder="https://..." style="direction:ltr;text-align:right">
+        <p class="form-hint">إذا رفعت صورة من الجهاز، سيتم استخدامها بدلاً من الرابط</p>
+      </div>
     </div>
     <div class="modal-footer"><button class="btn btn-ghost" id="cancelCategoryBtn">إلغاء</button><button class="btn btn-primary" id="confirmCategoryBtn">حفظ</button></div>
   </div>
 </div>
-
 <!-- District Modal (Edit name) -->
 <div class="modal-overlay" id="districtModal">
   <div class="modal-box narrow">
@@ -760,7 +776,7 @@ tr:hover td{background:#FAFBFC}
     whatsapp: { data:[], activeId:null, editingId:null },
     form: { editingId:null, images:[], sizes:[], colors:[], uploadingCount:0 },
     deleteTarget: null, deleteType: null,
-    categoryForm: { editingIndex: null },
+    categoryForm: { editingIndex: null, uploadedImageUrl: null },
     districtForm: { editingIndex: null, gov: null }
   };
 
@@ -1200,21 +1216,72 @@ tr:hover td{background:#FAFBFC}
     $$('[data-edit-cat]').forEach(b=>b.addEventListener('click',()=>openCategoryModal(+b.dataset.editCat)));
     $$('[data-delete-cat]').forEach(b=>b.addEventListener('click',()=>deleteCategory(+b.dataset.deleteCat)));
   }
-  function openCategoryModal(idx){
+   function openCategoryModal(idx){
     state.categoryForm.editingIndex = (idx === undefined || idx === null) ? null : idx;
+    state.categoryForm.uploadedImageUrl = null;
     const isEdit = state.categoryForm.editingIndex !== null;
     $('#categoryModalTitle').textContent = isEdit ? 'تعديل القسم' : 'إضافة قسم';
     if (isEdit) {
       const cat = state.categories[state.categoryForm.editingIndex];
       $('#catNameInput').value = cat.name || '';
       $('#catImageInput').value = cat.image || '';
+      updateCatImagePreview(cat.image || '');
     } else {
       $('#catNameInput').value = '';
       $('#catImageInput').value = '';
+      updateCatImagePreview('');
     }
     $('#categoryModal').classList.add('show');
     document.body.style.overflow = 'hidden';
     setTimeout(() => $('#catNameInput').focus(), 100);
+  }
+
+  function updateCatImagePreview(url){
+    const wrap = $('#catImagePreviewWrap');
+    const img = $('#catImagePreview');
+    if (!wrap || !img) return;
+    if (url && typeof url === 'string' && url.startsWith('http')) {
+      img.src = url;
+      wrap.style.display = 'block';
+    } else {
+      img.src = '';
+      wrap.style.display = 'none';
+    }
+  }
+
+  async function handleCatImageUpload(e){
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) { toast('الملف ليس صورة','error'); return; }
+    if (file.size > MAX_IMAGE_SIZE) { toast('حجم الصورة كبير (الحد 2MB)','error'); return; }
+
+    const btn = $('#catImageUploadBtn');
+    const origHTML = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = 'جارٍ الرفع...';
+    showLoading();
+
+    try {
+      const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g,'') || 'jpg';
+      const fn = 'categories/' + Date.now() + '-' + Math.random().toString(36).substring(2,10) + '.' + ext;
+      const { error } = await sb.storage.from(STORAGE_BUCKET).upload(fn, file, { cacheControl: '3600', upsert: false, contentType: file.type });
+      if (error) throw error;
+      const { data: ud } = sb.storage.from(STORAGE_BUCKET).getPublicUrl(fn);
+      if (ud && ud.publicUrl) {
+        state.categoryForm.uploadedImageUrl = ud.publicUrl;
+        $('#catImageInput').value = '';
+        updateCatImagePreview(ud.publicUrl);
+        toast('تم رفع الصورة ✓');
+      }
+    } catch(err) {
+      console.error(err);
+      toast('تعذر الرفع: ' + (err.message || ''), 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = origHTML;
+      e.target.value = '';
+      hideLoading();
+    }
   }
   function closeCategoryModal(){
     $('#categoryModal').classList.remove('show');
@@ -1223,7 +1290,7 @@ tr:hover td{background:#FAFBFC}
   }
   async function confirmCategory(){
     const name = $('#catNameInput').value.trim();
-    const image = $('#catImageInput').value.trim();
+    const image = (state.categoryForm.uploadedImageUrl || $('#catImageInput').value.trim() || '');
     if (!name) { toast('اسم القسم مطلوب','error'); return; }
     // check duplicate (except when editing same)
     const isEdit = state.categoryForm.editingIndex !== null;
@@ -1885,6 +1952,16 @@ tr:hover td{background:#FAFBFC}
   $('#closeCategoryModalBtn').addEventListener('click',closeCategoryModal);
   $('#cancelCategoryBtn').addEventListener('click',closeCategoryModal);
   $('#confirmCategoryBtn').addEventListener('click',confirmCategory);
+  $('#catImageUploadBtn').addEventListener('click',()=>$('#catImageFile').click());
+  $('#catImageFile').addEventListener('change',handleCatImageUpload);
+  $('#catImageRemoveBtn').addEventListener('click',()=>{
+    state.categoryForm.uploadedImageUrl = null;
+    $('#catImageInput').value = '';
+    updateCatImagePreview('');
+  });
+  $('#catImageInput').addEventListener('input',(e)=>{
+    if (!state.categoryForm.uploadedImageUrl) updateCatImagePreview(e.target.value.trim());
+  });
 
   // Districts
   $('#closeDistrictModalBtn').addEventListener('click',closeDistrictModal);
