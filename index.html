@@ -1122,7 +1122,7 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
     const dots = $('#bannersDots');
     if (!track) return;
     track.innerHTML = list.map((b, i) => {
-      const inner = '<img src="' + escapeHtml(b.image) + '" alt="" loading="lazy">' +
+      const inner = '<img src="' + escapeHtml(b.image) + '" alt="" loading="eager" decoding="async" onerror="this.style.background=\'#F4F5F7\'">' +
         (b.text ? '<div class="banner-overlay"><div class="banner-text">' + escapeHtml(b.text) + '</div></div>' : '');
       const isLink = b.link && typeof b.link === 'string' && b.link.startsWith('http');
       if (isLink) {
