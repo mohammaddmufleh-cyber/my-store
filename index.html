@@ -60,6 +60,36 @@ body.maintenance-on #addToCartFromModal{
 .hero-image{aspect-ratio:4/5;border-radius:var(--r-lg);overflow:hidden;background:var(--surface);box-shadow:var(--sh-md)}
 .hero-image img{width:100%;height:100%;object-fit:cover}
 
+/* ===== Banners Carousel ===== */
+.banners-section{margin:0 0 48px;position:relative}
+.banners-viewport{position:relative;border-radius:var(--r-lg);overflow:hidden;background:var(--surface);box-shadow:var(--sh-md);aspect-ratio:21/9}
+.banners-track{display:flex;transition:transform .5s cubic-bezier(.32,.72,0,1);height:100%}
+.banner-slide{flex:0 0 100%;position:relative;display:block;text-decoration:none;color:inherit;height:100%;overflow:hidden}
+.banner-slide img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.banner-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.65) 0%,rgba(0,0,0,0) 60%);display:flex;align-items:flex-end;padding:24px;pointer-events:none}
+.banner-text{color:#fff;font-size:clamp(1rem,2vw,1.5rem);font-weight:700;line-height:1.3;max-width:80%;text-shadow:0 2px 8px rgba(0,0,0,.5)}
+.banner-nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.9);color:var(--ink);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:var(--sh-md);z-index:3;transition:all .15s}
+.banner-nav:hover{background:#fff;transform:translateY(-50%) scale(1.08)}
+.banner-nav svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2.5}
+.banner-prev{right:14px}
+.banner-next{left:14px}
+.banners-dots{display:flex;justify-content:center;gap:6px;padding:14px 0 0}
+.banner-dot{width:8px;height:8px;border-radius:50%;background:#CBD5E1;border:none;cursor:pointer;padding:0;transition:all .2s}
+.banner-dot.active{background:var(--accent);width:24px;border-radius:4px}
+
+@media(max-width:768px){
+  .banners-section{margin:0 0 32px}
+  .banners-viewport{aspect-ratio:16/9}
+  .banner-overlay{padding:16px}
+  .banner-text{font-size:.95rem;max-width:90%}
+  .banner-nav{width:36px;height:36px}
+  .banner-nav svg{width:16px;height:16px}
+  .banner-prev{right:8px}
+  .banner-next{left:8px}
+  .banners-dots{padding-top:10px}
+}
+
+
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 28px;border-radius:var(--r);font-weight:600;font-size:1rem;transition:all .15s;border:1px solid transparent;text-decoration:none}
 .btn-primary{background:var(--accent);color:#fff}
 .btn-primary:hover{background:var(--accent-h);transform:translateY(-1px)}
@@ -455,6 +485,15 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
     <div class="hero-image" id="heroImage">
       <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&q=80" alt="">
     </div>
+  </section>
+
+  <section class="banners-section" id="bannersSection" style="display:none">
+    <div class="banners-viewport">
+      <div class="banners-track" id="bannersTrack"></div>
+      <button class="banner-nav banner-prev" id="bannersPrev" aria-label="السابق"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+      <button class="banner-nav banner-next" id="bannersNext" aria-label="التالي"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+    </div>
+    <div class="banners-dots" id="bannersDots"></div>
   </section>
 
   <section class="trust-bar">
@@ -985,6 +1024,9 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
     } else {
       document.body.classList.remove('maintenance-on');
     }
+    // ===== Banners =====
+    applyBanners();
+
     // ===== Free return =====
     const frItem = $('#trustFreeReturn');
     if (frItem) {
@@ -1053,6 +1095,80 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
     state.categoryCounts = {};
     (data||[]).forEach(x => state.categoryCounts[x.category] = x.product_count);
     renderChips();
+  }
+  // ============ BANNERS ============
+  const bannerState = { idx: 0, timer: null, count: 0 };
+
+  function applyBanners() {
+    const s = state.settings || {};
+    const list = Array.isArray(s.banners)
+      ? s.banners.filter(b => b && b.enabled !== false && typeof b.image === 'string' && b.image.startsWith('http'))
+      : [];
+    const wrap = $('#bannersSection');
+    if (!wrap) return;
+    if (!list.length) {
+      wrap.style.display = 'none';
+      if (bannerState.timer) { clearInterval(bannerState.timer); bannerState.timer = null; }
+      return;
+    }
+    wrap.style.display = '';
+    renderBanners(list);
+  }
+
+  function renderBanners(list) {
+    bannerState.count = list.length;
+    bannerState.idx = 0;
+    const track = $('#bannersTrack');
+    const dots = $('#bannersDots');
+    if (!track) return;
+    track.innerHTML = list.map((b, i) => {
+      const inner = '<img src="' + escapeHtml(b.image) + '" alt="" loading="lazy">' +
+        (b.text ? '<div class="banner-overlay"><div class="banner-text">' + escapeHtml(b.text) + '</div></div>' : '');
+      const isLink = b.link && typeof b.link === 'string' && b.link.startsWith('http');
+      if (isLink) {
+        return '<a href="' + escapeHtml(b.link) + '" target="_blank" rel="noopener noreferrer" class="banner-slide">' + inner + '</a>';
+      }
+      return '<div class="banner-slide">' + inner + '</div>';
+    }).join('');
+    if (dots) {
+      dots.innerHTML = list.length > 1
+        ? list.map((_, i) => '<button class="banner-dot ' + (i === 0 ? 'active' : '') + '" data-dot="' + i + '" aria-label="إعلان ' + (i + 1) + '"></button>').join('')
+        : '';
+      $$('#bannersDots .banner-dot').forEach(d => d.addEventListener('click', () => {
+        bannerState.idx = Number(d.dataset.dot);
+        updateBannersView();
+        startBannersAuto();
+      }));
+    }
+    updateBannersView();
+    startBannersAuto();
+  }
+
+  function updateBannersView() {
+    const track = $('#bannersTrack');
+    if (!track) return;
+    track.style.transform = 'translateX(' + (-bannerState.idx * 100) + '%)';
+    $$('#bannersDots .banner-dot').forEach((d, i) => d.classList.toggle('active', i === bannerState.idx));
+    const prevBtn = $('#bannersPrev');
+    const nextBtn = $('#bannersNext');
+    if (prevBtn) prevBtn.style.display = bannerState.count > 1 ? '' : 'none';
+    if (nextBtn) nextBtn.style.display = bannerState.count > 1 ? '' : 'none';
+  }
+
+  function bannersNavigate(dir) {
+    if (bannerState.count <= 1) return;
+    bannerState.idx = (bannerState.idx + dir + bannerState.count) % bannerState.count;
+    updateBannersView();
+    startBannersAuto();
+  }
+
+  function startBannersAuto() {
+    if (bannerState.timer) { clearInterval(bannerState.timer); bannerState.timer = null; }
+    if (bannerState.count <= 1) return;
+    bannerState.timer = setInterval(() => {
+      bannerState.idx = (bannerState.idx + 1) % bannerState.count;
+      updateBannersView();
+    }, 5000);
   }
 
   // ============ CATEGORIES ============
@@ -2184,6 +2300,22 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
   $('#closeCheckoutBtn').addEventListener('click', closeCheckout);
   $('#checkoutModalBackdrop').addEventListener('click', closeCheckout);
   $('#shopNowBtn').addEventListener('click', scrollToProducts);
+
+  // Banners
+  const bp = $('#bannersPrev');
+  const bn = $('#bannersNext');
+  if (bp) bp.addEventListener('click', () => bannersNavigate(-1));
+  if (bn) bn.addEventListener('click', () => bannersNavigate(1));
+  const bt = $('#bannersTrack');
+  if (bt) {
+    let bSx = 0;
+    bt.addEventListener('touchstart', e => { bSx = e.changedTouches[0].screenX; }, { passive: true });
+    bt.addEventListener('touchend', e => {
+      const dx = e.changedTouches[0].screenX - bSx;
+      if (Math.abs(dx) > 50) bannersNavigate(dx > 0 ? -1 : 1);
+    }, { passive: true });
+  }
+
 
   // OTP
   $('#openOtpBtn').addEventListener('click', openOtpModal);
