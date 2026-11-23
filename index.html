@@ -100,7 +100,7 @@ body.maintenance-on #addToCartFromModal{
 .btn-block{width:100%}
 .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
 
-.trust-bar{display:flex;flex-wrap:wrap;gap:1px;background:var(--border);border-radius:var(--r-lg);overflow:hidden;margin-bottom:64px;border:1px solid var(--border)}.trust-item{flex:1 1 45%;background:var(--surface);padding:20px 16px;text-align:center;min-width:0}
+.trust-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:1px;background:var(--border);border-radius:var(--r-lg);overflow:hidden;margin-bottom:64px;border:1px solid var(--border)}.trust-item{background:var(--surface);padding:20px 16px;text-align:center;min-width:0}
 .trust-item svg{width:24px;height:24px;stroke:var(--accent);fill:none;stroke-width:2;margin:0 auto 8px}
 .trust-item h4{font-size:.9rem;font-weight:600;margin-bottom:2px}
 .trust-item p{font-size:.8rem;color:var(--muted)}
@@ -437,6 +437,7 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
   .btn{min-height:42px}
 }
 @media(max-width:600px){
+  .trust-bar{display:flex;flex-wrap:wrap}
   .trust-item{flex:1 1 calc(50% - 1px);padding:16px 12px}
 }
 
