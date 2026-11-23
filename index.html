@@ -437,10 +437,7 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
   .btn{min-height:42px}
 }
 @media(max-width:600px){
-  .trust-item{flex:1 1 100%;display:flex;align-items:center;gap:14px;text-align:right;padding:16px 18px}
-  .trust-item svg{margin:0;flex-shrink:0;width:28px;height:28px}
-  .trust-item h4{margin-bottom:2px;font-size:.95rem}
-  .trust-item p{font-size:.8rem;margin:0}
+  .trust-item{flex:1 1 calc(50% - 1px);padding:16px 12px}
 }
 
 @media(max-width:380px){
@@ -1031,6 +1028,9 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
     } else {
       document.body.classList.remove('maintenance-on');
     }
+    // ===== Trust bar row span =====
+    updateTrustRowSpan();
+
     // ===== Banners =====
     applyBanners();
 
@@ -1081,6 +1081,16 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
 
     renderFooterCategories();
   }
+  function updateTrustRowSpan() {
+    const items = $$('.trust-bar .trust-item');
+    items.forEach(el => el.style.flexBasis = '');
+    if (window.innerWidth > 600) return;
+    const visible = items.filter(el => el.style.display !== 'none');
+    if (visible.length > 1 && visible.length % 2 === 1) {
+      visible[visible.length - 1].style.flexBasis = '100%';
+    }
+  }
+  window.addEventListener('resize', updateTrustRowSpan);
 
   function renderFooterCategories() {
     const col = $$('.footer-col')[0];
