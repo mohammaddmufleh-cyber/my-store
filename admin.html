@@ -475,7 +475,7 @@ tr:hover td{background:#FAFBFC}
           <div><div class="card-title">المدراء</div><div class="card-title-sub">إدارة المدراء والمالك</div></div>
           <button class="btn btn-primary" id="addAdminBtn"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> إضافة مدير</button>
         </div>
-        <div class="table-wrap"><table><thead><tr><th>البريد الإلكتروني</th><th>الدور</th><th>تاريخ الإضافة</th><th style="width:100px;text-align:left">الإجراءات</th></tr></thead><tbody id="adminsTableBody"><tr><td colspan="4" style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</td></tr></tbody></table></div>
+        <div class="table-wrap"><table><thead><tr><th>البريد الإلكتروني</th><th>الدور</th><th>الأقسام</th><th>تاريخ الإضافة</th><th style="width:150px;text-align:left">الإجراءات</th></tr></thead><tbody id="adminsTableBody"><tr><td colspan="5" style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</td></tr></tbody></table></div>
       </div>
     </div>
 
@@ -778,9 +778,46 @@ tr:hover td{background:#FAFBFC}
       <p style="font-size:.85rem;color:var(--muted);margin-bottom:16px;line-height:1.6">سيُنشأ حساب تلقائيًا. أبلغ المدير بكلمة المرور عبر قناة آمنة.</p>
       <div class="form-field full" style="margin-bottom:12px"><label class="form-label">البريد الإلكتروني</label><input type="email" class="form-input" id="newAdminEmail" placeholder="admin@example.com" autocomplete="off"></div>
       <div class="form-field full" style="margin-bottom:12px"><label class="form-label">كلمة المرور</label><input type="password" class="form-input" id="newAdminPassword" placeholder="8 أحرف على الأقل" autocomplete="new-password"></div>
-      <div class="form-field full"><label class="form-label">تأكيد كلمة المرور</label><input type="password" class="form-input" id="newAdminPasswordConfirm" placeholder="أعد كتابة كلمة المرور" autocomplete="new-password"></div>
+      <div class="form-field full" style="margin-bottom:16px"><label class="form-label">تأكيد كلمة المرور</label><input type="password" class="form-input" id="newAdminPasswordConfirm" placeholder="أعد كتابة كلمة المرور" autocomplete="new-password"></div>
+
+      <div class="form-section" style="margin-bottom:0">
+        <div class="form-section-title">نوع الصلاحيات</div>
+        <div class="switch-row" style="background:#F0F5F1;border-color:#86EFAC">
+          <div class="switch-info">
+            <div class="switch-title">مدير عام (يرى كل شيء ما عدا الإيرادات)</div>
+            <div class="switch-desc">يستطيع إدارة المنتجات والطلبات والأقسام والمحظورين — لا يرى الإيرادات ولا المدراء ولا الإعدادات</div>
+          </div>
+          <label class="switch"><input type="checkbox" id="newAdminIsGeneral"><span class="switch-slider"></span></label>
+        </div>
+
+        <div id="newAdminCatsWrap" style="display:none;margin-top:12px">
+          <label class="form-label" style="margin-bottom:8px;display:block">اختر الأقسام المصرّح بها:</label>
+          <div id="newAdminCatsList" style="display:flex;flex-direction:column;gap:6px;padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);max-height:200px;overflow-y:auto"></div>
+        </div>
+      </div>
     </div>
     <div class="modal-footer"><button class="btn btn-ghost" id="cancelAddAdminBtn">إلغاء</button><button class="btn btn-primary" id="confirmAddAdminBtn">إنشاء المدير</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="assignCatsModal">
+  <div class="modal-box narrow">
+    <div class="modal-header"><h2 class="modal-title">تعيين أقسام المدير</h2><button class="modal-close" id="closeAssignCatsBtn"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+    <div class="modal-body">
+      <p id="assignCatsEmail" style="font-size:.85rem;color:var(--muted);margin-bottom:12px"></p>
+      <div class="switch-row" style="background:#F0F5F1;border-color:#86EFAC;margin-bottom:12px">
+        <div class="switch-info">
+          <div class="switch-title">مدير عام</div>
+          <div class="switch-desc">يرى كل شيء ما عدا الإيرادات</div>
+        </div>
+        <label class="switch"><input type="checkbox" id="assignIsGeneral"><span class="switch-slider"></span></label>
+      </div>
+      <div id="assignCatsWrap">
+        <label class="form-label" style="margin-bottom:8px;display:block">الأقسام المصرّح بها:</label>
+        <div id="assignCatsList" style="display:flex;flex-direction:column;gap:6px;padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);max-height:240px;overflow-y:auto"></div>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" id="cancelAssignCatsBtn">إلغاء</button><button class="btn btn-primary" id="confirmAssignCatsBtn">حفظ</button></div>
   </div>
 </div>
 
@@ -842,7 +879,8 @@ tr:hover td{background:#FAFBFC}
     banners: { editingId: null, uploadedImageUrl: null, data: [] },
     revenue: { data: [], resetTarget: null },
     isGeneralAdmin: false,
-    myCategories: null
+    myCategories: null,
+    adminsForm: { assigningUserId: null, assigningEmail: null }
   };
 
   function escapeHtml(s){if(s==null)return'';return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -1331,23 +1369,36 @@ tr:hover td{background:#FAFBFC}
   }
   function renderCategoriesPage(){
     const c = $('#categoriesListContainer');
-    if (!state.categories.length) {
-      c.innerHTML = '<div class="empty"><p>لا توجد أقسام</p></div>';
+    const isReadOnly = !state.isOwner && !state.isGeneralAdmin;
+    let visibleCats = state.categories;
+    if (isReadOnly) {
+      const allowed = Array.isArray(state.myCategories) ? state.myCategories : [];
+      visibleCats = state.categories.filter(cat => allowed.includes(cat.name));
+    }
+    if (!visibleCats.length) {
+      c.innerHTML = '<div class="empty"><p>' + (isReadOnly ? 'لا توجد أقسام مُعيَّنة لك' : 'لا توجد أقسام') + '</p></div>';
       return;
     }
-    c.innerHTML = state.categories.map((cat, idx) => {
+    const addBtn = $('#addCategoryBtn');
+    if (addBtn) addBtn.style.display = isReadOnly ? 'none' : '';
+    c.innerHTML = visibleCats.map(cat => {
+      const realIdx = state.categories.findIndex(x => x.name === cat.name);
       const img = cat.image || 'https://via.placeholder.com/56x56?text=?';
+      const wa = cat.whatsapp ? '<span style="font-size:.75rem;color:var(--accent);direction:ltr;font-family:monospace">📱 ' + escapeHtml(cat.whatsapp) + '</span>' : '<span style="font-size:.75rem;color:var(--muted)">رقم عام</span>';
+      const actions = isReadOnly ? '' : `
+        <button class="action-btn edit" data-edit-cat="${realIdx}" title="تعديل"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+        <button class="action-btn delete" data-delete-cat="${realIdx}" title="حذف"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>`;
       return `<div class="cat-row">
         <img class="cat-row-img" src="${escapeHtml(img)}" onerror="this.src='https://via.placeholder.com/56x56?text=?'">
         <div class="cat-row-name">${escapeHtml(cat.name)}</div>
-        <div class="actions-cell">
-          <button class="action-btn edit" data-edit-cat="${idx}" title="تعديل"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-          <button class="action-btn delete" data-delete-cat="${idx}" title="حذف"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
-        </div>
+        ${wa}
+        <div class="actions-cell">${actions}</div>
       </div>`;
     }).join('');
-    $$('[data-edit-cat]').forEach(b=>b.addEventListener('click',()=>openCategoryModal(+b.dataset.editCat)));
-    $$('[data-delete-cat]').forEach(b=>b.addEventListener('click',()=>deleteCategory(+b.dataset.deleteCat)));
+    if (!isReadOnly) {
+      $$('[data-edit-cat]').forEach(b=>b.addEventListener('click',()=>openCategoryModal(+b.dataset.editCat)));
+      $$('[data-delete-cat]').forEach(b=>b.addEventListener('click',()=>deleteCategory(+b.dataset.deleteCat)));
+    }
   }
    function openCategoryModal(idx){
     state.categoryForm.editingIndex = (idx === undefined || idx === null) ? null : idx;
@@ -2224,27 +2275,80 @@ tr:hover td{background:#FAFBFC}
   }
   function renderAdminsTable(){
     const tbody=$('#adminsTableBody');
-    if(!state.admins.data.length){tbody.innerHTML='<tr><td colspan="4"><div class="empty"><p>لا يوجد مدراء</p></div></td></tr>';return}
+    if(!state.admins.data.length){tbody.innerHTML='<tr><td colspan="5"><div class="empty"><p>لا يوجد مدراء</p></div></td></tr>';return}
     tbody.innerHTML=state.admins.data.map(a=>{
       const isMe=a.user_id===state.user?.id,isOwnerRow=a.role==='owner';
-      const roleBadge=isOwnerRow?'<span class="badge-pill badge-owner">👑 المالك</span>':'<span class="badge-pill badge-admin">مدير</span>';
+      const isGeneral = !isOwnerRow && a.assigned_categories === null;
+      let roleBadge;
+      if(isOwnerRow) roleBadge='<span class="badge-pill badge-owner">👑 المالك</span>';
+      else if(isGeneral) roleBadge='<span class="badge-pill badge-active">مدير عام</span>';
+      else roleBadge='<span class="badge-pill badge-admin">مدير محدود</span>';
+
+      let catsCell = '<span style="color:var(--muted);font-size:.8rem">—</span>';
+      if(!isOwnerRow){
+        if(isGeneral) catsCell='<span style="color:var(--success);font-weight:600;font-size:.85rem">كل الأقسام</span>';
+        else if(Array.isArray(a.assigned_categories) && a.assigned_categories.length){
+          catsCell = a.assigned_categories.map(c=>'<span class="badge-pill badge-info" style="font-size:.7rem;margin-left:3px">'+escapeHtml(c)+'</span>').join('');
+        } else {
+          catsCell = '<span style="color:var(--danger);font-size:.8rem">بدون أقسام</span>';
+        }
+      }
+
       let ac='';
       if(isMe)ac='<span style="font-size:.75rem;color:var(--muted);font-weight:600">أنت</span>';
       else if(isOwnerRow)ac='<span style="font-size:.75rem;color:var(--muted);font-weight:600">—</span>';
-      else ac=`<button class="action-btn delete" data-delete-admin="${a.user_id}" data-admin-email="${escapeHtml(a.email)}" title="حذف"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>`;
-      return`<tr><td><span class="cell-name">${escapeHtml(a.email)}</span></td><td>${roleBadge}</td><td class="cell-muted" style="font-size:.8rem">${fmtDate(a.created_at)}</td><td><div class="actions-cell">${ac}</div></td></tr>`;
+      else {
+        ac = '<button class="action-btn edit" data-assign-admin="' + a.user_id + '" data-assign-email="' + escapeHtml(a.email) + '" title="تعيين الأقسام"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>' +
+          '<button class="action-btn delete" data-delete-admin="' + a.user_id + '" data-admin-email="' + escapeHtml(a.email) + '" title="حذف"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>';
+      }
+      return`<tr><td><span class="cell-name">${escapeHtml(a.email)}</span></td><td>${roleBadge}</td><td>${catsCell}</td><td class="cell-muted" style="font-size:.8rem">${fmtDate(a.created_at)}</td><td><div class="actions-cell">${ac}</div></td></tr>`;
     }).join('');
     $$('[data-delete-admin]').forEach(b=>b.addEventListener('click',()=>deleteAdmin(b.dataset.deleteAdmin,b.dataset.adminEmail)));
+    $$('[data-assign-admin]').forEach(b=>b.addEventListener('click',()=>openAssignCatsModal(b.dataset.assignAdmin, b.dataset.assignEmail)));
   }
   async function deleteAdmin(userId,email){
     if(!confirm(`حذف المدير "${email}"؟`))return;
     showLoading();
     try{const {data,error}=await sb.rpc('remove_admin',{p_user_id:userId});if(error)throw error;if(!data.success){toast(data.error||'تعذر','error');return}toast('تم الحذف ✓');await loadAdmins()}catch(e){console.error(e);toast('تعذر: '+(e.message||''),'error')}finally{hideLoading()}
   }
-  function openAddAdminModal(){$('#newAdminEmail').value='';$('#newAdminPassword').value='';$('#newAdminPasswordConfirm').value='';$('#addAdminModal').classList.add('show');document.body.style.overflow='hidden'}
-  function closeAddAdminModal(){$('#addAdminModal').classList.remove('show');document.body.style.overflow=''}
+  function populateAdminCatsCheckboxes(containerId, selectedNames){
+    const cont = document.getElementById(containerId);
+    if (!cont) return;
+    const sel = Array.isArray(selectedNames) ? selectedNames : [];
+    if (!state.categories.length) {
+      cont.innerHTML = '<em style="color:var(--muted);font-size:.85rem">لا توجد أقسام — أضف أقساماً أولاً</em>';
+      return;
+    }
+    cont.innerHTML = state.categories.map(c => {
+      const checked = sel.includes(c.name) ? 'checked' : '';
+      return '<label style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);cursor:pointer">' +
+        '<input type="checkbox" data-cat-name="' + escapeHtml(c.name) + '" ' + checked + ' style="width:16px;height:16px;accent-color:var(--accent)">' +
+        '<span style="font-size:.9rem;font-weight:500">' + escapeHtml(c.name) + '</span>' +
+      '</label>';
+    }).join('');
+  }
+  function openAddAdminModal(){
+    $('#newAdminEmail').value='';
+    $('#newAdminPassword').value='';
+    $('#newAdminPasswordConfirm').value='';
+    $('#newAdminIsGeneral').checked = false;
+    $('#newAdminCatsWrap').style.display = 'block';
+    populateAdminCatsCheckboxes('newAdminCatsList', []);
+    $('#addAdminModal').classList.add('show');
+    document.body.style.overflow='hidden';
+  }
+  function closeAddAdminModal(){
+    $('#addAdminModal').classList.remove('show');
+    document.body.style.overflow='';
+  }
   async function confirmAddAdmin(){
     const email=$('#newAdminEmail').value.trim().toLowerCase(),password=$('#newAdminPassword').value,confirm=$('#newAdminPasswordConfirm').value;
+    const isGeneral = $('#newAdminIsGeneral').checked;
+    let assignedCats = null;
+    if(!isGeneral){
+      assignedCats = $$('#newAdminCatsList input[type="checkbox"]:checked').map(el=>el.dataset.catName);
+      if(assignedCats.length===0){toast('اختر قسماً واحداً على الأقل أو فعّل "مدير عام"','error');return}
+    }
     if(!email||!password||!confirm){toast('ملء جميع الحقول','error');return}
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){toast('البريد غير صحيح','error');return}
     if(password.length<8){toast('كلمة المرور قصيرة','error');return}
@@ -2256,11 +2360,59 @@ tr:hover td{background:#FAFBFC}
       const response=await fetch(EDGE_FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token,'apikey':SUPABASE_ANON_KEY},body:JSON.stringify({email,password})});
       const result=await response.json();
       if(!result.success){toast(result.error||'فشل','error');return}
-      toast('تم إنشاء المدير ✓');closeAddAdminModal();await loadAdmins();
+      if(!isGeneral){
+        const {error:upErr} = await sb.from('admin_users').update({assigned_categories:assignedCats}).eq('email',email);
+        if(upErr){console.warn('Assign cats failed:',upErr);toast('تم الإنشاء لكن فشل تعيين الأقسام — عدّل من جدول المدراء','error')}
+      }
+      toast('تم إنشاء المدير ✓');
+      closeAddAdminModal();
+      await loadAdmins();
     }catch(e){console.error(e);toast('خطأ في الاتصال','error')}
     finally{hideLoading()}
   }
 
+  function openAssignCatsModal(userId, email){
+    state.adminsForm.assigningUserId = userId;
+    state.adminsForm.assigningEmail = email;
+    const admin = state.admins.data.find(a => a.user_id === userId);
+    const cats = admin?.assigned_categories;
+    const isGeneral = cats === null || cats === undefined;
+    $('#assignCatsEmail').textContent = 'المدير: ' + email;
+    $('#assignIsGeneral').checked = isGeneral;
+    $('#assignCatsWrap').style.display = isGeneral ? 'none' : 'block';
+    populateAdminCatsCheckboxes('assignCatsList', Array.isArray(cats) ? cats : []);
+    $('#assignCatsModal').classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeAssignCatsModal(){
+    $('#assignCatsModal').classList.remove('show');
+    document.body.style.overflow = '';
+    state.adminsForm.assigningUserId = null;
+    state.adminsForm.assigningEmail = null;
+  }
+  async function confirmAssignCats(){
+    const userId = state.adminsForm.assigningUserId;
+    if (!userId) return;
+    const isGeneral = $('#assignIsGeneral').checked;
+    let newCats = null;
+    if (!isGeneral) {
+      newCats = $$('#assignCatsList input[type="checkbox"]:checked').map(el => el.dataset.catName);
+      if (newCats.length === 0) { toast('اختر قسماً واحداً على الأقل أو فعّل "مدير عام"','error'); return; }
+    }
+    showLoading();
+    try {
+      const { error } = await sb.from('admin_users').update({ assigned_categories: newCats }).eq('user_id', userId);
+      if (error) throw error;
+      toast('تم الحفظ ✓');
+      closeAssignCatsModal();
+      await loadAdmins();
+    } catch(e) {
+      console.error(e);
+      toast('تعذر الحفظ: ' + (e.message || ''), 'error');
+    } finally { hideLoading(); }
+  }
+
+  // ============ WHATSAPP ============
   // ============ WHATSAPP ============
   async function loadWhatsapp(){
     const tbody=$('#waTableBody');tbody.innerHTML='<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</td></tr>';
@@ -2664,6 +2816,16 @@ tr:hover td{background:#FAFBFC}
   $('#addBlockedBtn').addEventListener('click',()=>openBlockCustomerModal(null,null,null));
   $('#saveSettingsBtn').addEventListener('click',saveSettings);
 
+  $('#closeAssignCatsBtn').addEventListener('click',closeAssignCatsModal);
+  $('#cancelAssignCatsBtn').addEventListener('click',closeAssignCatsModal);
+  $('#confirmAssignCatsBtn').addEventListener('click',confirmAssignCats);
+  $('#assignIsGeneral').addEventListener('change',(e)=>{
+    $('#assignCatsWrap').style.display = e.target.checked ? 'none' : 'block';
+  });
+  $('#newAdminIsGeneral').addEventListener('change',(e)=>{
+    $('#newAdminCatsWrap').style.display = e.target.checked ? 'none' : 'block';
+  });
+
   $('#addAdminBtn').addEventListener('click',openAddAdminModal);
   $('#closeAddAdminBtn').addEventListener('click',closeAddAdminModal);
   $('#cancelAddAdminBtn').addEventListener('click',closeAddAdminModal);
@@ -2683,7 +2845,7 @@ tr:hover td{background:#FAFBFC}
   $('#closeLightboxBtn').addEventListener('click',closeLightbox);
   $('#imageLightbox').addEventListener('click',e=>{if(e.target.id==='imageLightbox')closeLightbox()});
 
-  ['productModal','confirmModal','orderDetailModal','blockCustomerModal','addAdminModal','addWaModal','resetRevenueModal','categoryModal','districtModal','bannerModal'].forEach(id=>{
+  ['productModal','confirmModal','orderDetailModal','blockCustomerModal','addAdminModal','addWaModal','resetRevenueModal','categoryModal','districtModal','bannerModal','assignCatsModal'].forEach(id=>{
     const el=$('#'+id);
     if(el)el.addEventListener('click',e=>{if(e.target.id===id){
       if(id==='productModal')closeProductModal();
@@ -2696,6 +2858,7 @@ tr:hover td{background:#FAFBFC}
       else if(id==='categoryModal')closeCategoryModal();
       else if(id==='districtModal')closeDistrictModal();
       else if(id==='bannerModal')closeBannerModal();
+      else if(id==='assignCatsModal')closeAssignCatsModal();
     }});
   });
 
@@ -2704,6 +2867,7 @@ tr:hover td{background:#FAFBFC}
       if($('#imageLightbox').classList.contains('show'))closeLightbox();
       else if($('#districtModal').classList.contains('show'))closeDistrictModal();
       else if($('#bannerModal').classList.contains('show'))closeBannerModal();
+      else if($('#assignCatsModal').classList.contains('show'))closeAssignCatsModal();
       else if($('#categoryModal').classList.contains('show'))closeCategoryModal();
       else if($('#resetRevenueModal').classList.contains('show'))closeResetRevenueModal();
       else if($('#addWaModal').classList.contains('show'))closeWaModal();
