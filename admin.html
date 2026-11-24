@@ -840,7 +840,9 @@ tr:hover td{background:#FAFBFC}
     categoryForm: { editingIndex: null, uploadedImageUrl: null },
     districtForm: { editingIndex: null, gov: null },
     banners: { editingId: null, uploadedImageUrl: null, data: [] },
-    revenue: { data: [], resetTarget: null }
+    revenue: { data: [], resetTarget: null },
+    isGeneralAdmin: false,
+    myCategories: null
   };
 
   function escapeHtml(s){if(s==null)return'';return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -881,20 +883,27 @@ tr:hover td{background:#FAFBFC}
 
   // ============ OWNER VISIBILITY ============
   function applyOwnerVisibility(){
-  $$('.owner-only').forEach(el => {
-    if (state.isOwner) { 
-      el.classList.remove('owner-only');
-      el.style.display = '';
-    } else { 
-      el.classList.add('owner-only');
-      el.style.display = 'none'; 
+    $$('.owner-only').forEach(el => {
+      if (state.isOwner) { el.classList.remove('owner-only'); el.style.display = ''; }
+      else { el.classList.add('owner-only'); el.style.display = 'none'; }
+    });
+    ['navAdmins','navWhatsapp','navDistricts','navBanners'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = state.isOwner ? 'flex' : 'none';
+    });
+    const navCat = document.getElementById('navCategories');
+    if (navCat) {
+      const show = state.isOwner || state.isGeneralAdmin || (Array.isArray(state.myCategories) && state.myCategories.length > 0);
+      navCat.style.display = show ? 'flex' : 'none';
     }
-  });
-  ['navAdmins','navWhatsapp','navCategories','navDistricts','navBanners','navRevenue'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = state.isOwner ? 'flex' : 'none';
-  });
-}
+    const navRev = document.getElementById('navRevenue');
+    if (navRev) {
+      const show = state.isOwner || (!state.isGeneralAdmin && Array.isArray(state.myCategories) && state.myCategories.length > 0);
+      navRev.style.display = show ? 'flex' : 'none';
+    }
+    const resetAll = document.getElementById('resetAllRevenueBtn');
+    if (resetAll) resetAll.style.display = state.isOwner ? '' : 'none';
+  }
 
   // ============ AUTH ============
   async function checkSession(){
@@ -908,6 +917,12 @@ tr:hover td{background:#FAFBFC}
         const {data:o}=await sb.rpc('is_owner');
         state.isOwner = (o === true);
       }catch(e){ state.isOwner=false; }
+      try{
+        const {data:adminRow}=await sb.from('admin_users').select('role,assigned_categories').eq('user_id',session.user.id).maybeSingle();
+        state.myCategories = adminRow?.assigned_categories ?? null;
+        state.isGeneralAdmin = !state.isOwner && state.myCategories === null;
+        console.log('[ADMIN] isOwner:',state.isOwner,'| isGeneralAdmin:',state.isGeneralAdmin,'| myCategories:',state.myCategories);
+      }catch(e){ state.isGeneralAdmin=false; state.myCategories=null; }
       showDashboard();
       await refreshNavCounts();
       await Promise.all([loadDashboardStats(),loadTopProducts()]);
@@ -939,6 +954,12 @@ tr:hover td{background:#FAFBFC}
         const {data:o}=await sb.rpc('is_owner');
         state.isOwner = (o === true);
       }catch(e){ state.isOwner=false; }
+      try{
+        const {data:adminRow}=await sb.from('admin_users').select('role,assigned_categories').eq('user_id',data.user.id).maybeSingle();
+        state.myCategories = adminRow?.assigned_categories ?? null;
+        state.isGeneralAdmin = !state.isOwner && state.myCategories === null;
+        console.log('[ADMIN] isOwner:',state.isOwner,'| isGeneralAdmin:',state.isGeneralAdmin,'| myCategories:',state.myCategories);
+      }catch(e){ state.isGeneralAdmin=false; state.myCategories=null; }
       showDashboard();
       await refreshNavCounts();
       await Promise.all([loadDashboardStats(),loadTopProducts()]);
@@ -958,7 +979,16 @@ tr:hover td{background:#FAFBFC}
   }
 
   function switchPage(page){
-    if((page==='admins'||page==='categories'||page==='districts'||page==='whatsapp'||page==='banners'||page==='revenue')&&!state.isOwner){toast('غير مصرح','error');return}
+    const ownerOnly = ['admins','whatsapp','districts','banners'];
+    if(ownerOnly.includes(page)&&!state.isOwner){toast('غير مصرح','error');return}
+    if(page==='categories'){
+      const allowed = state.isOwner || state.isGeneralAdmin || (Array.isArray(state.myCategories) && state.myCategories.length > 0);
+      if(!allowed){toast('غير مصرح','error');return}
+    }
+    if(page==='revenue'){
+      const allowed = state.isOwner || (!state.isGeneralAdmin && Array.isArray(state.myCategories) && state.myCategories.length > 0);
+      if(!allowed){toast('غير مصرح','error');return}
+    }
     state.currentPage=page;
     $$('.nav-item').forEach(el=>el.classList.toggle('active',el.dataset.page===page));
     $$('.page').forEach(el=>el.classList.remove('active'));
@@ -1015,18 +1045,21 @@ tr:hover td{background:#FAFBFC}
   }
 
   function populateCategorySelects(){
-    // Products filter
+    let visibleCats = state.categories;
+    if (!state.isOwner && !state.isGeneralAdmin) {
+      const allowed = Array.isArray(state.myCategories) ? state.myCategories : [];
+      visibleCats = state.categories.filter(c => allowed.includes(c.name));
+    }
     const pf = $('#productsCategoryFilter');
     if (pf) {
       const current = pf.value;
       pf.innerHTML = '<option value="">كل الفئات</option>' +
-        state.categories.map(c => '<option value="'+escapeHtml(c.name)+'">'+escapeHtml(c.name)+'</option>').join('');
-      if (current && state.categories.find(c => c.name === current)) pf.value = current;
+        visibleCats.map(c => '<option value="'+escapeHtml(c.name)+'">'+escapeHtml(c.name)+'</option>').join('');
+      if (current && visibleCats.find(c => c.name === current)) pf.value = current;
     }
-    // Product form
     const pfc = $('#pfCategory');
     if (pfc) {
-      pfc.innerHTML = state.categories.map(c => '<option value="'+escapeHtml(c.name)+'">'+escapeHtml(c.name)+'</option>').join('');
+      pfc.innerHTML = visibleCats.map(c => '<option value="'+escapeHtml(c.name)+'">'+escapeHtml(c.name)+'</option>').join('');
     }
   }
 
@@ -1098,6 +1131,16 @@ tr:hover td{background:#FAFBFC}
       let q=sb.from('products').select('*',{count:'exact'});
       if(state.products.search)q=q.ilike('name_normalized','%'+normalizeArabicClient(state.products.search)+'%');
       if(state.products.category)q=q.eq('category',state.products.category);
+      if(!state.isOwner && !state.isGeneralAdmin){
+        const allowed = Array.isArray(state.myCategories) ? state.myCategories : [];
+        if(allowed.length===0){
+          tbody.innerHTML='<tr><td colspan="8"><div class="empty"><p>لا توجد أقسام مُعيَّنة لك — تواصل مع المالك</p></div></td></tr>';
+          state.products.data=[];state.products.total=0;
+          $('#productsSubtitle').textContent='0 منتج';
+          return;
+        }
+        q=q.in('category',allowed);
+      }
       if(state.products.status==='active')q=q.eq('is_active',true).eq('in_stock',true);
       else if(state.products.status==='inactive')q=q.eq('is_active',false);
       else if(state.products.status==='outstock')q=q.eq('in_stock',false);
