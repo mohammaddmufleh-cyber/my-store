@@ -2115,7 +2115,29 @@ select.co-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;bac
       return;
     }
 
-    const wa = getActiveWhatsAppNumber();
+    // ===== Determine WhatsApp number: category-specific or general =====
+    let wa = null;
+    try {
+      const firstItem = state.cart[0];
+      if (firstItem && firstItem.id) {
+        const { data: prod } = await sb.from('products').select('category').eq('id', firstItem.id).maybeSingle();
+        const catName = prod?.category;
+        if (catName) {
+          const catObj = state.categories.find(c => c.name === catName);
+          if (catObj && catObj.whatsapp) {
+            const cleaned = String(catObj.whatsapp).replace(/\D/g, '');
+            if (cleaned.length >= 8 && cleaned.length <= 15) {
+              wa = cleaned;
+              console.log('[WHATSAPP] Using category number for:', catName, '->', wa);
+            }
+          }
+        }
+      }
+    } catch(e) { console.warn('Category WA lookup failed:', e); }
+    if (!wa) {
+      wa = getActiveWhatsAppNumber();
+      if (wa) console.log('[WHATSAPP] Using general number ->', wa);
+    }
     if (!wa) {
       toast('لا يمكن إتمام الطلب حاليًا — لم يتم إعداد رقم واتساب. حاول لاحقًا.','error');
       return;
