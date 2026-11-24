@@ -1067,13 +1067,36 @@ tr:hover td{background:#FAFBFC}
   async function loadDashboardStats(){
     try{
       await loadSettingsCache();
-      const {count:pc}=await sb.from('products').select('*',{count:'exact',head:true}).eq('is_active',true);
-      const {count:oc}=await sb.from('orders').select('*',{count:'exact',head:true});
-      const {data:pr}=await sb.from('products').select('views');
-      const tv=(pr||[]).reduce((s,p)=>s+Number(p.views||0),0);
+      const isLimited = !state.isOwner && !state.isGeneralAdmin;
+      const allowed = Array.isArray(state.myCategories) ? state.myCategories : [];
 
+      if(isLimited && allowed.length===0){
+        $('#statProducts').textContent='0';
+        $('#statOrders').textContent='0';
+        $('#statViews').textContent='0';
+        return;
+      }
+
+      let pq = sb.from('products').select('*',{count:'exact',head:true}).eq('is_active',true);
+      if(isLimited) pq = pq.in('category', allowed);
+      const {count:pc}=await pq;
       $('#statProducts').textContent=fmtNum(pc||0);
-      $('#statOrders').textContent=fmtNum(oc||0);
+
+      let tv=0, oc=0;
+      if(isLimited){
+        const {data:prods}=await sb.from('products').select('id,views').in('category', allowed);
+        tv=(prods||[]).reduce((s,p)=>s+Number(p.views||0),0);
+        const pidSet = new Set((prods||[]).map(p=>p.id));
+        const {data:orders}=await sb.from('orders').select('items');
+        oc=(orders||[]).filter(o => (o.items||[]).some(it => pidSet.has(it.id))).length;
+      } else {
+        const {data:pr}=await sb.from('products').select('views');
+        tv=(pr||[]).reduce((s,p)=>s+Number(p.views||0),0);
+        const {count:orderCnt}=await sb.from('orders').select('*',{count:'exact',head:true});
+        oc=orderCnt||0;
+      }
+
+      $('#statOrders').textContent=fmtNum(oc);
       $('#statViews').textContent=fmtNum(tv);
 
       if(state.isOwner){
@@ -1097,11 +1120,22 @@ tr:hover td{background:#FAFBFC}
     tbody.innerHTML=`<tr><td colspan="${colCount}" style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</td></tr>`;
     try{
       const {data,error}=await sb.rpc('get_product_stats');if(error)throw error;
-      if(!data||!data.length){
+      let filteredData = data || [];
+      if(!state.isOwner && !state.isGeneralAdmin){
+        const allowed = Array.isArray(state.myCategories) ? state.myCategories : [];
+        if(allowed.length===0){
+          filteredData = [];
+        } else {
+          const {data:allowedProds} = await sb.from('products').select('id').in('category', allowed);
+          const allowedIds = new Set((allowedProds||[]).map(p=>p.id));
+          filteredData = filteredData.filter(p => allowedIds.has(p.product_id));
+        }
+      }
+      if(!filteredData.length){
         tbody.innerHTML=`<tr><td colspan="${colCount}" style="text-align:center;padding:32px;color:var(--muted)">لا توجد منتجات</td></tr>`;
         return;
       }
-      const top=data.slice(0,10),ids=top.map(p=>p.product_id);
+      const top=filteredData.slice(0,10),ids=top.map(p=>p.product_id);
       const {data:pd}=await sb.from('products').select('id,images').in('id',ids);
       const imgMap={};(pd||[]).forEach(p=>{const imgs=normalizeImages(p.images);imgMap[p.id]=imgs[0]||''});
       tbody.innerHTML=top.map((p,i)=>{
@@ -1993,17 +2027,48 @@ tr:hover td{background:#FAFBFC}
   }
 
   // ============ ORDERS ============
-  async function loadOrders(){
+    async function loadOrders(){
     const tbody=$('#ordersTableBody');tbody.innerHTML='<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</td></tr>';
     try{
       let q=sb.from('orders').select('*',{count:'exact'});
       if(state.orders.status)q=q.eq('status',state.orders.status);
       if(state.orders.payment)q=q.eq('payment_method',state.orders.payment);
       if(state.orders.search){const s=state.orders.search;q=q.or(`order_number.ilike.%${s}%,customer_name.ilike.%${s}%,customer_phone.ilike.%${s}%`)}
-      const from=state.orders.page*state.orders.pageSize,to=from+state.orders.pageSize-1;
-      const {data,count,error}=await q.order('created_at',{ascending:false}).range(from,to);
-      if(error)throw error;
-      state.orders.data=data||[];state.orders.total=count||0;
+
+      if(state.isOwner || state.isGeneralAdmin){
+        const from=state.orders.page*state.orders.pageSize,to=from+state.orders.pageSize-1;
+        const {data,count,error}=await q.order('created_at',{ascending:false}).range(from,to);
+        if(error)throw error;
+        state.orders.data=data||[];state.orders.total=count||0;
+      } else {
+        const allowed = Array.isArray(state.myCategories) ? state.myCategories : [];
+        if(allowed.length===0){
+          tbody.innerHTML='<tr><td colspan="8"><div class="empty"><p>لا توجد أقسام مُعيَّنة لك — تواصل مع المالك</p></div></td></tr>';
+          state.orders.data=[];state.orders.total=0;
+          $('#ordersSubtitle').textContent='0 طلب';
+          return;
+        }
+        const {data:allOrders,error}=await q.order('created_at',{ascending:false});
+        if(error)throw error;
+        const productIds = new Set();
+        (allOrders||[]).forEach(o => (o.items||[]).forEach(it => { if(it.id) productIds.add(it.id); }));
+        const catMap = {};
+        if(productIds.size > 0){
+          const {data:prods} = await sb.from('products').select('id,category').in('id',[...productIds]);
+          (prods||[]).forEach(p => { catMap[p.id] = p.category; });
+        }
+        const filtered = (allOrders||[]).filter(o => {
+          const items = o.items || [];
+          return items.some(it => {
+            const cat = catMap[it.id];
+            return cat && allowed.includes(cat);
+          });
+        });
+        state.orders.total = filtered.length;
+        const from = state.orders.page*state.orders.pageSize;
+        state.orders.data = filtered.slice(from, from + state.orders.pageSize);
+      }
+
       renderOrdersTable();renderOrdersPagination();
       $('#ordersSubtitle').textContent=`${fmtNum(state.orders.total)} طلب`;
     }catch(e){console.error(e);tbody.innerHTML='<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--danger)">تعذر التحميل</td></tr>'}
@@ -2064,9 +2129,14 @@ tr:hover td{background:#FAFBFC}
   async function loadReviews(){
     const c=$('#reviewsListContainer');c.innerHTML='<div style="text-align:center;padding:32px;color:var(--muted)">جارٍ التحميل...</div>';
     try{
-      const {data,error}=await sb.from('reviews').select('*,product:products(id,name,images)').order('created_at',{ascending:false});
+      const {data,error}=await sb.from('reviews').select('*,product:products(id,name,images,category)').order('created_at',{ascending:false});
       if(error)throw error;
-      state.reviews.all=data||[];
+      let allReviews = data||[];
+      if(!state.isOwner && !state.isGeneralAdmin){
+        const allowed = Array.isArray(state.myCategories) ? state.myCategories : [];
+        allReviews = allReviews.filter(r => r.product && allowed.includes(r.product.category));
+      }
+      state.reviews.all=allReviews;
       state.reviews.counts.pending=state.reviews.all.filter(r=>r.status==='pending').length;
       state.reviews.counts.approved=state.reviews.all.filter(r=>r.status==='approved').length;
       state.reviews.counts.rejected=state.reviews.all.filter(r=>r.status==='rejected').length;
@@ -2383,8 +2453,12 @@ tr:hover td{background:#FAFBFC}
       const map = {};
       (data || []).forEach(r => { map[r.category] = r; });
 
-      const allCats = state.categories.map(c => c.name);
-      if (map['غير معروف']) allCats.push('غير معروف');
+      let allCats = state.categories.map(c => c.name);
+      if(!state.isOwner && !state.isGeneralAdmin){
+        const allowed = Array.isArray(state.myCategories) ? state.myCategories : [];
+        allCats = allCats.filter(c => allowed.includes(c));
+      }
+      if (map['غير معروف'] && (state.isOwner || state.isGeneralAdmin)) allCats.push('غير معروف');
 
       const merged = allCats.map(cat => map[cat] || { category: cat, revenue: 0, orders_count: 0 });
 
