@@ -668,6 +668,12 @@ tr:hover td{background:#FAFBFC}
         <input type="url" class="form-input" id="catImageInput" placeholder="https://..." style="direction:ltr;text-align:right">
         <p class="form-hint">إذا رفعت صورة من الجهاز، سيتم استخدامها بدلاً من الرابط</p>
       </div>
+
+      <div class="form-field full" style="margin-top:12px">
+        <label class="form-label">رقم واتساب مخصص (اختياري)</label>
+        <input type="text" class="form-input" id="catWhatsappInput" placeholder="963912345678" style="direction:ltr;text-align:right;font-family:monospace" maxlength="20">
+        <p class="form-hint">بدون + أو مسافات. إذا تُرك فارغاً، تُستخدم الأرقام العامة</p>
+      </div>
     </div>
     <div class="modal-footer"><button class="btn btn-ghost" id="cancelCategoryBtn">إلغاء</button><button class="btn btn-primary" id="confirmCategoryBtn">حفظ</button></div>
   </div>
@@ -1275,10 +1281,12 @@ tr:hover td{background:#FAFBFC}
       const cat = state.categories[state.categoryForm.editingIndex];
       $('#catNameInput').value = cat.name || '';
       $('#catImageInput').value = cat.image || '';
+      $('#catWhatsappInput').value = cat.whatsapp || '';
       updateCatImagePreview(cat.image || '');
     } else {
       $('#catNameInput').value = '';
       $('#catImageInput').value = '';
+      $('#catWhatsappInput').value = '';
       updateCatImagePreview('');
     }
     $('#categoryModal').classList.add('show');
@@ -1341,7 +1349,13 @@ tr:hover td{background:#FAFBFC}
   async function confirmCategory(){
     const name = $('#catNameInput').value.trim();
     const image = (state.categoryForm.uploadedImageUrl || $('#catImageInput').value.trim() || '');
+    const whatsappRaw = $('#catWhatsappInput').value.trim();
+    const whatsapp = whatsappRaw ? whatsappRaw.replace(/\D/g, '') : '';
     if (!name) { toast('اسم القسم مطلوب','error'); return; }
+    if (whatsapp && (whatsapp.length < 8 || whatsapp.length > 15)) {
+      toast('رقم واتساب غير صالح (8-15 رقماً)','error');
+      return;
+    }
     // check duplicate (except when editing same)
     const isEdit = state.categoryForm.editingIndex !== null;
     const exists = state.categories.some((c, i) => c.name === name && i !== state.categoryForm.editingIndex);
@@ -1349,9 +1363,9 @@ tr:hover td{background:#FAFBFC}
 
     const newCats = [...state.categories];
     if (isEdit) {
-      newCats[state.categoryForm.editingIndex] = { name, image: image || '' };
+      newCats[state.categoryForm.editingIndex] = { name, image: image || '', whatsapp: whatsapp || '' };
     } else {
-      newCats.push({ name, image: image || '' });
+      newCats.push({ name, image: image || '', whatsapp: whatsapp || '' });
     }
 
     showLoading();
