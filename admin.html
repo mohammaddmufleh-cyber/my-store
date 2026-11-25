@@ -1012,12 +1012,32 @@ tr:hover td{background:#FAFBFC}
 
   async function refreshNavCounts(){
     try{
-      const {count:po}=await sb.from('orders').select('*',{count:'exact',head:true}).eq('status','pending');
-      const {count:pr}=await sb.from('reviews').select('*',{count:'exact',head:true}).eq('status','pending');
+      let po = 0, pr = 0;
+      const isLimited = !state.isOwner && !state.isGeneralAdmin;
+      const allowed = Array.isArray(state.myCategories) ? state.myCategories : [];
+
+      if (isLimited) {
+        if (allowed.length > 0) {
+          const {data: allowedProds} = await sb.from('products').select('id').in('category', allowed);
+          const allowedIds = new Set((allowedProds||[]).map(p => p.id));
+
+          const {data: pendingOrders} = await sb.from('orders').select('id,items').eq('status','pending');
+          po = (pendingOrders||[]).filter(o => (o.items||[]).some(it => allowedIds.has(it.id))).length;
+
+          const {data: pendingReviews} = await sb.from('reviews').select('product_id').eq('status','pending');
+          pr = (pendingReviews||[]).filter(r => allowedIds.has(r.product_id)).length;
+        }
+      } else {
+        const {count:orderCnt}=await sb.from('orders').select('*',{count:'exact',head:true}).eq('status','pending');
+        const {count:reviewCnt}=await sb.from('reviews').select('*',{count:'exact',head:true}).eq('status','pending');
+        po = orderCnt || 0;
+        pr = reviewCnt || 0;
+      }
+
       const oc=$('#navOrdersCount'),rc=$('#navReviewsCount');
-      if(po>0){oc.textContent=po;oc.classList.add('show')}else oc.classList.remove('show');
-      if(pr>0){rc.textContent=pr;rc.classList.add('show')}else rc.classList.remove('show');
-    }catch(e){}
+      if(oc){ if(po>0){oc.textContent=po;oc.classList.add('show')}else oc.classList.remove('show'); }
+      if(rc){ if(pr>0){rc.textContent=pr;rc.classList.add('show')}else rc.classList.remove('show'); }
+    }catch(e){console.error('refreshNavCounts:',e)}
   }
 
   function switchPage(page){
