@@ -2589,7 +2589,10 @@ tr:hover td{background:#FAFBFC}
       free_return_desc:$('#setFreeReturnDesc').value.trim()||'خلال 14 يوم',
       updated_at:new Date().toISOString()
     };
-<div class="form-field full owner-only" id="storeNameFieldWrap">
+    // Only owner can change store_name
+    if (state.isOwner) {
+      payload.store_name = $('#setStoreName').value.trim()||'متجري';
+    }
     showLoading();
     try{const {error}=await sb.from('store_settings').update(payload).eq('id',1);if(error)throw error;state.settings={...state.settings,...payload};toast('تم حفظ الإعدادات ✓')}
     catch(e){console.error(e);toast('تعذر الحفظ: '+(e.message||''),'error')}
