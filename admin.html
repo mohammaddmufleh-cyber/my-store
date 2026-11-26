@@ -2475,7 +2475,7 @@ tr:hover td{background:#FAFBFC}
   async function saveWaList(newList,newActiveId){
     const payload={whatsapp_recipients:newList,updated_at:new Date().toISOString()};
     if(newActiveId!==undefined)payload.active_recipient_id=newActiveId;
-    const {error}=await sb.from('store_settings').update(payload).eq('id',1);
+    const {error}=await sb.rpc('update_store_settings', { payload });
     if(error)throw error;
   }
   async function setActiveWa(id){
@@ -2609,12 +2609,19 @@ tr:hover td{background:#FAFBFC}
       free_return_desc:$('#setFreeReturnDesc').value.trim()||'خلال 14 يوم',
       updated_at:new Date().toISOString()
     };
-    // Only owner can change store_name
+    // فقط المالك يعدّل اسم المتجر
     if (state.isOwner) {
-      payload.store_name = $('#setStoreName').value.trim()||'متجري';
+      const nameInput = $('#setStoreName');
+      if (nameInput) payload.store_name = nameInput.value.trim() || 'متجري';
     }
     showLoading();
-    try{const {error}=await sb.from('store_settings').update(payload).eq('id',1);if(error)throw error;state.settings={...state.settings,...payload};toast('تم حفظ الإعدادات ✓')}
+     showLoading();
+    try{
+      const {data:result, error} = await sb.rpc('update_store_settings', { payload });
+      if(error) throw error;
+      state.settings = { ...state.settings, ...payload };
+      toast('تم حفظ الإعدادات ✓');
+    }
     catch(e){console.error(e);toast('تعذر الحفظ: '+(e.message||''),'error')}
     finally{hideLoading()}
   }
