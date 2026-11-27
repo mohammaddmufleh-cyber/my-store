@@ -2476,11 +2476,13 @@ tr:hover td{background:#FAFBFC}
     $$('[data-delete-wa]').forEach(b=>b.addEventListener('click',()=>deleteWa(b.dataset.deleteWa)));
   }
   async function saveWaList(newList,newActiveId){
+  }
+  async function saveWaList(newList,newActiveId){
     const payload={whatsapp_recipients:newList,updated_at:new Date().toISOString()};
     if(newActiveId!==undefined)payload.active_recipient_id=newActiveId;
     const {error}=await sb.rpc('update_store_settings',{payload});
     if(error)throw error;
-  }
+    }
   async function setActiveWa(id){
     showLoading();
     try{
