@@ -1524,7 +1524,8 @@ tr:hover td{background:#FAFBFC}
 
     showLoading();
     try {
-      const { error } = await sb.from('store_settings').update({ categories: newCats }).eq('id', 1);
+      const { error } = await sb.rpc('update_store_settings', { payload: { categories: newCats } });
+      if (error) throw error;
       if (error) throw error;
       state.categories = newCats;
       populateCategorySelects();
@@ -1546,7 +1547,8 @@ tr:hover td{background:#FAFBFC}
     const newCats = state.categories.filter((_, i) => i !== idx);
     showLoading();
     try {
-      const { error } = await sb.from('store_settings').update({ categories: newCats }).eq('id', 1);
+      const { error } = await sb.rpc('update_store_settings', { payload: { categories: newCats } });
+      if (error) throw error;
       if (error) throw error;
       state.categories = newCats;
       populateCategorySelects();
@@ -1628,7 +1630,8 @@ tr:hover td{background:#FAFBFC}
     try {
       const current = state.districts[gov] || { enabled: true, areas: [] };
       const updated = { ...state.districts, [gov]: { ...current, enabled } };
-      const { error } = await sb.from('store_settings').update({ districts: updated }).eq('id', 1);
+      const { error } = await sb.rpc('update_store_settings', { payload: { districts: updated } });
+      if (error) throw error;
       if (error) throw error;
       state.districts = updated;
       toast(enabled ? 'تم تفعيل المحافظة ✓' : 'تم إخفاء المحافظة ✓');
@@ -1642,7 +1645,8 @@ tr:hover td{background:#FAFBFC}
     const gov = state.currentDistrictGov;
     const current = state.districts[gov] || { enabled: true, areas: [] };
     const newDistricts = { ...state.districts, [gov]: { ...current, areas: updatedGovList } };
-    const { error } = await sb.from('store_settings').update({ districts: newDistricts }).eq('id', 1);
+    const { error } = await sb.rpc('update_store_settings', { payload: { districts: newDistricts } });
+    if (error) throw error;
     if (error) throw error;
     state.districts = newDistricts;
   }
@@ -1760,11 +1764,10 @@ tr:hover td{background:#FAFBFC}
     $$('[data-banner-up]').forEach(b => b.addEventListener('click', () => moveBanner(Number(b.dataset.bannerUp), -1)));
     $$('[data-banner-down]').forEach(b => b.addEventListener('click', () => moveBanner(Number(b.dataset.bannerDown), 1)));
   }
-  async function saveBanners(list){
-    const { error } = await sb.from('store_settings').update({ banners: list }).eq('id', 1);
-    if (error) throw error;
-    state.banners.data = list;
-    state.settings = { ...state.settings, banners: list };
+    const payload={whatsapp_recipients:newList,updated_at:new Date().toISOString()};
+    if(newActiveId!==undefined)payload.active_recipient_id=newActiveId;
+    const {error}=await sb.rpc('update_store_settings',{payload});
+    if(error)throw error;
   }
   function openBannerModal(idx){
     state.banners.editingId = (idx === undefined || idx === null) ? null : idx;
@@ -1951,7 +1954,7 @@ tr:hover td{background:#FAFBFC}
     $$('[data-banner-down]').forEach(b => b.addEventListener('click', () => moveBanner(Number(b.dataset.bannerDown), 1)));
   }
   async function saveBanners(list){
-    const { error } = await sb.from('store_settings').update({ banners: list }).eq('id', 1);
+    const { error } = await sb.rpc('update_store_settings', { payload: { banners: list } });
     if (error) throw error;
     state.banners.data = list;
     state.settings = { ...state.settings, banners: list };
@@ -2475,7 +2478,7 @@ tr:hover td{background:#FAFBFC}
   async function saveWaList(newList,newActiveId){
     const payload={whatsapp_recipients:newList,updated_at:new Date().toISOString()};
     if(newActiveId!==undefined)payload.active_recipient_id=newActiveId;
-    const {error}=await sb.rpc('update_store_settings', { payload });
+    const {error}=await sb.rpc('update_store_settings',{payload});
     if(error)throw error;
   }
   async function setActiveWa(id){
@@ -2615,8 +2618,7 @@ tr:hover td{background:#FAFBFC}
       if (nameInput) payload.store_name = nameInput.value.trim() || 'متجري';
     }
     showLoading();
-     showLoading();
-    try{
+         try{
       const {data:result, error} = await sb.rpc('update_store_settings', { payload });
       if(error) throw error;
       state.settings = { ...state.settings, ...payload };
@@ -2713,17 +2715,19 @@ tr:hover td{background:#FAFBFC}
     showLoading();
     try {
       if (state.revenue.resetTarget === '__ALL__') {
-        const { error } = await sb.from('store_settings').update({
-          revenue_count_from: new Date().toISOString(),
-          category_revenue_cutoffs: {}
-        }).eq('id', 1);
+        const { error } = await sb.rpc('update_store_settings', {
+          payload: {
+            revenue_count_from: new Date().toISOString(),
+            category_revenue_cutoffs: {}
+          }
+        });
         if (error) throw error;
         toast('تم تصفير كل الإيرادات ✓');
       } else {
         const { data: cur } = await sb.from('store_settings').select('category_revenue_cutoffs').eq('id', 1).maybeSingle();
         const cutoffs = (cur && cur.category_revenue_cutoffs && typeof cur.category_revenue_cutoffs === 'object') ? { ...cur.category_revenue_cutoffs } : {};
         cutoffs[state.revenue.resetTarget] = new Date().toISOString();
-        const { error } = await sb.from('store_settings').update({ category_revenue_cutoffs: cutoffs }).eq('id', 1);
+        const { error } = await sb.rpc('update_store_settings', { payload: { category_revenue_cutoffs: cutoffs } });
         if (error) throw error;
         toast('تم تصفير "' + state.revenue.resetTarget + '" ✓');
       }
